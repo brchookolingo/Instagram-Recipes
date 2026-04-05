@@ -95,13 +95,13 @@
       "phase": 2,
       "type": "ai-safe",
       "title": "Build URLInput component with clipboard detection",
-      "status": "pending",
+      "status": "complete",
       "depends_on": ["T03", "T04"],
       "description": "Create `src/components/URLInput.tsx`. This component renders a text input styled with NativeWind. On focus/mount it reads the clipboard via `expo-clipboard` — if the clipboard contains a string matching an Instagram URL pattern (`instagram.com/p/` or `instagram.com/reel/`) it auto-fills the input and shows a 'Paste from clipboard' suggestion. Exposes `onSubmit(url: string)` prop. Includes a 'Fetch Recipe' button. Create `src/hooks/useClipboard.ts` hook that encapsulates clipboard read logic. Commit.",
       "success_criteria": "URLInput.tsx and useClipboard.ts exist. Component compiles. Clipboard hook correctly identifies Instagram URL patterns.",
       "estimated_minutes": 25,
-      "attempts": [],
-      "completed_at": null,
+      "attempts": [{"started_at": "2026-04-05T16:48:00Z", "agent_note": "Completed successfully"}],
+      "completed_at": "2026-04-05T16:50:00Z",
       "notes": ""
     },
     {

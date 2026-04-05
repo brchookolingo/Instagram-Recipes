@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { View, Text, FlatList, TextInput, Pressable } from 'react-native';
+import { View, FlatList, TextInput, Pressable, Text } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useRecipeStore } from '../../src/stores/recipe-store';
 import { RecipeCard } from '../../src/components/RecipeCard';
+import { EmptyState } from '../../src/components/EmptyState';
 import { Recipe } from '../../src/types/recipe';
 
 export default function HomeScreen() {
@@ -35,13 +36,21 @@ export default function HomeScreen() {
       </View>
 
       {filtered.length === 0 ? (
-        <View className="flex-1 items-center justify-center px-8">
-          <Text className="text-5xl mb-4">🍽️</Text>
-          <Text className="text-xl font-bold text-gray-700">No recipes yet</Text>
-          <Text className="text-gray-400 text-center mt-2">
-            Tap the + button to save your first Instagram recipe
-          </Text>
-        </View>
+        search ? (
+          <EmptyState
+            icon="🔍"
+            title="No results"
+            subtitle={`No recipes matching "${search}"`}
+          />
+        ) : (
+          <EmptyState
+            icon="🍽️"
+            title="No recipes yet"
+            subtitle="Tap the + button to save your first Instagram recipe"
+            actionLabel="Add Recipe"
+            onAction={() => router.push('/add-recipe')}
+          />
+        )
       ) : (
         <FlatList
           data={filtered}

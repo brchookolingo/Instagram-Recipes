@@ -3,6 +3,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useBoardStore } from '../../src/stores/board-store';
 import { useRecipeStore } from '../../src/stores/recipe-store';
 import { RecipeCard } from '../../src/components/RecipeCard';
+import { EmptyState } from '../../src/components/EmptyState';
 import { Recipe } from '../../src/types/recipe';
 
 export default function BoardDetailScreen() {
@@ -87,13 +88,11 @@ export default function BoardDetailScreen() {
       </View>
 
       {boardRecipes.length === 0 ? (
-        <View className="flex-1 items-center justify-center px-8">
-          <Text className="text-5xl mb-4">📂</Text>
-          <Text className="text-xl font-bold text-gray-700">Board is empty</Text>
-          <Text className="text-gray-400 text-center mt-2">
-            Add recipes from the recipe detail screen
-          </Text>
-        </View>
+        <EmptyState
+          icon="📂"
+          title="Board is empty"
+          subtitle="Add recipes from the recipe detail screen"
+        />
       ) : (
         <FlatList
           data={boardRecipes}

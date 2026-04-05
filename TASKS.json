@@ -25,13 +25,13 @@
       "phase": 1,
       "type": "ai-safe",
       "title": "Install and configure all dependencies",
-      "status": "pending",
+      "status": "complete",
       "depends_on": ["T01"],
       "description": "Install: `react-native-mmkv`, `zustand`, `nativewind`, `tailwindcss`, `expo-image`, `expo-clipboard`, `expo-video-thumbnails`, `expo-file-system`, `@anthropic-ai/sdk`. Also install dev deps: `@types/react`, `prettier`. Run `npx expo install` for expo-managed packages. Commit package.json and package-lock/yarn.lock.",
       "success_criteria": "All packages listed above appear in package.json dependencies. No install errors.",
       "estimated_minutes": 20,
-      "attempts": [],
-      "completed_at": null,
+      "attempts": [{"started_at": "2026-04-05T16:42:00Z", "agent_note": "Completed successfully. Used npm install directly due to expo install network issues."}],
+      "completed_at": "2026-04-05T16:43:00Z",
       "notes": ""
     },
     {

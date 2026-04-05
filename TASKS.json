@@ -277,13 +277,13 @@
       "phase": 3,
       "type": "ai-safe",
       "title": "Build IngredientList and InstructionList components",
-      "status": "pending",
+      "status": "complete",
       "depends_on": ["T03", "T05"],
       "description": "Create `src/components/IngredientList.tsx`: renders a list of Ingredient items each with a checkbox. Checking an ingredient toggles its `checked` state and shows strikethrough text. Accepts `ingredients: Ingredient[]` and `onToggle: (index: number) => void` props. Create `src/components/InstructionList.tsx`: renders numbered steps. Each step has a circle number badge and text. Accepts `instructions: Instruction[]`. Style both with NativeWind. Commit.",
       "success_criteria": "Both component files exist and compile. IngredientList handles toggle state. InstructionList shows step numbers.",
       "estimated_minutes": 25,
-      "attempts": [],
-      "completed_at": null,
+      "attempts": [{"started_at": "2026-04-05T16:53:00Z", "agent_note": "Completed successfully"}],
+      "completed_at": "2026-04-05T16:55:00Z",
       "notes": ""
     },
     {

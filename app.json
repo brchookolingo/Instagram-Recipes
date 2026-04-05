@@ -3,6 +3,7 @@
     "name": "InstagramRecipes",
     "slug": "InstagramRecipes",
     "version": "1.0.0",
+    "scheme": "instagramrecipes",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",

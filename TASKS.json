@@ -291,13 +291,13 @@
       "phase": 3,
       "type": "ai-safe",
       "title": "Build Recipe Detail screen",
-      "status": "pending",
+      "status": "complete",
       "depends_on": ["T06", "T20"],
       "description": "Implement `app/recipe/[id].tsx`. Read the recipe id from route params, look it up in recipeStore. Show: full-width hero image, title, author, extractionSource badge (caption/video/manual), prep/cook/servings row, IngredientList (with toggle persisted back to store), InstructionList. Add a header right button with options: 'Add to Board', 'Delete'. Delete shows an Alert confirmation then calls recipeStore.deleteRecipe() and navigates back. Commit.",
       "success_criteria": "Screen renders all recipe fields. Ingredient toggle updates store. Delete flow works with confirmation.",
       "estimated_minutes": 30,
-      "attempts": [],
-      "completed_at": null,
+      "attempts": [{"started_at": "2026-04-05T16:57:00Z", "agent_note": "Completed successfully. Add-to-board modal will be wired in T23."}],
+      "completed_at": "2026-04-05T16:59:00Z",
       "notes": ""
     },
     {

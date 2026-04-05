@@ -221,13 +221,13 @@
       "phase": 2,
       "type": "ai-safe",
       "title": "Build Add Recipe screen — URL input and fetch flow",
-      "status": "pending",
+      "status": "complete",
       "depends_on": ["T07", "T11", "T14", "T15"],
       "description": "Implement the first half of `app/add-recipe.tsx`: render URLInput component, handle the 'Fetch Recipe' action — show a loading spinner while calling fetchInstagramPost(), then calling parseRecipeWithAI() (Tier 1), then if insufficient, calling extractFrames() + parseRecipeFromVideoFrames() (Tier 2), then falling back to parseRecipeFromCaption(). Store the partial recipe in local component state. Show an error message if all methods fail. Commit.",
       "success_criteria": "Screen compiles. The fetch → Tier 1 → Tier 2 → fallback chain is wired up. Loading and error states are handled.",
       "estimated_minutes": 30,
-      "attempts": [],
-      "completed_at": null,
+      "attempts": [{"started_at": "2026-04-05T17:18:00Z", "agent_note": "Completed T16+T17 together as both parts of add-recipe screen"}],
+      "completed_at": "2026-04-05T17:22:00Z",
       "notes": ""
     },
     {
@@ -235,13 +235,13 @@
       "phase": 2,
       "type": "ai-safe",
       "title": "Build Add Recipe screen — preview, edit, and save flow",
-      "status": "pending",
+      "status": "complete",
       "depends_on": ["T16", "T06"],
       "description": "Complete `app/add-recipe.tsx`: after fetch+parse, show a preview/edit form with editable fields for title, ingredients (add/remove/edit), instructions (add/remove/edit). Show the post image if available. Add a 'Save Recipe' button that calls recipeStore.addRecipe() with a generated UUID and timestamps. Navigate back to Home on success. Add a 'Skip — Enter Manually' option that bypasses fetch and shows a blank form. Commit.",
       "success_criteria": "Full add-recipe screen compiles. Save action adds recipe to Zustand store. Manual entry path works.",
       "estimated_minutes": 35,
-      "attempts": [],
-      "completed_at": null,
+      "attempts": [{"started_at": "2026-04-05T17:18:00Z", "agent_note": "Completed together with T16"}],
+      "completed_at": "2026-04-05T17:22:00Z",
       "notes": ""
     },
     {

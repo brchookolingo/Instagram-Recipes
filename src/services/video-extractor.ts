@@ -1,19 +1,19 @@
-import * as VideoThumbnails from 'expo-video-thumbnails';
-import * as FileSystem from 'expo-file-system';
-import Anthropic from '@anthropic-ai/sdk';
-import { Recipe } from '../types/recipe';
-import { CLAUDE_MODEL } from '../utils/constants';
+import * as VideoThumbnails from "expo-video-thumbnails";
+import { readAsStringAsync, EncodingType } from "expo-file-system/legacy";
+import Anthropic from "@anthropic-ai/sdk";
+import { Recipe } from "../types/recipe";
+import { CLAUDE_MODEL } from "../utils/constants";
 
 export async function extractFrames(
   videoUri: string,
-  frameCount: number = 6
+  frameCount: number = 6,
 ): Promise<string[]> {
   const frames: string[] = [];
 
   // Extract frames at evenly spaced intervals
   // Assume a rough duration; we extract at percentage-based time offsets
   const timeOffsets = Array.from({ length: frameCount }, (_, i) =>
-    Math.round((i / (frameCount - 1)) * 30000)
+    Math.round((i / (frameCount - 1)) * 30000),
   );
 
   for (const time of timeOffsets) {
@@ -57,7 +57,7 @@ Rules:
 
 export async function parseRecipeFromVideoFrames(
   frameUris: string[],
-  apiKey: string
+  apiKey: string,
 ): Promise<Partial<Recipe> | null> {
   if (frameUris.length === 0) return null;
 
@@ -68,23 +68,23 @@ export async function parseRecipeFromVideoFrames(
     const imageBlocks: Anthropic.Messages.ContentBlockParam[] = [];
 
     for (const uri of frameUris) {
-      const base64 = await FileSystem.readAsStringAsync(uri, {
-        encoding: FileSystem.EncodingType.Base64,
+      const base64 = await readAsStringAsync(uri, {
+        encoding: EncodingType.Base64,
       });
 
       imageBlocks.push({
-        type: 'image',
+        type: "image",
         source: {
-          type: 'base64',
-          media_type: 'image/jpeg',
+          type: "base64",
+          media_type: "image/jpeg",
           data: base64,
         },
       });
     }
 
     imageBlocks.push({
-      type: 'text',
-      text: 'Extract the recipe information from these video frames.',
+      type: "text",
+      text: "Extract the recipe information from these video frames.",
     });
 
     const message = await client.messages.create({
@@ -93,14 +93,14 @@ export async function parseRecipeFromVideoFrames(
       system: VISION_SYSTEM_PROMPT,
       messages: [
         {
-          role: 'user',
+          role: "user",
           content: imageBlocks,
         },
       ],
     });
 
-    const textBlock = message.content.find((block) => block.type === 'text');
-    if (!textBlock || textBlock.type !== 'text') return null;
+    const textBlock = message.content.find((block) => block.type === "text");
+    if (!textBlock || textBlock.type !== "text") return null;
 
     const jsonText = textBlock.text.trim();
     const parsed = JSON.parse(jsonText);
@@ -114,7 +114,7 @@ export async function parseRecipeFromVideoFrames(
       prepTime: parsed.prepTime,
       cookTime: parsed.cookTime,
       servings: parsed.servings,
-      extractionSource: 'video',
+      extractionSource: "video",
     };
   } catch {
     return null;

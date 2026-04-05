@@ -1,5 +1,5 @@
-import { View, Text, Pressable } from 'react-native';
-import { Ingredient } from '../types/recipe';
+import { View, Text, Pressable } from "react-native";
+import { Ingredient } from "../types/recipe";
 
 interface IngredientListProps {
   ingredients: Ingredient[];
@@ -17,7 +17,9 @@ export function IngredientList({ ingredients, onToggle }: IngredientListProps) {
         >
           <View
             className={`w-6 h-6 rounded-md border-2 items-center justify-center ${
-              ingredient.checked ? 'bg-pink-500 border-pink-500' : 'border-gray-300'
+              ingredient.checked
+                ? "bg-pink-500 border-pink-500"
+                : "border-gray-300"
             }`}
           >
             {ingredient.checked && (
@@ -26,7 +28,9 @@ export function IngredientList({ ingredients, onToggle }: IngredientListProps) {
           </View>
           <Text
             className={`flex-1 text-base ${
-              ingredient.checked ? 'line-through text-gray-400' : 'text-gray-800'
+              ingredient.checked
+                ? "line-through text-gray-400"
+                : "text-gray-800"
             }`}
           >
             {ingredient.text}

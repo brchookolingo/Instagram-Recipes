@@ -1,23 +1,30 @@
-import { useState, useEffect } from 'react';
-import { View, Text, TextInput, ScrollView, Pressable, Alert } from 'react-native';
-import { storage } from '../../src/utils/storage';
-import { useRecipeStore } from '../../src/stores/recipe-store';
-import { useBoardStore } from '../../src/stores/board-store';
+import { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  ScrollView,
+  Pressable,
+  Alert,
+} from "react-native";
+import { storage } from "../../src/utils/storage";
+import { useRecipeStore } from "../../src/stores/recipe-store";
+import { useBoardStore } from "../../src/stores/board-store";
 
 const API_KEY_KEYS = {
-  claude: 'settings:claude-api-key',
-  rapidapi: 'settings:rapidapi-key',
+  claude: "settings:claude-api-key",
+  rapidapi: "settings:rapidapi-key",
 } as const;
 
 export default function SettingsScreen() {
-  const [claudeKey, setClaudeKey] = useState('');
-  const [rapidApiKey, setRapidApiKey] = useState('');
+  const [claudeKey, setClaudeKey] = useState("");
+  const [rapidApiKey, setRapidApiKey] = useState("");
   const [showClaudeKey, setShowClaudeKey] = useState(false);
   const [showRapidApiKey, setShowRapidApiKey] = useState(false);
 
   useEffect(() => {
-    setClaudeKey(storage.getString(API_KEY_KEYS.claude) ?? '');
-    setRapidApiKey(storage.getString(API_KEY_KEYS.rapidapi) ?? '');
+    setClaudeKey(storage.getString(API_KEY_KEYS.claude) ?? "");
+    setRapidApiKey(storage.getString(API_KEY_KEYS.rapidapi) ?? "");
   }, []);
 
   const saveClaudeKey = (value: string) => {
@@ -25,7 +32,7 @@ export default function SettingsScreen() {
     if (value) {
       storage.set(API_KEY_KEYS.claude, value);
     } else {
-      storage.delete(API_KEY_KEYS.claude);
+      storage.remove(API_KEY_KEYS.claude);
     }
   };
 
@@ -34,31 +41,33 @@ export default function SettingsScreen() {
     if (value) {
       storage.set(API_KEY_KEYS.rapidapi, value);
     } else {
-      storage.delete(API_KEY_KEYS.rapidapi);
+      storage.remove(API_KEY_KEYS.rapidapi);
     }
   };
 
   const handleClearData = () => {
     Alert.alert(
-      'Clear All Data',
-      'This will delete all saved recipes and boards. This cannot be undone.',
+      "Clear All Data",
+      "This will delete all saved recipes and boards. This cannot be undone.",
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: "Cancel", style: "cancel" },
         {
-          text: 'Clear All Data',
-          style: 'destructive',
+          text: "Clear All Data",
+          style: "destructive",
           onPress: () => {
             useRecipeStore.setState({ recipes: [] });
             useBoardStore.setState({ boards: [] });
-            Alert.alert('Done', 'All data has been cleared.');
+            Alert.alert("Done", "All data has been cleared.");
           },
         },
-      ]
+      ],
     );
   };
 
   const maskKey = (key: string) =>
-    key.length > 8 ? key.substring(0, 4) + '••••' + key.substring(key.length - 4) : '••••••••';
+    key.length > 8
+      ? key.substring(0, 4) + "••••" + key.substring(key.length - 4)
+      : "••••••••";
 
   return (
     <ScrollView className="flex-1 bg-gray-50">
@@ -68,7 +77,9 @@ export default function SettingsScreen() {
         </Text>
         <View className="bg-white rounded-2xl px-4 py-4 gap-4">
           <View>
-            <Text className="text-sm font-medium text-gray-700 mb-1">Claude API Key</Text>
+            <Text className="text-sm font-medium text-gray-700 mb-1">
+              Claude API Key
+            </Text>
             <View className="flex-row items-center gap-2">
               <TextInput
                 className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm bg-gray-50"
@@ -80,13 +91,17 @@ export default function SettingsScreen() {
                 secureTextEntry={!showClaudeKey}
               />
               <Pressable onPress={() => setShowClaudeKey(!showClaudeKey)}>
-                <Text className="text-pink-500 text-sm">{showClaudeKey ? 'Hide' : 'Show'}</Text>
+                <Text className="text-pink-500 text-sm">
+                  {showClaudeKey ? "Hide" : "Show"}
+                </Text>
               </Pressable>
             </View>
           </View>
 
           <View>
-            <Text className="text-sm font-medium text-gray-700 mb-1">RapidAPI Key (optional)</Text>
+            <Text className="text-sm font-medium text-gray-700 mb-1">
+              RapidAPI Key (optional)
+            </Text>
             <View className="flex-row items-center gap-2">
               <TextInput
                 className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm bg-gray-50"
@@ -98,7 +113,9 @@ export default function SettingsScreen() {
                 secureTextEntry={!showRapidApiKey}
               />
               <Pressable onPress={() => setShowRapidApiKey(!showRapidApiKey)}>
-                <Text className="text-pink-500 text-sm">{showRapidApiKey ? 'Hide' : 'Show'}</Text>
+                <Text className="text-pink-500 text-sm">
+                  {showRapidApiKey ? "Hide" : "Show"}
+                </Text>
               </Pressable>
             </View>
           </View>

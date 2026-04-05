@@ -25,7 +25,7 @@ export interface Recipe {
   prepTime?: string;
   cookTime?: string;
   servings?: string;
-  extractionSource: 'caption' | 'video' | 'manual';
+  extractionSource: "caption" | "video" | "manual";
   boardIds: string[];
   createdAt: string;
   updatedAt: string;

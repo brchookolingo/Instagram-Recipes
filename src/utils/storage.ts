@@ -1,7 +1,7 @@
-import { MMKV } from 'react-native-mmkv';
+import { createMMKV } from "react-native-mmkv";
 
-export const storage = new MMKV({
-  id: 'instagram-recipes-storage',
+export const storage = createMMKV({
+  id: "instagram-recipes-storage",
 });
 
 export const zustandMMKVStorage = {
@@ -13,6 +13,6 @@ export const zustandMMKVStorage = {
     storage.set(name, value);
   },
   removeItem: (name: string): void => {
-    storage.delete(name);
+    storage.remove(name);
   },
 };

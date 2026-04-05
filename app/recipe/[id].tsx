@@ -1,22 +1,30 @@
-import { useState } from 'react';
-import { View, Text, ScrollView, Pressable, Alert, Modal, FlatList } from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Image } from 'expo-image';
-import { useRecipeStore } from '../../src/stores/recipe-store';
-import { useBoardStore } from '../../src/stores/board-store';
-import { IngredientList } from '../../src/components/IngredientList';
-import { InstructionList } from '../../src/components/InstructionList';
+import { useState } from "react";
+import {
+  View,
+  Text,
+  ScrollView,
+  Pressable,
+  Alert,
+  Modal,
+  FlatList,
+} from "react-native";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { Image } from "expo-image";
+import { useRecipeStore } from "../../src/stores/recipe-store";
+import { useBoardStore } from "../../src/stores/board-store";
+import { IngredientList } from "../../src/components/IngredientList";
+import { InstructionList } from "../../src/components/InstructionList";
 
 const SOURCE_LABELS = {
-  caption: 'Caption AI',
-  video: 'Video AI',
-  manual: 'Manual',
+  caption: "Caption AI",
+  video: "Video AI",
+  manual: "Manual",
 } as const;
 
 export default function RecipeDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
-  const recipe = useRecipeStore((s) => s.getRecipeById(id ?? ''));
+  const recipe = useRecipeStore((s) => s.getRecipeById(id ?? ""));
   const updateRecipe = useRecipeStore((s) => s.updateRecipe);
   const deleteRecipe = useRecipeStore((s) => s.deleteRecipe);
   const boards = useBoardStore((s) => s.boards);
@@ -34,23 +42,27 @@ export default function RecipeDetailScreen() {
 
   const handleToggleIngredient = (index: number) => {
     const updated = recipe.ingredients.map((ing, i) =>
-      i === index ? { ...ing, checked: !ing.checked } : ing
+      i === index ? { ...ing, checked: !ing.checked } : ing,
     );
     updateRecipe(recipe.id, { ingredients: updated });
   };
 
   const handleDelete = () => {
-    Alert.alert('Delete Recipe', `Are you sure you want to delete "${recipe.title}"?`, [
-      { text: 'Cancel', style: 'cancel' },
-      {
-        text: 'Delete',
-        style: 'destructive',
-        onPress: () => {
-          deleteRecipe(recipe.id);
-          router.back();
+    Alert.alert(
+      "Delete Recipe",
+      `Are you sure you want to delete "${recipe.title}"?`,
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: () => {
+            deleteRecipe(recipe.id);
+            router.back();
+          },
         },
-      },
-    ]);
+      ],
+    );
   };
 
   const handleToggleBoard = (boardId: string) => {
@@ -90,17 +102,23 @@ export default function RecipeDetailScreen() {
           </View>
           {recipe.prepTime ? (
             <View className="bg-pink-50 rounded-full px-3 py-1">
-              <Text className="text-xs text-pink-600">Prep: {recipe.prepTime}</Text>
+              <Text className="text-xs text-pink-600">
+                Prep: {recipe.prepTime}
+              </Text>
             </View>
           ) : null}
           {recipe.cookTime ? (
             <View className="bg-orange-50 rounded-full px-3 py-1">
-              <Text className="text-xs text-orange-600">Cook: {recipe.cookTime}</Text>
+              <Text className="text-xs text-orange-600">
+                Cook: {recipe.cookTime}
+              </Text>
             </View>
           ) : null}
           {recipe.servings ? (
             <View className="bg-blue-50 rounded-full px-3 py-1">
-              <Text className="text-xs text-blue-600">Serves: {recipe.servings}</Text>
+              <Text className="text-xs text-blue-600">
+                Serves: {recipe.servings}
+              </Text>
             </View>
           ) : null}
         </View>
@@ -144,7 +162,10 @@ export default function RecipeDetailScreen() {
 
       <Modal visible={showBoardModal} animationType="slide" transparent>
         <View className="flex-1 justify-end">
-          <Pressable className="flex-1" onPress={() => setShowBoardModal(false)} />
+          <Pressable
+            className="flex-1"
+            onPress={() => setShowBoardModal(false)}
+          />
           <View className="bg-white rounded-t-3xl px-4 pt-6 pb-10 max-h-96">
             <Text className="text-lg font-bold mb-4">Add to Board</Text>
             {boards.length === 0 ? (
@@ -164,11 +185,15 @@ export default function RecipeDetailScreen() {
                     >
                       <View
                         className={`w-6 h-6 rounded-md border-2 items-center justify-center mr-3 ${
-                          isInBoard ? 'bg-pink-500 border-pink-500' : 'border-gray-300'
+                          isInBoard
+                            ? "bg-pink-500 border-pink-500"
+                            : "border-gray-300"
                         }`}
                       >
                         {isInBoard && (
-                          <Text className="text-white text-xs font-bold">✓</Text>
+                          <Text className="text-white text-xs font-bold">
+                            ✓
+                          </Text>
                         )}
                       </View>
                       <Text className="text-base flex-1">{item.name}</Text>

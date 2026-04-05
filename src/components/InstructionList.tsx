@@ -1,5 +1,5 @@
-import { View, Text } from 'react-native';
-import { Instruction } from '../types/recipe';
+import { View, Text } from "react-native";
+import { Instruction } from "../types/recipe";
 
 interface InstructionListProps {
   instructions: Instruction[];

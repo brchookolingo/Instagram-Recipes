@@ -389,13 +389,13 @@
       "phase": 5,
       "type": "ai-safe",
       "title": "TypeScript audit and code cleanup",
-      "status": "pending",
+      "status": "complete",
       "depends_on": ["T27", "T26", "T25", "T24", "T23"],
       "description": "Run `npx tsc --noEmit` and fix all TypeScript errors. Run `npx prettier --write .` and commit formatting changes. Check that all Zustand stores have correct generic types. Ensure no `any` types are used. Check that all expo-router Link/router.push calls use correct typed routes. Commit.",
       "success_criteria": "`npx tsc --noEmit` exits with 0 errors. No `any` types in src/ files.",
       "estimated_minutes": 30,
-      "attempts": [],
-      "completed_at": null,
+      "attempts": [{"started_at": "2026-04-05T17:27:00Z", "agent_note": "Fixed MMKV v4 API (createMMKV, remove), expo-file-system v55 legacy imports, ran tsc and prettier."}],
+      "completed_at": "2026-04-05T17:30:00Z",
       "notes": ""
     },
     {

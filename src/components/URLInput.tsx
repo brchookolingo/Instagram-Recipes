@@ -1,13 +1,13 @@
-import { useState } from 'react';
-import { View, TextInput, Text, Pressable } from 'react-native';
-import { useClipboard } from '../hooks/useClipboard';
+import { useState } from "react";
+import { View, TextInput, Text, Pressable } from "react-native";
+import { useClipboard } from "../hooks/useClipboard";
 
 interface URLInputProps {
   onSubmit: (url: string) => void;
 }
 
 export function URLInput({ onSubmit }: URLInputProps) {
-  const [url, setUrl] = useState('');
+  const [url, setUrl] = useState("");
   const { clipboardUrl } = useClipboard();
 
   const handlePasteFromClipboard = () => {

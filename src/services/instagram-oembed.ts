@@ -8,7 +8,7 @@ export interface RawInstagramPost {
   isVideoPost?: boolean;
 }
 
-const OEMBED_ENDPOINT = 'https://graph.facebook.com/v22.0/instagram_oembed';
+const OEMBED_ENDPOINT = "https://graph.facebook.com/v22.0/instagram_oembed";
 
 function extractCaptionFromHtml(html: string): string | undefined {
   const match = html.match(/<blockquote[^>]*>([\s\S]*?)<\/blockquote>/i);
@@ -16,14 +16,16 @@ function extractCaptionFromHtml(html: string): string | undefined {
 
   // Strip inner HTML tags and get text content
   const text = match[1]
-    .replace(/<[^>]+>/g, '')
-    .replace(/\s+/g, ' ')
+    .replace(/<[^>]+>/g, "")
+    .replace(/\s+/g, " ")
     .trim();
 
   return text || undefined;
 }
 
-export async function fetchViaOEmbed(url: string): Promise<RawInstagramPost | null> {
+export async function fetchViaOEmbed(
+  url: string,
+): Promise<RawInstagramPost | null> {
   const appId = process.env.EXPO_PUBLIC_FACEBOOK_APP_ID;
   const appSecret = process.env.EXPO_PUBLIC_FACEBOOK_APP_SECRET;
 
@@ -37,7 +39,7 @@ export async function fetchViaOEmbed(url: string): Promise<RawInstagramPost | nu
     const params = new URLSearchParams({
       url,
       access_token: accessToken,
-      fields: 'thumbnail_url,author_name',
+      fields: "thumbnail_url,author_name",
     });
 
     const response = await fetch(`${OEMBED_ENDPOINT}?${params}`);

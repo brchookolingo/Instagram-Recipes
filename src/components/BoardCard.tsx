@@ -1,6 +1,6 @@
-import { View, Text, Pressable } from 'react-native';
-import { Image } from 'expo-image';
-import { Board } from '../types/recipe';
+import { View, Text, Pressable } from "react-native";
+import { Image } from "expo-image";
+import { Board } from "../types/recipe";
 
 interface BoardCardProps {
   board: Board;
@@ -28,7 +28,7 @@ export function BoardCard({ board, recipeCount, onPress }: BoardCardProps) {
             {board.name}
           </Text>
           <Text className="text-xs text-gray-500 mt-1">
-            {recipeCount} {recipeCount === 1 ? 'recipe' : 'recipes'}
+            {recipeCount} {recipeCount === 1 ? "recipe" : "recipes"}
           </Text>
         </View>
       </View>

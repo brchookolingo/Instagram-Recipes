@@ -1,7 +1,7 @@
-import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
-import { Board } from '../types/recipe';
-import { zustandMMKVStorage } from '../utils/storage';
+import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
+import { Board } from "../types/recipe";
+import { zustandMMKVStorage } from "../utils/storage";
 
 interface BoardState {
   boards: Board[];
@@ -21,7 +21,7 @@ export const useBoardStore = create<BoardState>()(
       updateBoard: (id, updates) =>
         set((state) => ({
           boards: state.boards.map((b) =>
-            b.id === id ? { ...b, ...updates } : b
+            b.id === id ? { ...b, ...updates } : b,
           ),
         })),
       deleteBoard: (id) =>
@@ -33,7 +33,7 @@ export const useBoardStore = create<BoardState>()(
           boards: state.boards.map((b) =>
             b.id === boardId && !b.recipeIds.includes(recipeId)
               ? { ...b, recipeIds: [...b.recipeIds, recipeId] }
-              : b
+              : b,
           ),
         })),
       removeRecipeFromBoard: (boardId, recipeId) =>
@@ -41,13 +41,13 @@ export const useBoardStore = create<BoardState>()(
           boards: state.boards.map((b) =>
             b.id === boardId
               ? { ...b, recipeIds: b.recipeIds.filter((id) => id !== recipeId) }
-              : b
+              : b,
           ),
         })),
     }),
     {
-      name: 'board-store',
+      name: "board-store",
       storage: createJSONStorage(() => zustandMMKVStorage),
-    }
-  )
+    },
+  ),
 );

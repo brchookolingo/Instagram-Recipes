@@ -1,4 +1,4 @@
-import { View, Text, Pressable } from 'react-native';
+import { View, Text, Pressable } from "react-native";
 
 interface EmptyStateProps {
   icon: string;
@@ -8,7 +8,13 @@ interface EmptyStateProps {
   onAction?: () => void;
 }
 
-export function EmptyState({ icon, title, subtitle, actionLabel, onAction }: EmptyStateProps) {
+export function EmptyState({
+  icon,
+  title,
+  subtitle,
+  actionLabel,
+  onAction,
+}: EmptyStateProps) {
   return (
     <View className="flex-1 items-center justify-center px-8">
       <Text className="text-5xl mb-4">{icon}</Text>

@@ -1,19 +1,19 @@
-import { useState } from 'react';
-import { View, FlatList, TextInput, Pressable, Text } from 'react-native';
-import { useRouter } from 'expo-router';
-import { useRecipeStore } from '../../src/stores/recipe-store';
-import { RecipeCard } from '../../src/components/RecipeCard';
-import { EmptyState } from '../../src/components/EmptyState';
-import { Recipe } from '../../src/types/recipe';
+import { useState } from "react";
+import { View, FlatList, TextInput, Pressable, Text } from "react-native";
+import { useRouter } from "expo-router";
+import { useRecipeStore } from "../../src/stores/recipe-store";
+import { RecipeCard } from "../../src/components/RecipeCard";
+import { EmptyState } from "../../src/components/EmptyState";
+import { Recipe } from "../../src/types/recipe";
 
 export default function HomeScreen() {
   const recipes = useRecipeStore((s) => s.recipes);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const router = useRouter();
 
   const filtered = search
     ? recipes.filter((r) =>
-        r.title.toLowerCase().includes(search.toLowerCase())
+        r.title.toLowerCase().includes(search.toLowerCase()),
       )
     : recipes;
 
@@ -48,7 +48,7 @@ export default function HomeScreen() {
             title="No recipes yet"
             subtitle="Tap the + button to save your first Instagram recipe"
             actionLabel="Add Recipe"
-            onAction={() => router.push('/add-recipe')}
+            onAction={() => router.push("/add-recipe")}
           />
         )
       ) : (
@@ -63,7 +63,7 @@ export default function HomeScreen() {
 
       <Pressable
         className="absolute bottom-6 right-6 w-14 h-14 bg-pink-500 rounded-full items-center justify-center shadow-lg"
-        onPress={() => router.push('/add-recipe')}
+        onPress={() => router.push("/add-recipe")}
       >
         <Text className="text-white text-3xl font-light">+</Text>
       </Pressable>

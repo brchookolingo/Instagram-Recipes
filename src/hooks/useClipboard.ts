@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
-import * as Clipboard from 'expo-clipboard';
+import { useState, useEffect, useCallback } from "react";
+import * as Clipboard from "expo-clipboard";
 
 const INSTAGRAM_URL_PATTERN = /instagram\.com\/(p|reel)\//i;
 

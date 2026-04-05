@@ -1,8 +1,8 @@
-import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
-import { Recipe } from '../types/recipe';
-import { zustandMMKVStorage } from '../utils/storage';
-import { cacheImage } from '../utils/image-cache';
+import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
+import { Recipe } from "../types/recipe";
+import { zustandMMKVStorage } from "../utils/storage";
+import { cacheImage } from "../utils/image-cache";
 
 interface RecipeState {
   recipes: Recipe[];
@@ -32,7 +32,9 @@ export const useRecipeStore = create<RecipeState>()(
       updateRecipe: (id, updates) =>
         set((state) => ({
           recipes: state.recipes.map((r) =>
-            r.id === id ? { ...r, ...updates, updatedAt: new Date().toISOString() } : r
+            r.id === id
+              ? { ...r, ...updates, updatedAt: new Date().toISOString() }
+              : r,
           ),
         })),
       deleteRecipe: (id) =>
@@ -42,8 +44,8 @@ export const useRecipeStore = create<RecipeState>()(
       getRecipeById: (id) => get().recipes.find((r) => r.id === id),
     }),
     {
-      name: 'recipe-store',
+      name: "recipe-store",
       storage: createJSONStorage(() => zustandMMKVStorage),
-    }
-  )
+    },
+  ),
 );

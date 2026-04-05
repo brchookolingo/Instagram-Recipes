@@ -1,10 +1,10 @@
-import { View, Text, FlatList, Alert, Pressable } from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useBoardStore } from '../../src/stores/board-store';
-import { useRecipeStore } from '../../src/stores/recipe-store';
-import { RecipeCard } from '../../src/components/RecipeCard';
-import { EmptyState } from '../../src/components/EmptyState';
-import { Recipe } from '../../src/types/recipe';
+import { View, Text, FlatList, Alert, Pressable } from "react-native";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { useBoardStore } from "../../src/stores/board-store";
+import { useRecipeStore } from "../../src/stores/recipe-store";
+import { RecipeCard } from "../../src/components/RecipeCard";
+import { EmptyState } from "../../src/components/EmptyState";
+import { Recipe } from "../../src/types/recipe";
 
 export default function BoardDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -27,7 +27,7 @@ export default function BoardDetailScreen() {
   const boardRecipes = recipes.filter((r) => board.recipeIds.includes(r.id));
 
   const handleRename = () => {
-    Alert.prompt('Rename Board', 'Enter a new name:', (name) => {
+    Alert.prompt("Rename Board", "Enter a new name:", (name) => {
       if (name?.trim()) {
         updateBoard(board.id, { name: name.trim() });
       }
@@ -35,25 +35,29 @@ export default function BoardDetailScreen() {
   };
 
   const handleDeleteBoard = () => {
-    Alert.alert('Delete Board', `Delete "${board.name}"? Recipes won't be deleted.`, [
-      { text: 'Cancel', style: 'cancel' },
-      {
-        text: 'Delete',
-        style: 'destructive',
-        onPress: () => {
-          deleteBoard(board.id);
-          router.back();
+    Alert.alert(
+      "Delete Board",
+      `Delete "${board.name}"? Recipes won't be deleted.`,
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: () => {
+            deleteBoard(board.id);
+            router.back();
+          },
         },
-      },
-    ]);
+      ],
+    );
   };
 
   const handleLongPressRecipe = (recipeId: string) => {
-    Alert.alert('Remove from Board', 'Remove this recipe from the board?', [
-      { text: 'Cancel', style: 'cancel' },
+    Alert.alert("Remove from Board", "Remove this recipe from the board?", [
+      { text: "Cancel", style: "cancel" },
       {
-        text: 'Remove',
-        style: 'destructive',
+        text: "Remove",
+        style: "destructive",
         onPress: () => removeRecipeFromBoard(board.id, recipeId),
       },
     ]);

@@ -1,11 +1,13 @@
-import { RawInstagramPost } from './instagram-oembed';
-import { fetchViaScraper } from './instagram-scraper';
-import { fetchViaOEmbed } from './instagram-oembed';
-import { withRetry } from '../utils/retry';
+import { RawInstagramPost } from "./instagram-oembed";
+import { fetchViaScraper } from "./instagram-scraper";
+import { fetchViaOEmbed } from "./instagram-oembed";
+import { withRetry } from "../utils/retry";
 
-export type { RawInstagramPost } from './instagram-oembed';
+export type { RawInstagramPost } from "./instagram-oembed";
 
-export async function fetchInstagramPost(url: string): Promise<RawInstagramPost | null> {
+export async function fetchInstagramPost(
+  url: string,
+): Promise<RawInstagramPost | null> {
   // Try scraper first (richer data: caption, video URL, full image) with retry
   try {
     const scraperResult = await withRetry(() => fetchViaScraper(url), 3, 1000);

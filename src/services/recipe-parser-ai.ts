@@ -1,6 +1,6 @@
-import Anthropic from '@anthropic-ai/sdk';
-import { Recipe } from '../types/recipe';
-import { CLAUDE_MODEL } from '../utils/constants';
+import Anthropic from "@anthropic-ai/sdk";
+import { Recipe } from "../types/recipe";
+import { CLAUDE_MODEL } from "../utils/constants";
 
 const SYSTEM_PROMPT = `You are a recipe extraction assistant. Given an Instagram post caption, extract recipe information and return ONLY a valid JSON object with no additional text.
 
@@ -29,7 +29,7 @@ Rules:
 
 export async function parseRecipeWithAI(
   caption: string,
-  apiKey: string
+  apiKey: string,
 ): Promise<Partial<Recipe> | null> {
   try {
     const client = new Anthropic({ apiKey, dangerouslyAllowBrowser: true });
@@ -40,14 +40,14 @@ export async function parseRecipeWithAI(
       system: SYSTEM_PROMPT,
       messages: [
         {
-          role: 'user',
+          role: "user",
           content: `Extract the recipe from this Instagram caption:\n\n${caption}`,
         },
       ],
     });
 
-    const textBlock = message.content.find((block) => block.type === 'text');
-    if (!textBlock || textBlock.type !== 'text') return null;
+    const textBlock = message.content.find((block) => block.type === "text");
+    if (!textBlock || textBlock.type !== "text") return null;
 
     const jsonText = textBlock.text.trim();
     const parsed = JSON.parse(jsonText);
@@ -61,7 +61,7 @@ export async function parseRecipeWithAI(
       prepTime: parsed.prepTime,
       cookTime: parsed.cookTime,
       servings: parsed.servings,
-      extractionSource: 'caption',
+      extractionSource: "caption",
     };
   } catch {
     return null;

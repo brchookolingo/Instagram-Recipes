@@ -1,5 +1,5 @@
-import React, { Component, ErrorInfo, ReactNode } from 'react';
-import { View, Text, Pressable } from 'react-native';
+import React, { Component, ErrorInfo, ReactNode } from "react";
+import { View, Text, Pressable } from "react-native";
 
 interface Props {
   children: ReactNode;
@@ -21,7 +21,7 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('ErrorBoundary caught:', error, errorInfo);
+    console.error("ErrorBoundary caught:", error, errorInfo);
   }
 
   handleReset = () => {
@@ -33,9 +33,11 @@ export class ErrorBoundary extends Component<Props, State> {
       return (
         <View className="flex-1 items-center justify-center bg-white px-8">
           <Text className="text-5xl mb-4">😵</Text>
-          <Text className="text-xl font-bold text-gray-700">Something went wrong</Text>
+          <Text className="text-xl font-bold text-gray-700">
+            Something went wrong
+          </Text>
           <Text className="text-gray-400 text-center mt-2">
-            {this.state.error?.message ?? 'An unexpected error occurred'}
+            {this.state.error?.message ?? "An unexpected error occurred"}
           </Text>
           <Pressable
             className="mt-6 bg-pink-500 rounded-xl px-6 py-3"

@@ -1,16 +1,19 @@
-import '../global.css';
+import "../global.css";
 
-import { Stack } from 'expo-router';
-import { ErrorBoundary } from '../src/components/ErrorBoundary';
+import { Stack } from "expo-router";
+import { ErrorBoundary } from "../src/components/ErrorBoundary";
 
 export default function RootLayout() {
   return (
     <ErrorBoundary>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="add-recipe" options={{ title: 'Add Recipe', presentation: 'modal' }} />
-        <Stack.Screen name="recipe/[id]" options={{ title: 'Recipe' }} />
-        <Stack.Screen name="board/[id]" options={{ title: 'Board' }} />
+        <Stack.Screen
+          name="add-recipe"
+          options={{ title: "Add Recipe", presentation: "modal" }}
+        />
+        <Stack.Screen name="recipe/[id]" options={{ title: "Recipe" }} />
+        <Stack.Screen name="board/[id]" options={{ title: "Board" }} />
       </Stack>
     </ErrorBoundary>
   );

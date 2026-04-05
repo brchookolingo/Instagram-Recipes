@@ -1,9 +1,9 @@
-import { View, Text, FlatList, Alert, Pressable } from 'react-native';
-import { useRouter } from 'expo-router';
-import { useBoardStore } from '../../src/stores/board-store';
-import { BoardCard } from '../../src/components/BoardCard';
-import { EmptyState } from '../../src/components/EmptyState';
-import { Board } from '../../src/types/recipe';
+import { View, Text, FlatList, Alert, Pressable } from "react-native";
+import { useRouter } from "expo-router";
+import { useBoardStore } from "../../src/stores/board-store";
+import { BoardCard } from "../../src/components/BoardCard";
+import { EmptyState } from "../../src/components/EmptyState";
+import { Board } from "../../src/types/recipe";
 
 export default function BoardsScreen() {
   const boards = useBoardStore((s) => s.boards);
@@ -11,7 +11,7 @@ export default function BoardsScreen() {
   const router = useRouter();
 
   const handleNewBoard = () => {
-    Alert.prompt('New Board', 'Enter a name for your board:', (name) => {
+    Alert.prompt("New Board", "Enter a name for your board:", (name) => {
       if (name?.trim()) {
         addBoard({
           id: Date.now().toString(),

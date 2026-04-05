@@ -1,13 +1,15 @@
-import { RawInstagramPost } from './instagram-oembed';
+import { RawInstagramPost } from "./instagram-oembed";
 
-const SCRAPER_HOST = 'instagram-scraper-api2.p.rapidapi.com';
+const SCRAPER_HOST = "instagram-scraper-api2.p.rapidapi.com";
 
 function extractShortcode(url: string): string | null {
   const match = url.match(/instagram\.com\/(?:p|reel)\/([A-Za-z0-9_-]+)/);
   return match ? match[1] : null;
 }
 
-export async function fetchViaScraper(url: string): Promise<RawInstagramPost | null> {
+export async function fetchViaScraper(
+  url: string,
+): Promise<RawInstagramPost | null> {
   const apiKey = process.env.EXPO_PUBLIC_RAPIDAPI_KEY;
   if (!apiKey) return null;
 
@@ -19,10 +21,10 @@ export async function fetchViaScraper(url: string): Promise<RawInstagramPost | n
       `https://${SCRAPER_HOST}/v1/post_info?code_or_id_or_url=${encodeURIComponent(url)}`,
       {
         headers: {
-          'x-rapidapi-key': apiKey,
-          'x-rapidapi-host': SCRAPER_HOST,
+          "x-rapidapi-key": apiKey,
+          "x-rapidapi-host": SCRAPER_HOST,
         },
-      }
+      },
     );
 
     if (!response.ok) return null;
@@ -35,17 +37,11 @@ export async function fetchViaScraper(url: string): Promise<RawInstagramPost | n
       data.data?.thumbnail_url ??
       undefined;
     const videoUrl =
-      data.data?.video_versions?.[0]?.url ??
-      data.data?.video_url ??
-      undefined;
+      data.data?.video_versions?.[0]?.url ?? data.data?.video_url ?? undefined;
     const authorName =
-      data.data?.user?.username ??
-      data.data?.owner?.username ??
-      undefined;
+      data.data?.user?.username ?? data.data?.owner?.username ?? undefined;
     const isVideoPost =
-      data.data?.media_type === 2 ||
-      data.data?.is_video === true ||
-      !!videoUrl;
+      data.data?.media_type === 2 || data.data?.is_video === true || !!videoUrl;
 
     return {
       caption,

@@ -249,13 +249,13 @@
       "phase": 3,
       "type": "ai-safe",
       "title": "Build RecipeCard component",
-      "status": "pending",
+      "status": "complete",
       "depends_on": ["T03", "T05"],
       "description": "Create `src/components/RecipeCard.tsx`. Props: `recipe: Recipe`, `onPress: () => void`. Render a card with: hero image (expo-image with placeholder), recipe title (truncated to 2 lines), author, prep/cook time badges if present, first 2 ingredient names as a preview line. Style with NativeWind — rounded corners, shadow, consistent aspect ratio. Commit.",
       "success_criteria": "Component file exists, compiles, all props are typed, no inline styles (NativeWind className only).",
       "estimated_minutes": 25,
-      "attempts": [],
-      "completed_at": null,
+      "attempts": [{"started_at": "2026-04-05T16:52:00Z", "agent_note": "Completed successfully"}],
+      "completed_at": "2026-04-05T16:53:00Z",
       "notes": ""
     },
     {

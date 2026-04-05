@@ -151,13 +151,13 @@
       "phase": 2,
       "type": "ai-safe",
       "title": "Implement third-party scraper service and InstagramService facade",
-      "status": "pending",
+      "status": "complete",
       "depends_on": ["T09", "T10"],
       "description": "Create `src/services/instagram-scraper.ts` implementing `fetchViaScraper(url: string): Promise<RawInstagramPost | null>` using the RapidAPI key from env. Create `src/services/instagram.ts` as the facade: try scraper first (richer data), fall back to oEmbed, return null if both fail. Export a single `fetchInstagramPost(url: string): Promise<RawInstagramPost | null>` function. Add a `isVideoPost` flag to RawInstagramPost. Commit.",
       "success_criteria": "All three service files exist, compile, and the facade correctly chains the two providers with fallback logic.",
       "estimated_minutes": 30,
-      "attempts": [],
-      "completed_at": null,
+      "attempts": [{"started_at": "2026-04-05T17:12:00Z", "agent_note": "Completed successfully"}],
+      "completed_at": "2026-04-05T17:14:00Z",
       "notes": ""
     },
     {

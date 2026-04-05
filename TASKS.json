@@ -193,13 +193,13 @@
       "phase": 2,
       "type": "ai-safe",
       "title": "Implement Claude AI caption parser (Tier 1)",
-      "status": "pending",
+      "status": "complete",
       "depends_on": ["T05", "T12", "T13"],
       "description": "Create `src/services/recipe-parser-ai.ts`. Implement `parseRecipeWithAI(caption: string, apiKey: string): Promise<Partial<Recipe> | null>`. Use `@anthropic-ai/sdk` to call claude-opus-4-6. System prompt instructs Claude to extract recipe data from an Instagram caption and return ONLY a valid JSON object matching the Recipe type (title, description, ingredients array, instructions array, tags, prepTime, cookTime, servings). Parse the JSON response. Return null on API error. Also export `isExtractionSufficient(partial: Partial<Recipe>): boolean` — returns true if both ingredients.length > 0 and instructions.length > 0. Commit.",
       "success_criteria": "Service file compiles. Function signature is correct. Claude is called with the right model ID and a well-structured prompt.",
       "estimated_minutes": 30,
-      "attempts": [],
-      "completed_at": null,
+      "attempts": [{"started_at": "2026-04-05T17:14:00Z", "agent_note": "Completed successfully"}],
+      "completed_at": "2026-04-05T17:16:00Z",
       "notes": ""
     },
     {

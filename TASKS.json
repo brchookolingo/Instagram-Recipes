@@ -207,13 +207,13 @@
       "phase": 2,
       "type": "ai-safe",
       "title": "Implement video frame extractor and Claude Vision parser (Tier 2)",
-      "status": "pending",
+      "status": "complete",
       "depends_on": ["T14"],
       "description": "Create `src/services/video-extractor.ts`. Implement `extractFrames(videoUri: string, frameCount?: number): Promise<string[]>` using `expo-video-thumbnails` — extract frameCount (default 6) frames evenly spaced across the video duration. Returns array of local file URIs. Implement `parseRecipeFromVideoFrames(frameUris: string[], apiKey: string): Promise<Partial<Recipe> | null>` — read each frame as base64 via expo-file-system, build a Claude API request with all frames as image content blocks plus a text prompt asking Claude to extract recipe data visible in the video frames. Return parsed JSON matching Recipe type. Commit.",
       "success_criteria": "Service file compiles. extractFrames and parseRecipeFromVideoFrames are exported. Claude Vision request is correctly structured with base64 image content blocks.",
       "estimated_minutes": 35,
-      "attempts": [],
-      "completed_at": null,
+      "attempts": [{"started_at": "2026-04-05T17:16:00Z", "agent_note": "Completed successfully"}],
+      "completed_at": "2026-04-05T17:18:00Z",
       "notes": ""
     },
     {

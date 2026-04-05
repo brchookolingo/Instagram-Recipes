@@ -305,13 +305,13 @@
       "phase": 4,
       "type": "ai-safe",
       "title": "Build BoardCard component and Boards list screen",
-      "status": "pending",
+      "status": "complete",
       "depends_on": ["T03", "T05", "T06"],
       "description": "Create `src/components/BoardCard.tsx`. Props: `board: Board`, `recipeCount: number`, `onPress: () => void`. Show cover image (first recipe image or placeholder), board name, recipe count. Implement `app/(tabs)/boards.tsx`: list all boards in a 2-column grid using BoardCard. Add a 'New Board' button that shows an Alert prompt for the board name, then calls boardStore.addBoard(). Empty state for no boards. Commit.",
       "success_criteria": "BoardCard component compiles. Boards screen shows boards from store. New board creation works via Alert prompt.",
       "estimated_minutes": 30,
-      "attempts": [],
-      "completed_at": null,
+      "attempts": [{"started_at": "2026-04-05T16:59:00Z", "agent_note": "Completed successfully"}],
+      "completed_at": "2026-04-05T17:01:00Z",
       "notes": ""
     },
     {

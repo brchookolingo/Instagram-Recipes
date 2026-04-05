@@ -165,13 +165,13 @@
       "phase": 2,
       "type": "ai-safe",
       "title": "Implement regex recipe parser (no-API fallback)",
-      "status": "pending",
+      "status": "complete",
       "depends_on": ["T05"],
       "description": "Create `src/services/recipe-parser.ts`. Implement `parseRecipeFromCaption(caption: string): Partial<Recipe>`. Use regex/heuristics to detect common recipe patterns: lines starting with numbers/bullets as instructions, lines with measurements (cup, tsp, tbsp, g, oz, ml) as ingredients, first capitalised sentence as title. Also export `hasRecipeContent(caption: string): boolean` to check if a caption likely contains recipe data (presence of measurement words, 'ingredients', 'instructions', 'steps', 'method'). Commit.",
       "success_criteria": "Parser file exists and compiles. hasRecipeContent returns true for a sample recipe caption and false for a non-recipe caption.",
       "estimated_minutes": 25,
-      "attempts": [],
-      "completed_at": null,
+      "attempts": [{"started_at": "2026-04-05T16:50:00Z", "agent_note": "Completed successfully"}],
+      "completed_at": "2026-04-05T16:52:00Z",
       "notes": ""
     },
     {

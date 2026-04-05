@@ -319,13 +319,13 @@
       "phase": 4,
       "type": "ai-safe",
       "title": "Build Board Detail screen and Add-to-Board flow",
-      "status": "pending",
+      "status": "complete",
       "depends_on": ["T06", "T18", "T22"],
       "description": "Implement `app/board/[id].tsx`: shows board name as title, grid of RecipeCard for recipes in the board (join by recipeIds). Long-press a recipe card to remove it from the board. Add an edit button to rename the board. Delete board option in header. In `app/recipe/[id].tsx`, wire up the 'Add to Board' option: show a Modal listing all boards with checkboxes for which boards this recipe belongs to. Tapping a board calls boardStore.addRecipeToBoard / removeRecipeFromBoard. Commit.",
       "success_criteria": "Board detail screen shows correct recipes. Remove from board works. Add-to-board modal shows and updates store.",
       "estimated_minutes": 35,
-      "attempts": [],
-      "completed_at": null,
+      "attempts": [{"started_at": "2026-04-05T17:01:00Z", "agent_note": "Completed successfully"}],
+      "completed_at": "2026-04-05T17:04:00Z",
       "notes": ""
     },
     {

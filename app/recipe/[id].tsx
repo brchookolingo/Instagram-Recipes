@@ -1,7 +1,9 @@
-import { View, Text, ScrollView, Pressable, Alert } from 'react-native';
+import { useState } from 'react';
+import { View, Text, ScrollView, Pressable, Alert, Modal, FlatList } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Image } from 'expo-image';
 import { useRecipeStore } from '../../src/stores/recipe-store';
+import { useBoardStore } from '../../src/stores/board-store';
 import { IngredientList } from '../../src/components/IngredientList';
 import { InstructionList } from '../../src/components/InstructionList';
 
@@ -17,6 +19,10 @@ export default function RecipeDetailScreen() {
   const recipe = useRecipeStore((s) => s.getRecipeById(id ?? ''));
   const updateRecipe = useRecipeStore((s) => s.updateRecipe);
   const deleteRecipe = useRecipeStore((s) => s.deleteRecipe);
+  const boards = useBoardStore((s) => s.boards);
+  const addRecipeToBoard = useBoardStore((s) => s.addRecipeToBoard);
+  const removeRecipeFromBoard = useBoardStore((s) => s.removeRecipeFromBoard);
+  const [showBoardModal, setShowBoardModal] = useState(false);
 
   if (!recipe) {
     return (
@@ -47,6 +53,16 @@ export default function RecipeDetailScreen() {
     ]);
   };
 
+  const handleToggleBoard = (boardId: string) => {
+    const board = boards.find((b) => b.id === boardId);
+    if (!board) return;
+    if (board.recipeIds.includes(recipe.id)) {
+      removeRecipeFromBoard(boardId, recipe.id);
+    } else {
+      addRecipeToBoard(boardId, recipe.id);
+    }
+  };
+
   const imageUri = recipe.localImageUri || recipe.imageUrl;
 
   return (
@@ -66,7 +82,7 @@ export default function RecipeDetailScreen() {
           <Text className="text-gray-500 mt-1">by {recipe.author}</Text>
         ) : null}
 
-        <View className="flex-row items-center gap-2 mt-3">
+        <View className="flex-row items-center gap-2 mt-3 flex-wrap">
           <View className="bg-purple-100 rounded-full px-3 py-1">
             <Text className="text-xs text-purple-700">
               {SOURCE_LABELS[recipe.extractionSource]}
@@ -112,6 +128,12 @@ export default function RecipeDetailScreen() {
 
         <View className="flex-row gap-3 mt-8 mb-8">
           <Pressable
+            className="flex-1 bg-pink-50 rounded-xl py-3 items-center"
+            onPress={() => setShowBoardModal(true)}
+          >
+            <Text className="text-pink-600 font-semibold">Add to Board</Text>
+          </Pressable>
+          <Pressable
             className="flex-1 bg-red-50 rounded-xl py-3 items-center"
             onPress={handleDelete}
           >
@@ -119,6 +141,54 @@ export default function RecipeDetailScreen() {
           </Pressable>
         </View>
       </View>
+
+      <Modal visible={showBoardModal} animationType="slide" transparent>
+        <View className="flex-1 justify-end">
+          <Pressable className="flex-1" onPress={() => setShowBoardModal(false)} />
+          <View className="bg-white rounded-t-3xl px-4 pt-6 pb-10 max-h-96">
+            <Text className="text-lg font-bold mb-4">Add to Board</Text>
+            {boards.length === 0 ? (
+              <Text className="text-gray-400 text-center py-4">
+                No boards yet. Create one from the Boards tab.
+              </Text>
+            ) : (
+              <FlatList
+                data={boards}
+                keyExtractor={(item) => item.id}
+                renderItem={({ item }) => {
+                  const isInBoard = item.recipeIds.includes(recipe.id);
+                  return (
+                    <Pressable
+                      className="flex-row items-center py-3 border-b border-gray-100"
+                      onPress={() => handleToggleBoard(item.id)}
+                    >
+                      <View
+                        className={`w-6 h-6 rounded-md border-2 items-center justify-center mr-3 ${
+                          isInBoard ? 'bg-pink-500 border-pink-500' : 'border-gray-300'
+                        }`}
+                      >
+                        {isInBoard && (
+                          <Text className="text-white text-xs font-bold">✓</Text>
+                        )}
+                      </View>
+                      <Text className="text-base flex-1">{item.name}</Text>
+                      <Text className="text-xs text-gray-400">
+                        {item.recipeIds.length} recipes
+                      </Text>
+                    </Pressable>
+                  );
+                }}
+              />
+            )}
+            <Pressable
+              className="mt-4 bg-gray-100 rounded-xl py-3 items-center"
+              onPress={() => setShowBoardModal(false)}
+            >
+              <Text className="text-gray-600 font-semibold">Done</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
 }

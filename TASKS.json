@@ -361,13 +361,13 @@
       "phase": 5,
       "type": "ai-safe",
       "title": "Implement image caching with expo-file-system",
-      "status": "pending",
+      "status": "complete",
       "depends_on": ["T17"],
       "description": "Create `src/utils/image-cache.ts`. Implement `cacheImage(remoteUrl: string, recipeId: string): Promise<string>` — downloads the image to `FileSystem.documentDirectory + 'images/' + recipeId + '.jpg'` if not already cached. Returns the local URI. Implement `getCachedImageUri(recipeId: string): string | null` — returns the local URI if it exists, null otherwise. Update `recipeStore.addRecipe()` to call cacheImage() and store the localImageUri on the recipe. Update RecipeCard and Recipe Detail to prefer localImageUri over imageUrl. Commit.",
       "success_criteria": "image-cache.ts exists. addRecipe downloads and caches the image. RecipeCard uses localImageUri when available.",
       "estimated_minutes": 25,
-      "attempts": [],
-      "completed_at": null,
+      "attempts": [{"started_at": "2026-04-05T17:22:00Z", "agent_note": "Completed. RecipeCard and RecipeDetail already prefer localImageUri over imageUrl."}],
+      "completed_at": "2026-04-05T17:24:00Z",
       "notes": ""
     },
     {

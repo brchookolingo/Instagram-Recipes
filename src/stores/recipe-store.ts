@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { Recipe } from '../types/recipe';
 import { zustandMMKVStorage } from '../utils/storage';
+import { cacheImage } from '../utils/image-cache';
 
 interface RecipeState {
   recipes: Recipe[];
@@ -15,8 +16,19 @@ export const useRecipeStore = create<RecipeState>()(
   persist(
     (set, get) => ({
       recipes: [],
-      addRecipe: (recipe) =>
-        set((state) => ({ recipes: [...state.recipes, recipe] })),
+      addRecipe: (recipe) => {
+        set((state) => ({ recipes: [...state.recipes, recipe] }));
+        // Cache image in background
+        if (recipe.imageUrl) {
+          cacheImage(recipe.imageUrl, recipe.id)
+            .then((localUri) => {
+              get().updateRecipe(recipe.id, { localImageUri: localUri });
+            })
+            .catch(() => {
+              // Silently fail — remote URL still works
+            });
+        }
+      },
       updateRecipe: (id, updates) =>
         set((state) => ({
           recipes: state.recipes.map((r) =>

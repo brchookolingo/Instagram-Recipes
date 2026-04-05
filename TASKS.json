@@ -263,13 +263,13 @@
       "phase": 3,
       "type": "ai-safe",
       "title": "Build Home screen with recipe grid",
-      "status": "pending",
+      "status": "complete",
       "depends_on": ["T06", "T18"],
       "description": "Implement `app/(tabs)/index.tsx`. Use `useRecipeStore()` to read recipes. Render a 2-column FlatList of RecipeCard components. Tapping a card navigates to `/recipe/[id]`. Add a FAB (floating action button) in the bottom-right corner that navigates to `/add-recipe`. Add a search bar at the top that filters recipes by title (client-side). Show an empty state (illustration + text) when no recipes are saved. Commit.",
       "success_criteria": "Screen renders recipe grid from store. FAB navigates to add-recipe. Search filters the list. Empty state shows when store is empty.",
       "estimated_minutes": 30,
-      "attempts": [],
-      "completed_at": null,
+      "attempts": [{"started_at": "2026-04-05T16:55:00Z", "agent_note": "Completed successfully"}],
+      "completed_at": "2026-04-05T16:57:00Z",
       "notes": ""
     },
     {

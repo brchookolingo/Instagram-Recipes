@@ -375,13 +375,13 @@
       "phase": 5,
       "type": "ai-safe",
       "title": "Add error handling and retry logic",
-      "status": "pending",
+      "status": "complete",
       "depends_on": ["T16", "T17"],
       "description": "Create `src/utils/retry.ts` with a `withRetry<T>(fn: () => Promise<T>, maxAttempts?: number, delayMs?: number): Promise<T>` helper. Apply it to Instagram fetch calls in instagram.ts (max 3 attempts, 1s delay). Add a global error boundary component `src/components/ErrorBoundary.tsx` wrapping the root layout. Add user-visible error toasts/alerts in the Add Recipe screen for each failure mode: network error, post not found, recipe not detected, API key missing. Commit.",
       "success_criteria": "retry.ts and ErrorBoundary.tsx exist and compile. Fetch functions use withRetry. Error states in add-recipe screen have descriptive messages.",
       "estimated_minutes": 25,
-      "attempts": [],
-      "completed_at": null,
+      "attempts": [{"started_at": "2026-04-05T17:24:00Z", "agent_note": "Completed. withRetry applied to instagram.ts, ErrorBoundary wraps root layout, add-recipe has error toasts."}],
+      "completed_at": "2026-04-05T17:27:00Z",
       "notes": ""
     },
     {

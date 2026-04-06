@@ -33,11 +33,14 @@ export async function fetchViaScraper(
     }
 
     const data = await response.json();
+    const post = data?.data?.post;
+    if (!post) return null;
 
-    const caption = data.caption_text ?? undefined;
-    const imageUrl = data.image_urls?.[0] ?? undefined;
-    const videoUrl = data.video_url ?? undefined;
-    const isVideoPost = data.media_type === "VIDEO" || !!videoUrl;
+    const caption = post.edge_media_to_caption?.edges?.[0]?.node?.text ?? undefined;
+    const imageUrl = post.display_url ?? post.thumbnail_src ?? undefined;
+    const videoUrl = post.video_url ?? undefined;
+    const isVideoPost = post.is_video === true || !!videoUrl;
+    const authorName = post.owner?.username ?? undefined;
 
     return {
       caption,
@@ -45,6 +48,7 @@ export async function fetchViaScraper(
       thumbnailUrl: imageUrl,
       videoUrl,
       isVideoPost,
+      authorName,
     };
   } catch {
     return null;

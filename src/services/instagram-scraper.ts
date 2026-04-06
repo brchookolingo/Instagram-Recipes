@@ -1,6 +1,6 @@
 import { RawInstagramPost } from "./instagram-oembed";
 
-const SCRAPER_HOST = "instagram-scraper-api2.p.rapidapi.com";
+const SCRAPER_HOST = "instagram-scraper21.p.rapidapi.com";
 
 function extractShortcode(url: string): string | null {
   const match = url.match(/instagram\.com\/(?:p|reel)\/([A-Za-z0-9_-]+)/);
@@ -18,7 +18,7 @@ export async function fetchViaScraper(
 
   try {
     const response = await fetch(
-      `https://${SCRAPER_HOST}/v1/post_info?code_or_id_or_url=${encodeURIComponent(url)}`,
+      `https://${SCRAPER_HOST}/api/v1/post-info?code=${shortcode}`,
       {
         headers: {
           "x-rapidapi-key": apiKey,
@@ -27,28 +27,23 @@ export async function fetchViaScraper(
       },
     );
 
-    if (!response.ok) return null;
+    if (!response.ok) {
+      console.log('[scraper] response not ok:', response.status, response.statusText);
+      return null;
+    }
 
     const data = await response.json();
 
-    const caption = data.data?.caption?.text ?? data.caption?.text ?? undefined;
-    const imageUrl =
-      data.data?.image_versions?.items?.[0]?.url ??
-      data.data?.thumbnail_url ??
-      undefined;
-    const videoUrl =
-      data.data?.video_versions?.[0]?.url ?? data.data?.video_url ?? undefined;
-    const authorName =
-      data.data?.user?.username ?? data.data?.owner?.username ?? undefined;
-    const isVideoPost =
-      data.data?.media_type === 2 || data.data?.is_video === true || !!videoUrl;
+    const caption = data.caption_text ?? undefined;
+    const imageUrl = data.image_urls?.[0] ?? undefined;
+    const videoUrl = data.video_url ?? undefined;
+    const isVideoPost = data.media_type === "VIDEO" || !!videoUrl;
 
     return {
       caption,
       imageUrl,
       thumbnailUrl: imageUrl,
       videoUrl,
-      authorName,
       isVideoPost,
     };
   } catch {

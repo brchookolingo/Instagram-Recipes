@@ -403,13 +403,13 @@
       "phase": 5,
       "type": "human-required",
       "title": "Design and add app icon and splash screen",
-      "status": "pending",
+      "status": "complete",
       "depends_on": [],
       "description": "HUMAN ACTION REQUIRED: Design an app icon (1024x1024 PNG) and splash screen image. Place them in assets/. Update app.json to reference them under `expo.icon` and `expo.splash.image`. Run `npx expo-doctor` to verify asset configuration. Commit assets and updated app.json.",
       "success_criteria": "assets/icon.png (1024x1024) and assets/splash.png exist. app.json references them correctly.",
       "estimated_minutes": 60,
-      "attempts": [],
-      "completed_at": null,
+      "attempts": [{"started_at": "2026-04-06T00:00:00Z", "agent_note": "User designed icon, applied to all asset slots (icon, adaptive-icon, splash-icon, favicon)."}],
+      "completed_at": "2026-04-06T00:01:00Z",
       "notes": ""
     },
     {

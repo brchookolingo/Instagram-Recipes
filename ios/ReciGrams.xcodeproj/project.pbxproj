@@ -8,28 +8,28 @@
 
 /* Begin PBXBuildFile section */
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
-		1782F99B300E8ECEDEB1997A /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A81136E7369212D41EB1B157 /* ExpoModulesProvider.swift */; };
-		3DE045582823EF829F66ED1B /* libPods-InstagramRecipes.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6C98A5174CC577671D232C76 /* libPods-InstagramRecipes.a */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
-		7C2556A33FB23A0E851B6818 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = F76D625B3D385A72599F16C4 /* PrivacyInfo.xcprivacy */; };
+		467EA859A3C3966DE1F3E84F /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5AB8338FD06DC695B355772 /* ExpoModulesProvider.swift */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
+		C13041A660846E5D3C5AA0FE /* libPods-ReciGrams.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 35AE1365C83A9A69D7430372 /* libPods-ReciGrams.a */; };
+		C76D2C4DAF405B6114D32570 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = F0D79D02C28DF74192E56242 /* PrivacyInfo.xcprivacy */; };
 		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		13B07F961A680F5B00A75B9A /* InstagramRecipes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = InstagramRecipes.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = InstagramRecipes/Images.xcassets; sourceTree = "<group>"; };
-		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = InstagramRecipes/Info.plist; sourceTree = "<group>"; };
-		6C98A5174CC577671D232C76 /* libPods-InstagramRecipes.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-InstagramRecipes.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		6E2E12CA2BF65F7C294FA996 /* Pods-InstagramRecipes.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-InstagramRecipes.release.xcconfig"; path = "Target Support Files/Pods-InstagramRecipes/Pods-InstagramRecipes.release.xcconfig"; sourceTree = "<group>"; };
-		A81136E7369212D41EB1B157 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-InstagramRecipes/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
-		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = InstagramRecipes/SplashScreen.storyboard; sourceTree = "<group>"; };
+		13B07F961A680F5B00A75B9A /* ReciGrams.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ReciGrams.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = ReciGrams/Images.xcassets; sourceTree = "<group>"; };
+		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = ReciGrams/Info.plist; sourceTree = "<group>"; };
+		35AE1365C83A9A69D7430372 /* libPods-ReciGrams.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ReciGrams.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		70C0A2A27D2C2F181D09ACC2 /* Pods-ReciGrams.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ReciGrams.release.xcconfig"; path = "Target Support Files/Pods-ReciGrams/Pods-ReciGrams.release.xcconfig"; sourceTree = "<group>"; };
+		A5AB8338FD06DC695B355772 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-ReciGrams/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
+		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = ReciGrams/SplashScreen.storyboard; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
-		D623410FE3BCB353F4E98980 /* Pods-InstagramRecipes.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-InstagramRecipes.debug.xcconfig"; path = "Target Support Files/Pods-InstagramRecipes/Pods-InstagramRecipes.debug.xcconfig"; sourceTree = "<group>"; };
+		BB3E378BFF0A623EB0E3A85B /* Pods-ReciGrams.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ReciGrams.debug.xcconfig"; path = "Target Support Files/Pods-ReciGrams/Pods-ReciGrams.debug.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = InstagramRecipes/AppDelegate.swift; sourceTree = "<group>"; };
-		F11748442D0722820044C1D9 /* InstagramRecipes-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "InstagramRecipes-Bridging-Header.h"; path = "InstagramRecipes/InstagramRecipes-Bridging-Header.h"; sourceTree = "<group>"; };
-		F76D625B3D385A72599F16C4 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = InstagramRecipes/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		F0D79D02C28DF74192E56242 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = ReciGrams/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = ReciGrams/AppDelegate.swift; sourceTree = "<group>"; };
+		F11748442D0722820044C1D9 /* ReciGrams-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "ReciGrams-Bridging-Header.h"; path = "ReciGrams/ReciGrams-Bridging-Header.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -37,60 +37,50 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3DE045582823EF829F66ED1B /* libPods-InstagramRecipes.a in Frameworks */,
+				C13041A660846E5D3C5AA0FE /* libPods-ReciGrams.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		13B07FAE1A68108700A75B9A /* InstagramRecipes */ = {
+		13B07FAE1A68108700A75B9A /* ReciGrams */ = {
 			isa = PBXGroup;
 			children = (
 				F11748412D0307B40044C1D9 /* AppDelegate.swift */,
-				F11748442D0722820044C1D9 /* InstagramRecipes-Bridging-Header.h */,
+				F11748442D0722820044C1D9 /* ReciGrams-Bridging-Header.h */,
 				BB2F792B24A3F905000567C9 /* Supporting */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
-				F76D625B3D385A72599F16C4 /* PrivacyInfo.xcprivacy */,
+				F0D79D02C28DF74192E56242 /* PrivacyInfo.xcprivacy */,
 			);
-			name = InstagramRecipes;
+			name = ReciGrams;
+			sourceTree = "<group>";
+		};
+		25433690F12DF08E527C61DD /* ReciGrams */ = {
+			isa = PBXGroup;
+			children = (
+				A5AB8338FD06DC695B355772 /* ExpoModulesProvider.swift */,
+			);
+			name = ReciGrams;
 			sourceTree = "<group>";
 		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				6C98A5174CC577671D232C76 /* libPods-InstagramRecipes.a */,
+				35AE1365C83A9A69D7430372 /* libPods-ReciGrams.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		47EA938E4DE5FA0BF883CFA1 /* Pods */ = {
+		36D78EC575826CC7441BF8B0 /* ExpoModulesProviders */ = {
 			isa = PBXGroup;
 			children = (
-				D623410FE3BCB353F4E98980 /* Pods-InstagramRecipes.debug.xcconfig */,
-				6E2E12CA2BF65F7C294FA996 /* Pods-InstagramRecipes.release.xcconfig */,
-			);
-			name = Pods;
-			path = Pods;
-			sourceTree = "<group>";
-		};
-		4B78A37F265B21EE061473DA /* ExpoModulesProviders */ = {
-			isa = PBXGroup;
-			children = (
-				74B197775889B28E0C41CE3E /* InstagramRecipes */,
+				25433690F12DF08E527C61DD /* ReciGrams */,
 			);
 			name = ExpoModulesProviders;
-			sourceTree = "<group>";
-		};
-		74B197775889B28E0C41CE3E /* InstagramRecipes */ = {
-			isa = PBXGroup;
-			children = (
-				A81136E7369212D41EB1B157 /* ExpoModulesProvider.swift */,
-			);
-			name = InstagramRecipes;
 			sourceTree = "<group>";
 		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
@@ -103,12 +93,12 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				13B07FAE1A68108700A75B9A /* InstagramRecipes */,
+				13B07FAE1A68108700A75B9A /* ReciGrams */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
-				47EA938E4DE5FA0BF883CFA1 /* Pods */,
-				4B78A37F265B21EE061473DA /* ExpoModulesProviders */,
+				C9EEC4503142931A0E9143CA /* Pods */,
+				36D78EC575826CC7441BF8B0 /* ExpoModulesProviders */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -118,7 +108,7 @@
 		83CBBA001A601CBA00E9B192 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				13B07F961A680F5B00A75B9A /* InstagramRecipes.app */,
+				13B07F961A680F5B00A75B9A /* ReciGrams.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -129,32 +119,42 @@
 				BB2F792C24A3F905000567C9 /* Expo.plist */,
 			);
 			name = Supporting;
-			path = InstagramRecipes/Supporting;
+			path = ReciGrams/Supporting;
+			sourceTree = "<group>";
+		};
+		C9EEC4503142931A0E9143CA /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				BB3E378BFF0A623EB0E3A85B /* Pods-ReciGrams.debug.xcconfig */,
+				70C0A2A27D2C2F181D09ACC2 /* Pods-ReciGrams.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		13B07F861A680F5B00A75B9A /* InstagramRecipes */ = {
+		13B07F861A680F5B00A75B9A /* ReciGrams */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "InstagramRecipes" */;
+			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "ReciGrams" */;
 			buildPhases = (
 				08A4A3CD28434E44B6B9DE2E /* [CP] Check Pods Manifest.lock */,
-				735FAA8C460EB833DF207786 /* [Expo] Configure project */,
+				391931338097DB4747E1F987 /* [Expo] Configure project */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */,
-				30881D2EC33C07DB966FF126 /* [CP] Embed Pods Frameworks */,
+				E482CB06282DB3953EAE9B0E /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = InstagramRecipes;
-			productName = InstagramRecipes;
-			productReference = 13B07F961A680F5B00A75B9A /* InstagramRecipes.app */;
+			name = ReciGrams;
+			productName = ReciGrams;
+			productReference = 13B07F961A680F5B00A75B9A /* ReciGrams.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -167,10 +167,12 @@
 				TargetAttributes = {
 					13B07F861A680F5B00A75B9A = {
 						LastSwiftMigration = 1250;
+						DevelopmentTeam = "J8JH2HBYG4";
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
-			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "InstagramRecipes" */;
+			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "ReciGrams" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -183,7 +185,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				13B07F861A680F5B00A75B9A /* InstagramRecipes */,
+				13B07F861A680F5B00A75B9A /* ReciGrams */,
 			);
 		};
 /* End PBXProject section */
@@ -196,7 +198,7 @@
 				BB2F792D24A3F905000567C9 /* Expo.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
-				7C2556A33FB23A0E851B6818 /* PrivacyInfo.xcprivacy in Resources */,
+				C76D2C4DAF405B6114D32570 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -235,36 +237,14 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-InstagramRecipes-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-ReciGrams-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		30881D2EC33C07DB966FF126 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-InstagramRecipes/Pods-InstagramRecipes-frameworks.sh",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/React-Core-prebuilt/React.framework/React",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/ReactNativeDependencies/ReactNativeDependencies.framework/ReactNativeDependencies",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/hermes-engine/Pre-built/hermesvm.framework/hermesvm",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/React.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ReactNativeDependencies.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/hermesvm.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-InstagramRecipes/Pods-InstagramRecipes-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		735FAA8C460EB833DF207786 /* [Expo] Configure project */ = {
+		391931338097DB4747E1F987 /* [Expo] Configure project */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
@@ -275,18 +255,18 @@
 			inputPaths = (
 				"$(SRCROOT)/.xcode.env",
 				"$(SRCROOT)/.xcode.env.local",
-				"$(SRCROOT)/InstagramRecipes/InstagramRecipes.entitlements",
-				"$(SRCROOT)/Pods/Target Support Files/Pods-InstagramRecipes/expo-configure-project.sh",
+				"$(SRCROOT)/ReciGrams/ReciGrams.entitlements",
+				"$(SRCROOT)/Pods/Target Support Files/Pods-ReciGrams/expo-configure-project.sh",
 			);
 			name = "[Expo] Configure project";
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(SRCROOT)/Pods/Target Support Files/Pods-InstagramRecipes/ExpoModulesProvider.swift",
+				"$(SRCROOT)/Pods/Target Support Files/Pods-ReciGrams/ExpoModulesProvider.swift",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-InstagramRecipes/expo-configure-project.sh\"\n";
+			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-ReciGrams/expo-configure-project.sh\"\n";
 		};
 		800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -294,7 +274,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-InstagramRecipes/Pods-InstagramRecipes-resources.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-ReciGrams/Pods-ReciGrams-resources.sh",
 				"${PODS_CONFIGURATION_BUILD_DIR}/EXConstants/EXConstants.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/EXConstants/ExpoConstants_privacy.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/ExpoFileSystem/ExpoFileSystem_privacy.bundle",
@@ -315,7 +295,29 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-InstagramRecipes/Pods-InstagramRecipes-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ReciGrams/Pods-ReciGrams-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E482CB06282DB3953EAE9B0E /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-ReciGrams/Pods-ReciGrams-frameworks.sh",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/React-Core-prebuilt/React.framework/React",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/ReactNativeDependencies/ReactNativeDependencies.framework/ReactNativeDependencies",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/hermes-engine/Pre-built/hermesvm.framework/hermesvm",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/React.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ReactNativeDependencies.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/hermesvm.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ReciGrams/Pods-ReciGrams-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -326,7 +328,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */,
-				1782F99B300E8ECEDEB1997A /* ExpoModulesProvider.swift in Sources */,
+				467EA859A3C3966DE1F3E84F /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -335,18 +337,18 @@
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D623410FE3BCB353F4E98980 /* Pods-InstagramRecipes.debug.xcconfig */;
+			baseConfigurationReference = BB3E378BFF0A623EB0E3A85B /* Pods-ReciGrams.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = InstagramRecipes/InstagramRecipes.entitlements;
+				CODE_SIGN_ENTITLEMENTS = ReciGrams/ReciGrams.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					"FB_SONARKIT_ENABLED=1",
 				);
-				INFOPLIST_FILE = InstagramRecipes/Info.plist;
+				INFOPLIST_FILE = ReciGrams/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -360,24 +362,27 @@
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = com.bchookolingo.InstagramRecipes;
-				PRODUCT_NAME = InstagramRecipes;
-				SWIFT_OBJC_BRIDGING_HEADER = "InstagramRecipes/InstagramRecipes-Bridging-Header.h";
+				PRODUCT_NAME = ReciGrams;
+				SWIFT_OBJC_BRIDGING_HEADER = "ReciGrams/ReciGrams-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
+				DEVELOPMENT_TEAM = "J8JH2HBYG4";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 			};
 			name = Debug;
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6E2E12CA2BF65F7C294FA996 /* Pods-InstagramRecipes.release.xcconfig */;
+			baseConfigurationReference = 70C0A2A27D2C2F181D09ACC2 /* Pods-ReciGrams.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = InstagramRecipes/InstagramRecipes.entitlements;
+				CODE_SIGN_ENTITLEMENTS = ReciGrams/ReciGrams.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
-				INFOPLIST_FILE = InstagramRecipes/Info.plist;
+				INFOPLIST_FILE = ReciGrams/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -391,11 +396,14 @@
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = com.bchookolingo.InstagramRecipes;
-				PRODUCT_NAME = InstagramRecipes;
-				SWIFT_OBJC_BRIDGING_HEADER = "InstagramRecipes/InstagramRecipes-Bridging-Header.h";
+				PRODUCT_NAME = ReciGrams;
+				SWIFT_OBJC_BRIDGING_HEADER = "ReciGrams/ReciGrams-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
+				DEVELOPMENT_TEAM = "J8JH2HBYG4";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 			};
 			name = Release;
 		};
@@ -524,7 +532,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "InstagramRecipes" */ = {
+		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "ReciGrams" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				13B07F941A680F5B00A75B9A /* Debug */,
@@ -533,7 +541,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "InstagramRecipes" */ = {
+		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "ReciGrams" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				83CBBA201A601CBA00E9B192 /* Debug */,

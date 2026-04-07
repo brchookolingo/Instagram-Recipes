@@ -28,7 +28,6 @@ export async function fetchViaScraper(
     );
 
     if (!response.ok) {
-      console.log('[scraper] response not ok:', response.status, response.statusText);
       return null;
     }
 

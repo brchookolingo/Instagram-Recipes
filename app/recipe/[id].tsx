@@ -16,12 +16,6 @@ import { useBoardStore } from "../../src/stores/board-store";
 import { IngredientList } from "../../src/components/IngredientList";
 import { InstructionList } from "../../src/components/InstructionList";
 
-const SOURCE_LABELS = {
-  caption: "Caption AI",
-  video: "Video AI",
-  manual: "Manual",
-} as const;
-
 export default function RecipeDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
@@ -72,14 +66,6 @@ export default function RecipeDetailScreen() {
 
   return (
     <ScrollView className="flex-1 bg-white">
-      {imageUri ? (
-        <Image
-          source={{ uri: imageUri }}
-          className="w-full aspect-square"
-          contentFit="cover"
-        />
-      ) : null}
-
       <View className="px-4 py-4">
         <Text className="text-2xl font-bold">{recipe.title}</Text>
 
@@ -96,11 +82,6 @@ export default function RecipeDetailScreen() {
         ) : null}
 
         <View className="flex-row items-center gap-2 mt-3 flex-wrap">
-          <View className="bg-purple-100 rounded-full px-3 py-1">
-            <Text className="text-xs text-purple-700">
-              {SOURCE_LABELS[recipe.extractionSource]}
-            </Text>
-          </View>
           {recipe.prepTime ? (
             <View className="bg-pink-50 rounded-full px-3 py-1">
               <Text className="text-xs text-pink-600">
@@ -126,6 +107,14 @@ export default function RecipeDetailScreen() {
 
         {recipe.description ? (
           <Text className="text-gray-600 mt-4">{recipe.description}</Text>
+        ) : null}
+
+        {imageUri ? (
+          <Image
+            source={{ uri: imageUri }}
+            style={{ width: "100%", aspectRatio: 1, borderRadius: 16, marginTop: 16 }}
+            contentFit="cover"
+          />
         ) : null}
 
         {recipe.ingredients.length > 0 && (

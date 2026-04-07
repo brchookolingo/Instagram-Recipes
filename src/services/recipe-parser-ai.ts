@@ -54,7 +54,11 @@ export async function parseRecipeWithAI(
     const textBlock = message.content.find((block) => block.type === "text");
     if (!textBlock || textBlock.type !== "text") return null;
 
-    const jsonText = textBlock.text.trim();
+    const jsonText = textBlock.text
+      .trim()
+      .replace(/^```(?:json)?\s*/i, "")
+      .replace(/\s*```$/i, "")
+      .trim();
     const parsed = JSON.parse(jsonText);
 
     return {

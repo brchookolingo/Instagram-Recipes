@@ -7,26 +7,12 @@ interface RecipeCardProps {
   onPress: () => void;
 }
 
-const PLACEHOLDER_IMAGE =
-  "https://via.placeholder.com/300x300.png?text=No+Image";
-
 export function RecipeCard({ recipe, onPress }: RecipeCardProps) {
-  const imageUri = recipe.localImageUri || recipe.imageUrl || PLACEHOLDER_IMAGE;
-  const ingredientPreview = recipe.ingredients
-    .slice(0, 2)
-    .map((i) => i.text)
-    .join(", ");
+  const imageUri = recipe.localImageUri || recipe.imageUrl || null;
 
   return (
     <Pressable className="flex-1 m-1.5" onPress={onPress}>
-      <View className="bg-white rounded-2xl shadow-sm overflow-hidden">
-        <Image
-          source={{ uri: imageUri }}
-          className="w-full aspect-square"
-          contentFit="cover"
-          placeholder={{ blurhash: "L6PZfSi_.AyE_3t7t7R**0o#DgR4" }}
-          transition={200}
-        />
+      <View className="bg-white rounded-2xl shadow-sm overflow-hidden flex-1">
         <View className="p-3">
           <Text className="text-base font-semibold" numberOfLines={2}>
             {recipe.title}
@@ -52,12 +38,23 @@ export function RecipeCard({ recipe, onPress }: RecipeCardProps) {
               </View>
             ) : null}
           </View>
-          {ingredientPreview ? (
-            <Text className="text-xs text-gray-400 mt-2" numberOfLines={1}>
-              {ingredientPreview}
+          {recipe.description ? (
+            <Text className="text-xs text-gray-400 mt-2" numberOfLines={2}>
+              {recipe.description}
             </Text>
           ) : null}
         </View>
+        {imageUri ? (
+          <Image
+            source={{ uri: imageUri }}
+            style={{ width: "100%", aspectRatio: 1 }}
+            contentFit="cover"
+            placeholder={{ blurhash: "L6PZfSi_.AyE_3t7t7R**0o#DgR4" }}
+            transition={200}
+          />
+        ) : (
+          <View style={{ width: "100%", aspectRatio: 1, backgroundColor: "#f3f4f6" }} />
+        )}
       </View>
     </Pressable>
   );

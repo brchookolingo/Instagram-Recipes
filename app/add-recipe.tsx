@@ -21,16 +21,12 @@ import {
   isExtractionSufficient,
 } from "../src/services/recipe-parser-ai";
 import {
-  extractFrames,
-  parseRecipeFromVideoFrames,
-} from "../src/services/video-extractor";
-import {
   parseRecipeFromCaption,
   hasRecipeContent,
 } from "../src/services/recipe-parser";
 import { useRecipeStore } from "../src/stores/recipe-store";
-import { storage } from "../src/utils/storage";
 import { Recipe, Ingredient, Instruction } from "../src/types/recipe";
+import { cacheImage } from "../src/utils/image-cache";
 
 type Step = "input" | "loading" | "preview";
 
@@ -56,10 +52,7 @@ export default function AddRecipeScreen() {
   const [extractionSource, setExtractionSource] =
     useState<Recipe["extractionSource"]>("manual");
 
-  const apiKey =
-    storage.getString("settings:claude-api-key") ??
-    process.env.EXPO_PUBLIC_CLAUDE_API_KEY ??
-    "";
+  const apiKey = process.env.EXPO_PUBLIC_CLAUDE_API_KEY ?? "";
 
   const populateFromPartial = (partial: Partial<Recipe>) => {
     if (partial.title) setTitle(partial.title);
@@ -79,8 +72,7 @@ export default function AddRecipeScreen() {
     setError("");
 
     try {
-      // Step 1: Fetch Instagram post
-      setLoadingMessage("Fetching Instagram post...");
+      setLoadingMessage("Analyzing Post...");
       const post = await fetchInstagramPost(url);
 
       if (!post) {
@@ -91,13 +83,11 @@ export default function AddRecipeScreen() {
 
       setPostData(post);
 
-      // Step 2: Tier 1 — AI caption parsing
+      // Tier 1 — AI caption parsing
       if (post.caption && apiKey) {
-        setLoadingMessage("Extracting recipe with AI...");
         const aiResult = await parseRecipeWithAI(post.caption, apiKey);
 
         if (aiResult && isExtractionSufficient(aiResult)) {
-          setLoadingMessage("Cleaning up recipe data...");
           const cleanedResult = await cleanupRecipeExtraction(aiResult, apiKey);
           populateFromPartial(cleanedResult);
           setStep("preview");
@@ -105,24 +95,8 @@ export default function AddRecipeScreen() {
         }
       }
 
-      // Step 3: Tier 2 — Video frame extraction (if video post)
-      if (post.isVideoPost && post.videoUrl && apiKey) {
-        setLoadingMessage("Analyzing video frames...");
-        const frames = await extractFrames(post.videoUrl);
-
-        if (frames.length > 0) {
-          const videoResult = await parseRecipeFromVideoFrames(frames, apiKey);
-          if (videoResult && isExtractionSufficient(videoResult)) {
-            populateFromPartial(videoResult);
-            setStep("preview");
-            return;
-          }
-        }
-      }
-
-      // Step 4: Fallback — regex parser
+      // Fallback — regex parser
       if (post.caption && hasRecipeContent(post.caption)) {
-        setLoadingMessage("Parsing recipe from caption...");
         const regexResult = parseRecipeFromCaption(post.caption);
         populateFromPartial(regexResult);
       }
@@ -176,18 +150,32 @@ export default function AddRecipeScreen() {
     );
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!title.trim()) {
       Alert.alert("Missing Title", "Please enter a recipe title.");
       return;
     }
 
     const now = new Date().toISOString();
+    const recipeId = Date.now().toString();
+    const rawImageUrl = postData?.imageUrl ?? postData?.thumbnailUrl;
+
+    // Cache the image now while the CDN URL is fresh
+    let localImageUri: string | undefined;
+    if (rawImageUrl) {
+      try {
+        localImageUri = await cacheImage(rawImageUrl, recipeId);
+      } catch {
+        // Silently fall back to remote URL
+      }
+    }
+
     const recipe: Recipe = {
-      id: Date.now().toString(),
+      id: recipeId,
       title: title.trim(),
       description: description.trim(),
-      imageUrl: postData?.imageUrl ?? postData?.thumbnailUrl ?? "",
+      imageUrl: rawImageUrl ?? "",
+      localImageUri,
       videoUrl: postData?.videoUrl,
       sourceUrl,
       author: postData?.authorName ?? "",

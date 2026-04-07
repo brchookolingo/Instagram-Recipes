@@ -12,8 +12,8 @@ export default function RootLayout() {
           name="add-recipe"
           options={{ title: "Add Recipe", presentation: "modal" }}
         />
-        <Stack.Screen name="recipe/[id]" options={{ title: "Recipe" }} />
-        <Stack.Screen name="board/[id]" options={{ title: "Board" }} />
+        <Stack.Screen name="recipe/[id]" options={{ title: "Recipe", headerBackButtonDisplayMode: "minimal" }} />
+        <Stack.Screen name="board/[id]" options={{ title: "Board", headerBackButtonDisplayMode: "minimal" }} />
       </Stack>
     </ErrorBoundary>
   );

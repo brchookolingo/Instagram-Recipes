@@ -1,6 +1,7 @@
 import { View, Text, FlatList, Alert, Pressable } from "react-native";
 import { useRouter } from "expo-router";
 import { useBoardStore } from "../../src/stores/board-store";
+import { useRecipeStore } from "../../src/stores/recipe-store";
 import { BoardCard } from "../../src/components/BoardCard";
 import { EmptyState } from "../../src/components/EmptyState";
 import { Board } from "../../src/types/recipe";
@@ -8,6 +9,7 @@ import { Board } from "../../src/types/recipe";
 export default function BoardsScreen() {
   const boards = useBoardStore((s) => s.boards);
   const addBoard = useBoardStore((s) => s.addBoard);
+  const recipes = useRecipeStore((s) => s.recipes);
   const router = useRouter();
 
   const handleNewBoard = () => {
@@ -23,13 +25,23 @@ export default function BoardsScreen() {
     });
   };
 
-  const renderItem = ({ item }: { item: Board }) => (
-    <BoardCard
-      board={item}
-      recipeCount={item.recipeIds.length}
-      onPress={() => router.push(`/board/${item.id}`)}
-    />
-  );
+  const renderItem = ({ item }: { item: Board }) => {
+    const recipeImages = item.recipeIds
+      .slice(0, 4)
+      .map((id) => recipes.find((r) => r.id === id))
+      .filter(Boolean)
+      .map((r) => r!.localImageUri || r!.imageUrl)
+      .filter(Boolean) as string[];
+
+    return (
+      <BoardCard
+        board={item}
+        recipeCount={item.recipeIds.length}
+        recipeImages={recipeImages}
+        onPress={() => router.push(`/board/${item.id}`)}
+      />
+    );
+  };
 
   return (
     <View className="flex-1 bg-gray-50">

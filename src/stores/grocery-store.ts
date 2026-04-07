@@ -80,6 +80,7 @@ export const useGroceryStore = create<GroceryState>()(
     {
       name: "grocery-store",
       storage: createJSONStorage(() => zustandMMKVStorage),
+      partialize: (state) => ({ sections: state.sections, recipeRefs: state.recipeRefs }),
     },
   ),
 );

@@ -39,6 +39,14 @@ export async function consolidateAndGroupIngredients(
 ): Promise<GrocerySection[]> {
   const client = new Anthropic({ apiKey, dangerouslyAllowBrowser: true });
 
+  // Preserve which items were already checked so we can restore that state after Claude reorganizes
+  const checkedTexts = new Set(
+    existingSections
+      .flatMap((s) => s.items)
+      .filter((item) => item.checked)
+      .map((item) => item.text.toLowerCase().trim()),
+  );
+
   const newItems = newIngredients.map((ing) => ({
     text: ing.text,
     quantity: ing.quantity ?? "",
@@ -87,7 +95,7 @@ export async function consolidateAndGroupIngredients(
       text: item.text,
       quantity: item.quantity || undefined,
       unit: item.unit || undefined,
-      checked: false,
+      checked: checkedTexts.has(item.text.toLowerCase().trim()),
     })),
   }));
 }

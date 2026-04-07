@@ -61,9 +61,9 @@ export default function AddRecipeScreen() {
     if (partial.ingredients) setIngredients(partial.ingredients);
     if (partial.instructions) setInstructions(partial.instructions);
     if (partial.tags) setTags(partial.tags.join(", "));
-    if (partial.prepTime) setPrepTime(partial.prepTime);
-    if (partial.cookTime) setCookTime(partial.cookTime);
-    if (partial.servings) setServings(partial.servings);
+    if (partial.prepTime !== undefined) setPrepTime(String(partial.prepTime));
+    if (partial.cookTime !== undefined) setCookTime(String(partial.cookTime));
+    if (partial.servings !== undefined) setServings(String(partial.servings));
     if (partial.extractionSource) setExtractionSource(partial.extractionSource);
   };
 
@@ -246,9 +246,9 @@ export default function AddRecipeScreen() {
         .split(",")
         .map((t) => t.trim())
         .filter(Boolean),
-      prepTime: prepTime || undefined,
-      cookTime: cookTime || undefined,
-      servings: servings || undefined,
+      prepTime: parseInt(prepTime, 10) || undefined,
+      cookTime: parseInt(cookTime, 10) || undefined,
+      servings: parseInt(servings, 10) || undefined,
       extractionSource,
       boardIds: [],
       createdAt: now,
@@ -338,7 +338,8 @@ export default function AddRecipeScreen() {
               className="border border-gray-200 rounded-xl px-4 py-3 text-base"
               value={prepTime}
               onChangeText={setPrepTime}
-              placeholder="e.g. 15 min"
+              placeholder="e.g. 15"
+              keyboardType="numeric"
             />
           </View>
           <View className="flex-1">
@@ -349,7 +350,8 @@ export default function AddRecipeScreen() {
               className="border border-gray-200 rounded-xl px-4 py-3 text-base"
               value={cookTime}
               onChangeText={setCookTime}
-              placeholder="e.g. 30 min"
+              placeholder="e.g. 30"
+              keyboardType="numeric"
             />
           </View>
           <View className="flex-1">
@@ -361,6 +363,7 @@ export default function AddRecipeScreen() {
               value={servings}
               onChangeText={setServings}
               placeholder="e.g. 4"
+              keyboardType="numeric"
             />
           </View>
         </View>

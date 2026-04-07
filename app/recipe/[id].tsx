@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Image } from "expo-image";
+import { Ionicons } from "@expo/vector-icons";
 import { useRecipeStore } from "../../src/stores/recipe-store";
 import { useBoardStore } from "../../src/stores/board-store";
 import { useGroceryStore } from "../../src/stores/grocery-store";
@@ -23,6 +24,7 @@ export default function RecipeDetailScreen() {
   const router = useRouter();
   const recipe = useRecipeStore((s) => s.getRecipeById(id ?? ""));
   const deleteRecipe = useRecipeStore((s) => s.deleteRecipe);
+  const updateRecipe = useRecipeStore((s) => s.updateRecipe);
   const boards = useBoardStore((s) => s.boards);
   const addRecipeToBoard = useBoardStore((s) => s.addRecipeToBoard);
   const removeRecipeFromBoard = useBoardStore((s) => s.removeRecipeFromBoard);
@@ -103,28 +105,41 @@ export default function RecipeDetailScreen() {
           </Pressable>
         ) : null}
 
-        <View className="flex-row items-center gap-2 mt-3 flex-wrap">
-          {recipe.prepTime ? (
-            <View className="bg-pink-50 rounded-full px-3 py-1">
-              <Text className="text-xs text-pink-600">
-                Prep: {recipe.prepTime}
-              </Text>
-            </View>
-          ) : null}
-          {recipe.cookTime ? (
-            <View className="bg-orange-50 rounded-full px-3 py-1">
-              <Text className="text-xs text-orange-600">
-                Cook: {recipe.cookTime}
-              </Text>
-            </View>
-          ) : null}
-          {recipe.servings ? (
-            <View className="bg-blue-50 rounded-full px-3 py-1">
-              <Text className="text-xs text-blue-600">
-                Serves: {recipe.servings}
-              </Text>
-            </View>
-          ) : null}
+        <View className="flex-row items-center mt-3">
+          <View className="flex-1 flex-row flex-wrap gap-2">
+            {recipe.prepTime ? (
+              <View className="bg-pink-50 rounded-full px-3 py-1">
+                <Text className="text-xs text-pink-600">
+                  Prep: {recipe.prepTime} min
+                </Text>
+              </View>
+            ) : null}
+            {recipe.cookTime ? (
+              <View className="bg-orange-50 rounded-full px-3 py-1">
+                <Text className="text-xs text-orange-600">
+                  Cook: {recipe.cookTime} min
+                </Text>
+              </View>
+            ) : null}
+            {recipe.servings ? (
+              <View className="bg-blue-50 rounded-full px-3 py-1">
+                <Text className="text-xs text-blue-600">
+                  Serves: {recipe.servings}
+                </Text>
+              </View>
+            ) : null}
+          </View>
+          <Pressable
+            className="p-2"
+            hitSlop={8}
+            onPress={() => updateRecipe(recipe.id, { isFavourite: !recipe.isFavourite })}
+          >
+            <Ionicons
+              name={recipe.isFavourite ? "heart" : "heart-outline"}
+              size={24}
+              color={recipe.isFavourite ? "#ef4444" : "#000000"}
+            />
+          </Pressable>
         </View>
 
         {recipe.description ? (
@@ -152,6 +167,13 @@ export default function RecipeDetailScreen() {
             <InstructionList instructions={recipe.instructions} />
           </View>
         )}
+
+        {recipe.notes ? (
+          <View className="mt-6">
+            <Text className="text-lg font-bold mb-3">Notes</Text>
+            <Text className="text-base text-gray-700 leading-relaxed">{recipe.notes}</Text>
+          </View>
+        ) : null}
 
         <View className="gap-3 mt-8 mb-8">
           <View className="flex-row gap-3">

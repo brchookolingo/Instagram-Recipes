@@ -14,10 +14,10 @@ Return this exact JSON structure:
   "instructions": [
     { "stepNumber": 1, "text": "Step description" }
   ],
-  "tags": ["tag1", "tag2"],
-  "prepTime": "15 min",
-  "cookTime": "30 min",
-  "servings": "4"
+  "tags": ["chicken", "gluten free", "quick"],
+  "prepTime": 15,
+  "cookTime": 30,
+  "servings": 4
 }
 
 Rules:
@@ -28,9 +28,15 @@ Rules:
 
 Required fields — always include these, inferring from context if not explicitly stated:
 - "description": Write a short appetizing summary of the dish based on the caption. Maximum 300 characters. Never omit this.
-- "prepTime": Estimate from the instructions (e.g. chopping, mixing, marinating). Use format "15 min". If truly unknown, use "~15 min".
-- "cookTime": Estimate from cooking steps (e.g. baking, simmering, frying times). Use format "30 min". If truly unknown, use "~30 min".
-- "servings": Estimate from ingredient quantities or dish type. Use format "4" or "4-6". If truly unknown, use "4".`;
+- "prepTime": Estimate from the instructions (e.g. chopping, mixing, marinating). Return as a whole number of minutes (e.g. 15). If a range like "25-30", use the higher value (30). Never use strings or units.
+- "cookTime": Estimate from cooking steps (e.g. baking, simmering, frying times). Return as a whole number of minutes (e.g. 30). If a range, use the higher value. Never use strings or units.
+- "servings": Estimate from ingredient quantities or dish type. Return as a whole number (e.g. 4). If a range like "5-6", use the higher value (6). Never use strings or units.
+
+Tags rules — maximum 10 tags total:
+- FIRST, include any applicable dietary tags from: vegetarian, vegan, gluten free, lactose free
+- SECOND, include the primary protein(s) from: beef, chicken, pork, lamb, fish, shellfish
+- THEN add other relevant tags (cuisine type, cooking method, occasion, etc.) up to the 10 tag limit
+- All tags lowercase`;
 
 export async function parseRecipeWithAI(
   caption: string,
@@ -61,15 +67,20 @@ export async function parseRecipeWithAI(
       .trim();
     const parsed = JSON.parse(jsonText);
 
+    const toNum = (v: unknown): number | undefined => {
+      const n = parseInt(String(v ?? ""), 10);
+      return Number.isFinite(n) && n > 0 ? n : undefined;
+    };
+
     return {
       title: parsed.title,
       description: parsed.description,
       ingredients: parsed.ingredients,
       instructions: parsed.instructions,
       tags: parsed.tags,
-      prepTime: parsed.prepTime,
-      cookTime: parsed.cookTime,
-      servings: parsed.servings,
+      prepTime: toNum(parsed.prepTime),
+      cookTime: toNum(parsed.cookTime),
+      servings: toNum(parsed.servings),
       extractionSource: "caption",
     };
   } catch {

@@ -19,9 +19,9 @@ export default function EditRecipeScreen() {
 
   const [title, setTitle] = useState(recipe?.title ?? "");
   const [description, setDescription] = useState(recipe?.description ?? "");
-  const [prepTime, setPrepTime] = useState(recipe?.prepTime ?? "");
-  const [cookTime, setCookTime] = useState(recipe?.cookTime ?? "");
-  const [servings, setServings] = useState(recipe?.servings ?? "");
+  const [prepTime, setPrepTime] = useState(recipe?.prepTime !== undefined ? String(recipe.prepTime) : "");
+  const [cookTime, setCookTime] = useState(recipe?.cookTime !== undefined ? String(recipe.cookTime) : "");
+  const [servings, setServings] = useState(recipe?.servings !== undefined ? String(recipe.servings) : "");
   const [ingredients, setIngredients] = useState<Ingredient[]>(
     recipe?.ingredients ?? [],
   );
@@ -29,6 +29,7 @@ export default function EditRecipeScreen() {
     recipe?.instructions ?? [],
   );
   const [tags, setTags] = useState(recipe?.tags?.join(", ") ?? "");
+  const [notes, setNotes] = useState(recipe?.notes ?? "");
 
   if (!recipe) {
     return (
@@ -82,11 +83,12 @@ export default function EditRecipeScreen() {
     updateRecipe(recipe.id, {
       title: title.trim(),
       description: description.trim(),
-      prepTime: prepTime.trim() || undefined,
-      cookTime: cookTime.trim() || undefined,
-      servings: servings.trim() || undefined,
+      prepTime: parseInt(prepTime, 10) || undefined,
+      cookTime: parseInt(cookTime, 10) || undefined,
+      servings: parseInt(servings, 10) || undefined,
       ingredients: ingredients.filter((i) => i.text.trim()),
       instructions: instructions.filter((i) => i.text.trim()),
+      notes: notes.trim() || undefined,
       tags: tags
         .split(",")
         .map((t) => t.trim())
@@ -137,7 +139,8 @@ export default function EditRecipeScreen() {
               className="border border-gray-200 rounded-xl px-4 py-3 text-base"
               value={prepTime}
               onChangeText={setPrepTime}
-              placeholder="e.g. 15 min"
+              placeholder="e.g. 15"
+              keyboardType="numeric"
             />
           </View>
           <View className="flex-1">
@@ -148,7 +151,8 @@ export default function EditRecipeScreen() {
               className="border border-gray-200 rounded-xl px-4 py-3 text-base"
               value={cookTime}
               onChangeText={setCookTime}
-              placeholder="e.g. 30 min"
+              placeholder="e.g. 30"
+              keyboardType="numeric"
             />
           </View>
           <View className="flex-1">
@@ -160,6 +164,7 @@ export default function EditRecipeScreen() {
               value={servings}
               onChangeText={setServings}
               placeholder="e.g. 4"
+              keyboardType="numeric"
             />
           </View>
         </View>
@@ -214,6 +219,24 @@ export default function EditRecipeScreen() {
               </Pressable>
             </View>
           ))}
+        </View>
+
+        {/* Notes */}
+        <View>
+          <View className="flex-row items-center justify-between mb-1">
+            <Text className="text-sm font-medium text-gray-500">Notes</Text>
+            <Text className="text-xs text-gray-400">{notes.length}/500</Text>
+          </View>
+          <TextInput
+            className="border border-gray-200 rounded-xl px-4 py-3 text-base"
+            value={notes}
+            onChangeText={(text) => { if (text.length <= 500) setNotes(text); }}
+            placeholder="Any extra notes, variations, tips..."
+            multiline
+            numberOfLines={4}
+            textAlignVertical="top"
+            maxLength={500}
+          />
         </View>
 
         {/* Tags */}

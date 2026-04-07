@@ -39,7 +39,9 @@ export async function fetchViaScraper(
     const imageUrl = post.display_url ?? post.thumbnail_src ?? undefined;
     const videoUrl = post.video_url ?? undefined;
     const isVideoPost = post.is_video === true || !!videoUrl;
-    const authorName = post.owner?.full_name ?? post.owner?.username ?? undefined;
+    const authorName = post.owner?.username
+      ? `@${post.owner.username}`
+      : post.owner?.full_name ?? undefined;
 
     return {
       caption,

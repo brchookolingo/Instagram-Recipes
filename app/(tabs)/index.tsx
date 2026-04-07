@@ -1,21 +1,46 @@
 import { useState } from "react";
-import { View, FlatList, TextInput, Pressable, Text } from "react-native";
+import { View, FlatList, TextInput, Pressable, Text, Modal } from "react-native";
 import { useRouter } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
 import { useRecipeStore } from "../../src/stores/recipe-store";
 import { RecipeCard } from "../../src/components/RecipeCard";
 import { EmptyState } from "../../src/components/EmptyState";
+import { applyFilters } from "../../src/utils/recipe-filters";
 import { Recipe } from "../../src/types/recipe";
 
 export default function HomeScreen() {
   const recipes = useRecipeStore((s) => s.recipes);
   const [search, setSearch] = useState("");
+  const [showFilter, setShowFilter] = useState(false);
+  const [filterFavourites, setFilterFavourites] = useState(false);
+  const [filterDietary, setFilterDietary] = useState<string[]>([]);
+  const [filterProtein, setFilterProtein] = useState<string[]>([]);
+  const [filterPrep, setFilterPrep] = useState<string[]>([]);
   const router = useRouter();
 
-  const filtered = search
-    ? recipes.filter((r) =>
-        r.title.toLowerCase().includes(search.toLowerCase()),
-      )
-    : recipes;
+  const activeFilterCount =
+    (filterFavourites ? 1 : 0) +
+    filterDietary.length +
+    filterProtein.length +
+    filterPrep.length;
+
+  const togglePill = (arr: string[], val: string, set: (v: string[]) => void) =>
+    set(arr.includes(val) ? arr.filter((x) => x !== val) : [...arr, val]);
+
+  const filtered = applyFilters(recipes, {
+    search,
+    filterFavourites,
+    filterDietary,
+    filterProtein,
+    filterPrep,
+  });
+
+  const handleClearFilters = () => {
+    setFilterFavourites(false);
+    setFilterDietary([]);
+    setFilterProtein([]);
+    setFilterPrep([]);
+  };
 
   const renderItem = ({ item }: { item: Recipe | null }) => {
     if (!item) return <View className="flex-1 m-1.5" />;
@@ -27,23 +52,73 @@ export default function HomeScreen() {
     );
   };
 
+  const PillButton = ({
+    label,
+    active,
+    onPress,
+  }: {
+    label: string;
+    active: boolean;
+    onPress: () => void;
+  }) => (
+    <Pressable
+      className={`rounded-full px-4 py-2 border ${active ? "bg-pink-500 border-pink-500" : "bg-white border-gray-300"}`}
+      onPress={onPress}
+    >
+      <Text className={`text-sm font-medium ${active ? "text-white" : "text-gray-600"}`}>
+        {label}
+      </Text>
+    </Pressable>
+  );
+
   return (
     <View className="flex-1 bg-gray-50">
-      <View className="px-4 pt-2 pb-2">
+      {/* Search + filter bar */}
+      <View className="px-4 pt-2 pb-2 flex-row items-center gap-2">
         <TextInput
-          className="bg-white border border-gray-200 rounded-xl px-4 py-2.5 text-base"
+          className="flex-1 bg-white border border-gray-200 rounded-xl px-4 py-2.5 text-base"
           placeholder="Search recipes..."
           value={search}
           onChangeText={setSearch}
         />
+        <Pressable
+          className="bg-white border border-gray-200 rounded-xl p-2.5 items-center justify-center"
+          onPress={() => setShowFilter(true)}
+          style={{ position: "relative" }}
+        >
+          <Ionicons name="options-outline" size={22} color="#374151" />
+          {activeFilterCount > 0 && (
+            <View
+              style={{
+                position: "absolute",
+                top: -6,
+                right: -6,
+                backgroundColor: "#ec4899",
+                borderRadius: 10,
+                width: 20,
+                height: 20,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Text style={{ color: "white", fontSize: 11, fontWeight: "bold" }}>
+                {activeFilterCount}
+              </Text>
+            </View>
+          )}
+        </Pressable>
       </View>
 
       {filtered.length === 0 ? (
-        search ? (
+        search || activeFilterCount > 0 ? (
           <EmptyState
             icon="🔍"
             title="No results"
-            subtitle={`No recipes matching "${search}"`}
+            subtitle={
+              search
+                ? `No recipes matching "${search}"`
+                : "No recipes match the current filters"
+            }
           />
         ) : (
           <EmptyState
@@ -70,6 +145,87 @@ export default function HomeScreen() {
       >
         <Text className="text-white text-3xl font-light">+</Text>
       </Pressable>
+
+      {/* Filter modal */}
+      <Modal visible={showFilter} animationType="slide" transparent>
+        <View className="flex-1 justify-end">
+          <Pressable className="flex-1" onPress={() => setShowFilter(false)} />
+          <View className="bg-white rounded-t-3xl px-4 pt-6 pb-10">
+            {/* Header */}
+            <View className="flex-row items-center justify-between mb-5">
+              <Text className="text-lg font-bold">Filter Recipes</Text>
+              <Pressable onPress={handleClearFilters}>
+                <Text className="text-pink-500 font-semibold">Clear All</Text>
+              </Pressable>
+            </View>
+
+            {/* Favourites */}
+            <Text className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">
+              Favourites
+            </Text>
+            <View className="flex-row flex-wrap gap-2 mb-5">
+              <PillButton
+                label="Show Favourites Only"
+                active={filterFavourites}
+                onPress={() => setFilterFavourites((v) => !v)}
+              />
+            </View>
+
+            {/* Dietary */}
+            <Text className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">
+              Dietary
+            </Text>
+            <View className="flex-row flex-wrap gap-2 mb-5">
+              {["Vegetarian", "Vegan", "Gluten Free", "Lactose Free"].map((diet) => (
+                <PillButton
+                  key={diet}
+                  label={diet}
+                  active={filterDietary.includes(diet)}
+                  onPress={() => togglePill(filterDietary, diet, setFilterDietary)}
+                />
+              ))}
+            </View>
+
+            {/* Protein */}
+            <Text className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">
+              Protein
+            </Text>
+            <View className="flex-row flex-wrap gap-2 mb-5">
+              {["Beef", "Chicken", "Pork", "Lamb", "Fish", "Shellfish"].map((protein) => (
+                <PillButton
+                  key={protein}
+                  label={protein}
+                  active={filterProtein.includes(protein)}
+                  onPress={() => togglePill(filterProtein, protein, setFilterProtein)}
+                />
+              ))}
+            </View>
+
+            {/* Preparation */}
+            <Text className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">
+              Preparation
+            </Text>
+            <View className="flex-row flex-wrap gap-2 mb-4">
+              {["Under 30 min", "Under 1 hour", "Serves 6+"].map((prep) => (
+                <PillButton
+                  key={prep}
+                  label={prep}
+                  active={filterPrep.includes(prep)}
+                  onPress={() => togglePill(filterPrep, prep, setFilterPrep)}
+                />
+              ))}
+            </View>
+
+            {/* Done */}
+            <Pressable
+              className="bg-pink-500 rounded-xl py-3 items-center mt-2"
+              onPress={() => setShowFilter(false)}
+            >
+              <Text className="text-white font-semibold">Done</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }

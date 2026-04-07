@@ -14,7 +14,7 @@ export default function TabLayout() {
         options={{
           title: "Recipes",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="home-outline" size={size} color={color} />
+            <Ionicons name="book-outline" size={size} color={color} />
           ),
         }}
       />

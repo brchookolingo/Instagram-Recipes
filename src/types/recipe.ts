@@ -21,10 +21,12 @@ export interface Recipe {
   author: string;
   ingredients: Ingredient[];
   instructions: Instruction[];
+  notes?: string;
   tags: string[];
-  prepTime?: string;
-  cookTime?: string;
-  servings?: string;
+  isFavourite?: boolean;
+  prepTime?: number;
+  cookTime?: number;
+  servings?: number;
   extractionSource: "caption" | "video" | "manual";
   boardIds: string[];
   createdAt: string;

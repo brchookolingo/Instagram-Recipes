@@ -17,6 +17,7 @@ import {
 } from "../src/services/instagram";
 import {
   parseRecipeWithAI,
+  cleanupRecipeExtraction,
   isExtractionSufficient,
 } from "../src/services/recipe-parser-ai";
 import {
@@ -96,7 +97,9 @@ export default function AddRecipeScreen() {
         const aiResult = await parseRecipeWithAI(post.caption, apiKey);
 
         if (aiResult && isExtractionSufficient(aiResult)) {
-          populateFromPartial(aiResult);
+          setLoadingMessage("Cleaning up recipe data...");
+          const cleanedResult = await cleanupRecipeExtraction(aiResult, apiKey);
+          populateFromPartial(cleanedResult);
           setStep("preview");
           return;
         }

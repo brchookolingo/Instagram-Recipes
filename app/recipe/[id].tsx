@@ -7,6 +7,7 @@ import {
   Alert,
   Modal,
   FlatList,
+  Linking,
 } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Image } from "expo-image";
@@ -25,7 +26,6 @@ export default function RecipeDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const recipe = useRecipeStore((s) => s.getRecipeById(id ?? ""));
-  const updateRecipe = useRecipeStore((s) => s.updateRecipe);
   const deleteRecipe = useRecipeStore((s) => s.deleteRecipe);
   const boards = useBoardStore((s) => s.boards);
   const addRecipeToBoard = useBoardStore((s) => s.addRecipeToBoard);
@@ -39,13 +39,6 @@ export default function RecipeDetailScreen() {
       </View>
     );
   }
-
-  const handleToggleIngredient = (index: number) => {
-    const updated = recipe.ingredients.map((ing, i) =>
-      i === index ? { ...ing, checked: !ing.checked } : ing,
-    );
-    updateRecipe(recipe.id, { ingredients: updated });
-  };
 
   const handleDelete = () => {
     Alert.alert(
@@ -82,7 +75,7 @@ export default function RecipeDetailScreen() {
       {imageUri ? (
         <Image
           source={{ uri: imageUri }}
-          className="w-full aspect-video"
+          className="w-full aspect-square"
           contentFit="cover"
         />
       ) : null}
@@ -92,6 +85,14 @@ export default function RecipeDetailScreen() {
 
         {recipe.author ? (
           <Text className="text-gray-500 mt-1">by {recipe.author}</Text>
+        ) : null}
+
+        {recipe.sourceUrl ? (
+          <Pressable onPress={() => Linking.openURL(recipe.sourceUrl)}>
+            <Text className="text-pink-500 text-sm mt-1">
+              View on Instagram ↗
+            </Text>
+          </Pressable>
         ) : null}
 
         <View className="flex-row items-center gap-2 mt-3 flex-wrap">
@@ -130,10 +131,7 @@ export default function RecipeDetailScreen() {
         {recipe.ingredients.length > 0 && (
           <View className="mt-6">
             <Text className="text-lg font-bold mb-3">Ingredients</Text>
-            <IngredientList
-              ingredients={recipe.ingredients}
-              onToggle={handleToggleIngredient}
-            />
+            <IngredientList ingredients={recipe.ingredients} />
           </View>
         )}
 
@@ -144,19 +142,27 @@ export default function RecipeDetailScreen() {
           </View>
         )}
 
-        <View className="flex-row gap-3 mt-8 mb-8">
+        <View className="gap-3 mt-8 mb-8">
           <Pressable
-            className="flex-1 bg-pink-50 rounded-xl py-3 items-center"
+            className="bg-pink-50 rounded-xl py-3 items-center"
             onPress={() => setShowBoardModal(true)}
           >
             <Text className="text-pink-600 font-semibold">Add to Board</Text>
           </Pressable>
-          <Pressable
-            className="flex-1 bg-red-50 rounded-xl py-3 items-center"
-            onPress={handleDelete}
-          >
-            <Text className="text-red-600 font-semibold">Delete Recipe</Text>
-          </Pressable>
+          <View className="flex-row gap-3">
+            <Pressable
+              className="flex-1 bg-gray-100 rounded-xl py-3 items-center"
+              onPress={() => router.push(`/recipe/edit/${recipe.id}`)}
+            >
+              <Text className="text-gray-700 font-semibold">Edit Recipe</Text>
+            </Pressable>
+            <Pressable
+              className="flex-1 bg-red-50 rounded-xl py-3 items-center"
+              onPress={handleDelete}
+            >
+              <Text className="text-red-600 font-semibold">Delete Recipe</Text>
+            </Pressable>
+          </View>
         </View>
       </View>
 

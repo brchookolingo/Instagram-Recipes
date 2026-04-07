@@ -1,19 +1,20 @@
 import { Tabs } from "expo-router";
-import { Text } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: "#e91e63",
+        tabBarActiveTintColor: "#000000",
+        tabBarInactiveTintColor: "#9ca3af",
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
           title: "Home",
-          tabBarIcon: ({ color }) => (
-            <Text style={{ color, fontSize: 20 }}>🏠</Text>
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="home-outline" size={size} color={color} />
           ),
         }}
       />
@@ -21,8 +22,8 @@ export default function TabLayout() {
         name="boards"
         options={{
           title: "Boards",
-          tabBarIcon: ({ color }) => (
-            <Text style={{ color, fontSize: 20 }}>📋</Text>
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="albums-outline" size={size} color={color} />
           ),
         }}
       />
@@ -30,8 +31,8 @@ export default function TabLayout() {
         name="settings"
         options={{
           title: "Settings",
-          tabBarIcon: ({ color }) => (
-            <Text style={{ color, fontSize: 20 }}>⚙️</Text>
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="settings-outline" size={size} color={color} />
           ),
         }}
       />

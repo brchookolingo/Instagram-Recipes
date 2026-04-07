@@ -7,7 +7,7 @@ const SYSTEM_PROMPT = `You are a recipe extraction assistant. Given an Instagram
 Return this exact JSON structure:
 {
   "title": "Recipe title",
-  "description": "Brief description",
+  "description": "Brief appetizing description of the dish, max 300 characters",
   "ingredients": [
     { "text": "full ingredient line", "quantity": "1", "unit": "cup", "checked": false }
   ],
@@ -23,9 +23,14 @@ Return this exact JSON structure:
 Rules:
 - Extract all ingredients with quantities and units when available
 - Number instructions sequentially
-- If a field is not found in the caption, omit it from the JSON
 - Handle emoji-heavy captions, multi-language text, and informal formatting
-- Return ONLY the JSON object, no markdown, no explanation`;
+- Return ONLY the JSON object, no markdown, no explanation
+
+Required fields — always include these, inferring from context if not explicitly stated:
+- "description": Write a short appetizing summary of the dish based on the caption. Maximum 300 characters. Never omit this.
+- "prepTime": Estimate from the instructions (e.g. chopping, mixing, marinating). Use format "15 min". If truly unknown, use "~15 min".
+- "cookTime": Estimate from cooking steps (e.g. baking, simmering, frying times). Use format "30 min". If truly unknown, use "~30 min".
+- "servings": Estimate from ingredient quantities or dish type. Use format "4" or "4-6". If truly unknown, use "4".`;
 
 export async function parseRecipeWithAI(
   caption: string,
@@ -75,4 +80,53 @@ export function isExtractionSufficient(partial: Partial<Recipe>): boolean {
     Array.isArray(partial.instructions) &&
     partial.instructions.length > 0
   );
+}
+
+const CLEANUP_PROMPT = `You are a recipe data validator. You will receive a recipe JSON that may have misclassified items — cooking steps accidentally placed in the ingredients list, or ingredients accidentally placed in the instructions list.
+
+Your job is to fix the ingredients and instructions arrays only. Return the corrected recipe as ONLY a valid JSON object with no additional text, preserving all other fields exactly as provided.
+
+Rules for ingredients:
+- Must be actual food items, spices, liquids, or cooking components with quantities
+- Must NOT contain cooking actions, method descriptions, or temperature/time instructions
+
+Rules for instructions:
+- Must be actual cooking steps describing actions (e.g. "Heat oil in pan...", "Mix together...")
+- Must NOT contain standalone ingredient lines
+
+If an item is in the wrong array, move it to the correct one. Re-number instructions sequentially after any changes. Return ONLY the corrected JSON object.`;
+
+export async function cleanupRecipeExtraction(
+  recipe: Partial<Recipe>,
+  apiKey: string,
+): Promise<Partial<Recipe>> {
+  try {
+    const client = new Anthropic({ apiKey, dangerouslyAllowBrowser: true });
+
+    const message = await client.messages.create({
+      model: CLAUDE_MODEL,
+      max_tokens: 2048,
+      system: CLEANUP_PROMPT,
+      messages: [
+        {
+          role: "user",
+          content: `Clean up this recipe JSON, fixing any misclassified ingredients or instructions:\n\n${JSON.stringify(recipe, null, 2)}`,
+        },
+      ],
+    });
+
+    const textBlock = message.content.find((block) => block.type === "text");
+    if (!textBlock || textBlock.type !== "text") return recipe;
+
+    const parsed = JSON.parse(textBlock.text.trim());
+
+    return {
+      ...recipe,
+      ingredients: parsed.ingredients ?? recipe.ingredients,
+      instructions: parsed.instructions ?? recipe.instructions,
+    };
+  } catch {
+    // If cleanup fails, return the original extraction unchanged
+    return recipe;
+  }
 }

@@ -16,6 +16,9 @@ interface GroceryState {
     apiKey: string,
   ) => Promise<void>;
   toggleItem: (sectionName: string, itemId: string) => void;
+  addItem: (sectionName: string, text: string) => void;
+  removeItem: (sectionName: string, itemId: string) => void;
+  updateItem: (sectionName: string, itemId: string, text: string) => void;
   clearAll: () => void;
   clearChecked: () => void;
 }
@@ -59,6 +62,57 @@ export const useGroceryStore = create<GroceryState>()(
                     item.id === itemId
                       ? { ...item, checked: !item.checked }
                       : item,
+                  ),
+                }
+              : section,
+          ),
+        })),
+
+      addItem: (sectionName, text) =>
+        set((state) => {
+          const newItem = {
+            id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+            text: text.trim(),
+            checked: false,
+          };
+          const sectionExists = state.sections.some((s) => s.name === sectionName);
+          if (sectionExists) {
+            return {
+              sections: state.sections.map((section) =>
+                section.name === sectionName
+                  ? { ...section, items: [...section.items, newItem] }
+                  : section,
+              ),
+            };
+          }
+          // Create the section if it doesn't exist yet
+          return {
+            sections: [...state.sections, { name: sectionName, items: [newItem] }],
+          };
+        }),
+
+      removeItem: (sectionName, itemId) =>
+        set((state) => ({
+          sections: state.sections
+            .map((section) =>
+              section.name === sectionName
+                ? {
+                    ...section,
+                    items: section.items.filter((item) => item.id !== itemId),
+                  }
+                : section,
+            )
+            .filter((section) => section.items.length > 0),
+        })),
+
+      updateItem: (sectionName, itemId, text) =>
+        set((state) => ({
+          sections: state.sections.map((section) =>
+            section.name === sectionName
+              ? {
+                  ...section,
+                  items: section.items.map((item) =>
+                    item.id === itemId ? { ...item, text } : item,
                   ),
                 }
               : section,

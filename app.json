@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "InstagramRecipes",
-    "slug": "InstagramRecipes",
+    "name": "ReciGrams",
+    "slug": "ReciGrams",
     "version": "1.0.0",
     "scheme": "instagramrecipes",
     "orientation": "portrait",

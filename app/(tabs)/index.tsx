@@ -17,12 +17,15 @@ export default function HomeScreen() {
       )
     : recipes;
 
-  const renderItem = ({ item }: { item: Recipe }) => (
-    <RecipeCard
-      recipe={item}
-      onPress={() => router.push(`/recipe/${item.id}`)}
-    />
-  );
+  const renderItem = ({ item }: { item: Recipe | null }) => {
+    if (!item) return <View className="flex-1 m-1.5" />;
+    return (
+      <RecipeCard
+        recipe={item}
+        onPress={() => router.push(`/recipe/${item.id}`)}
+      />
+    );
+  };
 
   return (
     <View className="flex-1 bg-gray-50">
@@ -53,9 +56,9 @@ export default function HomeScreen() {
         )
       ) : (
         <FlatList
-          data={filtered}
+          data={filtered.length % 2 !== 0 ? [...filtered, null] : filtered}
           renderItem={renderItem}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item?.id ?? "spacer"}
           numColumns={2}
           contentContainerStyle={{ padding: 4 }}
         />

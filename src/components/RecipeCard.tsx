@@ -12,7 +12,18 @@ export function RecipeCard({ recipe, onPress }: RecipeCardProps) {
 
   return (
     <Pressable className="flex-1 m-1.5" onPress={onPress}>
-      <View className="bg-white rounded-2xl shadow-sm overflow-hidden flex-1">
+      <View className="bg-white rounded-2xl shadow-sm overflow-hidden">
+        {imageUri ? (
+          <Image
+            source={{ uri: imageUri }}
+            style={{ width: "100%", aspectRatio: 1 }}
+            contentFit="cover"
+            placeholder={{ blurhash: "L6PZfSi_.AyE_3t7t7R**0o#DgR4" }}
+            transition={200}
+          />
+        ) : (
+          <View style={{ width: "100%", aspectRatio: 1, backgroundColor: "#f3f4f6" }} />
+        )}
         <View className="p-3">
           <Text className="text-base font-semibold" numberOfLines={2}>
             {recipe.title}
@@ -44,17 +55,6 @@ export function RecipeCard({ recipe, onPress }: RecipeCardProps) {
             </Text>
           ) : null}
         </View>
-        {imageUri ? (
-          <Image
-            source={{ uri: imageUri }}
-            style={{ width: "100%", aspectRatio: 1 }}
-            contentFit="cover"
-            placeholder={{ blurhash: "L6PZfSi_.AyE_3t7t7R**0o#DgR4" }}
-            transition={200}
-          />
-        ) : (
-          <View style={{ width: "100%", aspectRatio: 1, backgroundColor: "#f3f4f6" }} />
-        )}
       </View>
     </Pressable>
   );

@@ -51,6 +51,7 @@ export default function AddRecipeScreen() {
   const [servings, setServings] = useState("");
   const [extractionSource, setExtractionSource] =
     useState<Recipe["extractionSource"]>("manual");
+  const [saving, setSaving] = useState(false);
 
   const apiKey = process.env.EXPO_PUBLIC_CLAUDE_API_KEY ?? "";
 
@@ -81,6 +82,41 @@ export default function AddRecipeScreen() {
       "Sliding into Instagram... 📱",
       "Teaching Claude to cook... 🤖",
       "Almost ready to plate... 🍽️",
+    ],
+    [
+      "Raiding the 'gram... 📸",
+      "Decoding the deliciousness... 🔬",
+      "Sprinkling on the magic... ✨",
+    ],
+    [
+      "Fetching your feast... 🍽️",
+      "Whipping up the details... 🥄",
+      "Almost on the table... 🕯️",
+    ],
+    [
+      "Peeking at Instagram... 👀",
+      "Putting on the chef's hat... 👨‍🍳",
+      "Plating up nicely... 🍴",
+    ],
+    [
+      "Sneaking into the feed... 🤫",
+      "Letting Claude taste test... 🤖",
+      "Garnishing the final dish... 🌿",
+    ],
+    [
+      "Borrowing that reel... 🎬",
+      "Extracting all the yumminess... 😋",
+      "Final seasoning check... 🧂",
+    ],
+    [
+      "Hot off the reel... 🎥",
+      "Claude's putting on his apron... 👨‍🍳",
+      "Dishing it up... 🥘",
+    ],
+    [
+      "Grabbing that post... 📲",
+      "Taste-testing with AI... 🤖",
+      "Ready to serve... 🍽️",
     ],
   ];
 
@@ -173,10 +209,13 @@ export default function AddRecipeScreen() {
   };
 
   const handleSave = async () => {
+    if (saving) return;
     if (!title.trim()) {
       Alert.alert("Missing Title", "Please enter a recipe title.");
       return;
     }
+
+    setSaving(true);
 
     const now = new Date().toISOString();
     const recipeId = Date.now().toString();
@@ -391,10 +430,13 @@ export default function AddRecipeScreen() {
         </View>
 
         <Pressable
-          className="bg-pink-500 rounded-xl py-4 items-center mt-2 mb-8"
+          className={`rounded-xl py-4 items-center mt-2 mb-8 ${saving ? "bg-pink-300" : "bg-pink-500"}`}
           onPress={handleSave}
+          disabled={saving}
         >
-          <Text className="text-white font-bold text-base">Save Recipe</Text>
+          <Text className="text-white font-bold text-base">
+            {saving ? "Saving..." : "Save Recipe"}
+          </Text>
         </Pressable>
       </View>
     </ScrollView>

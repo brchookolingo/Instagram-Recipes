@@ -66,13 +66,33 @@ export default function AddRecipeScreen() {
     if (partial.extractionSource) setExtractionSource(partial.extractionSource);
   };
 
+  const LOADING_THEMES = [
+    [
+      "Hunting down that post... 🔍",
+      "Sniffing out the recipe... 🧑‍🍳",
+      "Giving it a taste test... ✨",
+    ],
+    [
+      "Hunting down that post... 🔍",
+      "Cooking up the recipe... 🍳",
+      "Putting on the finishing touches... ✨",
+    ],
+    [
+      "Sliding into Instagram... 📱",
+      "Teaching Claude to cook... 🤖",
+      "Almost ready to plate... 🍽️",
+    ],
+  ];
+
   const handleFetch = async (url: string) => {
     setSourceUrl(url);
     setStep("loading");
     setError("");
 
+    const theme = LOADING_THEMES[Math.floor(Math.random() * LOADING_THEMES.length)];
+
     try {
-      setLoadingMessage("Analyzing Post...");
+      setLoadingMessage(theme[0]);
       const post = await fetchInstagramPost(url);
 
       if (!post) {
@@ -85,9 +105,11 @@ export default function AddRecipeScreen() {
 
       // Tier 1 — AI caption parsing
       if (post.caption && apiKey) {
+        setLoadingMessage(theme[1]);
         const aiResult = await parseRecipeWithAI(post.caption, apiKey);
 
         if (aiResult && isExtractionSufficient(aiResult)) {
+          setLoadingMessage(theme[2]);
           const cleanedResult = await cleanupRecipeExtraction(aiResult, apiKey);
           populateFromPartial(cleanedResult);
           setStep("preview");

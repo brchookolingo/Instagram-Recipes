@@ -8,11 +8,13 @@ import {
   Modal,
   FlatList,
   Linking,
+  ActivityIndicator,
 } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Image } from "expo-image";
 import { useRecipeStore } from "../../src/stores/recipe-store";
 import { useBoardStore } from "../../src/stores/board-store";
+import { useGroceryStore } from "../../src/stores/grocery-store";
 import { IngredientList } from "../../src/components/IngredientList";
 import { InstructionList } from "../../src/components/InstructionList";
 
@@ -25,6 +27,10 @@ export default function RecipeDetailScreen() {
   const addRecipeToBoard = useBoardStore((s) => s.addRecipeToBoard);
   const removeRecipeFromBoard = useBoardStore((s) => s.removeRecipeFromBoard);
   const [showBoardModal, setShowBoardModal] = useState(false);
+  const [addingToGrocery, setAddingToGrocery] = useState(false);
+  const addRecipeIngredients = useGroceryStore((s) => s.addRecipeIngredients);
+
+  const apiKey = process.env.EXPO_PUBLIC_CLAUDE_API_KEY ?? "";
 
   if (!recipe) {
     return (
@@ -50,6 +56,22 @@ export default function RecipeDetailScreen() {
         },
       ],
     );
+  };
+
+  const handleAddToGrocery = async () => {
+    if (!recipe.ingredients.length) {
+      Alert.alert("No Ingredients", "This recipe has no ingredients to add.");
+      return;
+    }
+    setAddingToGrocery(true);
+    try {
+      await addRecipeIngredients(recipe.id, recipe.title, recipe.ingredients, apiKey);
+      Alert.alert("Added!", "Ingredients added to your grocery list.");
+    } catch {
+      Alert.alert("Error", "Failed to add ingredients. Check your Claude API key in Settings.");
+    } finally {
+      setAddingToGrocery(false);
+    }
   };
 
   const handleToggleBoard = (boardId: string) => {
@@ -132,12 +154,26 @@ export default function RecipeDetailScreen() {
         )}
 
         <View className="gap-3 mt-8 mb-8">
-          <Pressable
-            className="bg-pink-50 rounded-xl py-3 items-center"
-            onPress={() => setShowBoardModal(true)}
-          >
-            <Text className="text-pink-600 font-semibold">Add to Board</Text>
-          </Pressable>
+          <View className="flex-row gap-3">
+            <Pressable
+              className="flex-1 bg-pink-50 rounded-xl py-3 items-center"
+              onPress={() => setShowBoardModal(true)}
+            >
+              <Text className="text-pink-600 font-semibold">Add to Board</Text>
+            </Pressable>
+            <Pressable
+              className="flex-1 bg-green-50 rounded-xl py-3 items-center flex-row justify-center gap-2"
+              onPress={handleAddToGrocery}
+              disabled={addingToGrocery}
+            >
+              {addingToGrocery ? (
+                <ActivityIndicator size="small" color="#16a34a" />
+              ) : null}
+              <Text className="text-green-700 font-semibold">
+                {addingToGrocery ? "Adding..." : "Add to Grocery List"}
+              </Text>
+            </Pressable>
+          </View>
           <View className="flex-row gap-3">
             <Pressable
               className="flex-1 bg-gray-100 rounded-xl py-3 items-center"

@@ -7,27 +7,27 @@ function isSupportedUrl(text: string): boolean {
 }
 
 export function useClipboard() {
-  const [clipboardUrl, setClipboardUrl] = useState<string | null>(null);
+  const [hasClipboardContent, setHasClipboardContent] = useState(false);
 
-  const checkClipboard = useCallback(async () => {
-    try {
-      const hasString = await Clipboard.hasStringAsync();
-      if (!hasString) return;
-
-      const content = await Clipboard.getStringAsync();
-      if (content && isSupportedUrl(content)) {
-        setClipboardUrl(content.trim());
-      } else {
-        setClipboardUrl(null);
-      }
-    } catch {
-      setClipboardUrl(null);
-    }
+  // Only check presence on mount — does not trigger the iOS paste permission prompt.
+  useEffect(() => {
+    Clipboard.hasStringAsync()
+      .then(setHasClipboardContent)
+      .catch(() => setHasClipboardContent(false));
   }, []);
 
-  useEffect(() => {
-    checkClipboard();
-  }, [checkClipboard]);
+  // Called only when the user explicitly taps the paste button.
+  const getClipboardUrl = useCallback(async (): Promise<string | null> => {
+    try {
+      const content = await Clipboard.getStringAsync();
+      if (content && isSupportedUrl(content)) {
+        return content.trim();
+      }
+    } catch {
+      // ignore
+    }
+    return null;
+  }, []);
 
-  return { clipboardUrl, checkClipboard };
+  return { hasClipboardContent, getClipboardUrl };
 }

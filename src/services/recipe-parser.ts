@@ -55,6 +55,38 @@ const MEASUREMENT_PATTERN = new RegExp(
 
 const BULLET_OR_NUMBER_PATTERN = /^[\s]*(?:[-•*]|\d+[.)]\s)/;
 
+const SOCIAL_MEDIA_HOSTS = [
+  "instagram.com",
+  "tiktok.com",
+  "twitter.com",
+  "x.com",
+  "facebook.com",
+  "youtube.com",
+  "youtu.be",
+  "threads.net",
+  "snapchat.com",
+];
+
+/**
+ * Extracts HTTP(S) URLs from a social media caption, filtering out links
+ * back to social media platforms (which won't contain recipe content).
+ * Returns up to 3 candidate URLs to try.
+ */
+export function extractUrlsFromCaption(caption: string): string[] {
+  const matches = caption.match(/https?:\/\/[^\s<>"{}|\\^`\[\]]+/g) ?? [];
+  return matches
+    .map((url) => url.replace(/[.,;:!?]+$/, "")) // strip trailing punctuation
+    .filter((url) => {
+      try {
+        const host = new URL(url).hostname.replace(/^www\./, "");
+        return !SOCIAL_MEDIA_HOSTS.some((h) => host === h || host.endsWith(`.${h}`));
+      } catch {
+        return false;
+      }
+    })
+    .slice(0, 3);
+}
+
 export function hasRecipeContent(caption: string): boolean {
   const lower = caption.toLowerCase();
   const hasKeywords = RECIPE_KEYWORDS.some((kw) => lower.includes(kw));

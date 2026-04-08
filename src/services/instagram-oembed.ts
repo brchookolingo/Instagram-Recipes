@@ -21,8 +21,8 @@ function extractCaptionFromHtml(html: string): string | undefined {
 export async function fetchViaOEmbed(
   url: string,
 ): Promise<RawInstagramPost | null> {
-  const appId = process.env.FACEBOOK_APP_ID;
-  const appSecret = process.env.FACEBOOK_APP_SECRET;
+  const appId = process.env.EXPO_PUBLIC_FACEBOOK_APP_ID;
+  const appSecret = process.env.EXPO_PUBLIC_FACEBOOK_APP_SECRET;
 
   if (!appId || !appSecret) {
     return null;

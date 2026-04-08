@@ -10,9 +10,10 @@ interface URLInputProps {
 export function URLInput({ onSubmit }: URLInputProps) {
   const [url, setUrl] = useState("");
   const [validationError, setValidationError] = useState("");
-  const { clipboardUrl } = useClipboard();
+  const { hasClipboardContent, getClipboardUrl } = useClipboard();
 
-  const handlePasteFromClipboard = () => {
+  const handlePasteFromClipboard = async () => {
+    const clipboardUrl = await getClipboardUrl();
     if (clipboardUrl) {
       setUrl(clipboardUrl);
       setValidationError("");
@@ -57,14 +58,12 @@ export function URLInput({ onSubmit }: URLInputProps) {
       {validationError ? (
         <Text className="text-red-500 text-sm mt-1 ml-1">{validationError}</Text>
       ) : null}
-      {clipboardUrl && !url && (
+      {hasClipboardContent && !url && (
         <Pressable
           className="mt-2 bg-pink-50 rounded-lg px-4 py-2"
           onPress={handlePasteFromClipboard}
         >
-          <Text className="text-pink-600 text-sm">
-            Paste from clipboard: {clipboardUrl.substring(0, 40)}...
-          </Text>
+          <Text className="text-pink-600 text-sm">Paste from clipboard</Text>
         </Pressable>
       )}
       <Pressable

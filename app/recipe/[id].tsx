@@ -82,7 +82,7 @@ export default function RecipeDetailScreen() {
     setAddingToGrocery(true);
     try {
       // Send the currently-scaled quantities to the grocery list
-      await addRecipeIngredients(recipe.id, recipe.title, scaledIngredients, "");
+      await addRecipeIngredients(recipe.id, recipe.title, scaledIngredients, process.env.EXPO_PUBLIC_CLAUDE_API_KEY ?? "");
       Alert.alert("Added!", "Ingredients added to your grocery list.");
     } catch {
       Alert.alert("Error", "Failed to add ingredients. Please try again.");

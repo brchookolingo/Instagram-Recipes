@@ -11,7 +11,7 @@ function extractShortcode(url: string): string | null {
 export async function fetchViaScraper(
   url: string,
 ): Promise<RawInstagramPost | null> {
-  const apiKey = process.env.RAPIDAPI_KEY;
+  const apiKey = process.env.EXPO_PUBLIC_RAPIDAPI_KEY;
   if (!apiKey) return null;
 
   const shortcode = extractShortcode(url);

@@ -2,6 +2,7 @@ import { View, Text, FlatList, Alert, Pressable } from "react-native";
 import { useRouter } from "expo-router";
 import { useBoardStore } from "../../src/stores/board-store";
 import { useRecipeStore } from "../../src/stores/recipe-store";
+import { generateId } from "../../src/utils/uuid";
 import { BoardCard } from "../../src/components/BoardCard";
 import { EmptyState } from "../../src/components/EmptyState";
 import { Board } from "../../src/types/recipe";
@@ -16,7 +17,7 @@ export default function BoardsScreen() {
     Alert.prompt("New Board", "Enter a name for your board:", (name) => {
       if (name?.trim()) {
         addBoard({
-          id: crypto.randomUUID(),
+          id: generateId(),
           name: name.trim(),
           recipeIds: [],
           createdAt: new Date().toISOString(),

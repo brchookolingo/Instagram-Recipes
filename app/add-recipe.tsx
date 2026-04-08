@@ -19,6 +19,7 @@ import {
 import { extractRecipeFromPost } from "../src/services/recipe-extractor";
 import { useRecipeStore } from "../src/stores/recipe-store";
 import { Recipe, Ingredient, Instruction } from "../src/types/recipe";
+import { generateId } from "../src/utils/uuid";
 
 type Step = "input" | "loading" | "preview";
 
@@ -207,7 +208,7 @@ export default function AddRecipeScreen() {
       setSaving(true);
 
       const now = new Date().toISOString();
-      const recipeId = crypto.randomUUID();
+      const recipeId = generateId();
       const rawImageUrl = postData?.imageUrl ?? postData?.thumbnailUrl;
 
       const recipe: Recipe = {

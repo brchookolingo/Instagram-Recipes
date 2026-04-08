@@ -1,3 +1,7 @@
+// Expo Router's built-in error boundary — catches render errors within this
+// route while keeping the rest of the navigation tree intact.
+export { ErrorBoundary } from "expo-router";
+
 import { useState } from "react";
 import {
   View,
@@ -18,7 +22,6 @@ import { useBoardStore } from "../../src/stores/board-store";
 import { useGroceryStore } from "../../src/stores/grocery-store";
 import { IngredientList } from "../../src/components/IngredientList";
 import { InstructionList } from "../../src/components/InstructionList";
-import { scaleIngredients, scaleTime } from "../../src/utils/scale-recipe";
 
 export default function RecipeDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -31,7 +34,7 @@ export default function RecipeDetailScreen() {
   const removeRecipeFromBoard = useBoardStore((s) => s.removeRecipeFromBoard);
   const [showBoardModal, setShowBoardModal] = useState(false);
   const [addingToGrocery, setAddingToGrocery] = useState(false);
-  const [scale, setScale] = useState<0.5 | 1 | 2>(1);
+  const [scale, setScale] = useState<"half" | "normal" | "double">("normal");
   const addRecipeIngredients = useGroceryStore((s) => s.addRecipeIngredients);
 
   if (!recipe) {
@@ -60,12 +63,16 @@ export default function RecipeDetailScreen() {
     );
   };
 
-  const scaledIngredients = scaleIngredients(recipe.ingredients, scale);
+  const scaleFactor = scale === "half" ? 0.5 : scale === "double" ? 2 : 1;
+  const scaledIngredients =
+    scale === "half"
+      ? (recipe.ingredientsHalf ?? recipe.ingredients)
+      : scale === "double"
+        ? (recipe.ingredientsDouble ?? recipe.ingredients)
+        : recipe.ingredients;
   const scaledServings = recipe.servings
-    ? Math.round(recipe.servings * scale)
+    ? Math.round(recipe.servings * scaleFactor)
     : undefined;
-  const scaledPrepTime = scaleTime(recipe.prepTime, scale);
-  const scaledCookTime = scaleTime(recipe.cookTime, scale);
 
   const handleAddToGrocery = async () => {
     if (!recipe.ingredients.length) {
@@ -115,17 +122,17 @@ export default function RecipeDetailScreen() {
 
         <View className="flex-row items-center mt-3">
           <View className="flex-1 flex-row flex-wrap gap-2">
-            {scaledPrepTime ? (
+            {recipe.prepTime ? (
               <View className="bg-pink-50 rounded-full px-3 py-1">
                 <Text className="text-xs text-pink-600">
-                  Prep: {scaledPrepTime} min
+                  Prep: {recipe.prepTime} min
                 </Text>
               </View>
             ) : null}
-            {scaledCookTime ? (
+            {recipe.cookTime ? (
               <View className="bg-orange-50 rounded-full px-3 py-1">
                 <Text className="text-xs text-orange-600">
-                  Cook: {scaledCookTime} min
+                  Cook: {recipe.cookTime} min
                 </Text>
               </View>
             ) : null}
@@ -167,19 +174,30 @@ export default function RecipeDetailScreen() {
             <View className="flex-row items-center justify-between mb-3">
               <Text className="text-lg font-bold">Ingredients</Text>
               <View className="flex-row bg-gray-100 rounded-xl p-1 gap-1">
-                {([0.5, 1, 2] as const).map((factor) => (
-                  <Pressable
-                    key={factor}
-                    onPress={() => setScale(factor)}
-                    className={`px-3 py-1 rounded-lg ${scale === factor ? "bg-white shadow-sm" : ""}`}
-                  >
-                    <Text
-                      className={`text-sm font-semibold ${scale === factor ? "text-pink-500" : "text-gray-400"}`}
-                    >
-                      {factor === 0.5 ? "½×" : factor === 1 ? "1×" : "2×"}
-                    </Text>
-                  </Pressable>
-                ))}
+                <Pressable
+                  onPress={() => setScale("half")}
+                  className={`px-3 py-1 rounded-lg ${scale === "half" ? "bg-white" : ""}`}
+                >
+                  <Text className={`text-sm font-semibold ${scale === "half" ? "text-pink-500" : "text-gray-400"}`}>
+                    ½×
+                  </Text>
+                </Pressable>
+                <Pressable
+                  onPress={() => setScale("normal")}
+                  className={`px-3 py-1 rounded-lg ${scale === "normal" ? "bg-white" : ""}`}
+                >
+                  <Text className={`text-sm font-semibold ${scale === "normal" ? "text-pink-500" : "text-gray-400"}`}>
+                    1×
+                  </Text>
+                </Pressable>
+                <Pressable
+                  onPress={() => setScale("double")}
+                  className={`px-3 py-1 rounded-lg ${scale === "double" ? "bg-white" : ""}`}
+                >
+                  <Text className={`text-sm font-semibold ${scale === "double" ? "text-pink-500" : "text-gray-400"}`}>
+                    2×
+                  </Text>
+                </Pressable>
               </View>
             </View>
             <IngredientList ingredients={scaledIngredients} />

@@ -20,6 +20,8 @@ export interface Recipe {
   sourceUrl: string;
   author: string;
   ingredients: Ingredient[];
+  ingredientsHalf?: Ingredient[];
+  ingredientsDouble?: Ingredient[];
   instructions: Instruction[];
   notes?: string;
   tags: string[];

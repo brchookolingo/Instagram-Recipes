@@ -4,6 +4,7 @@ import { Ingredient } from "../types/recipe";
 import { GrocerySection, RecipeRef } from "../types/grocery";
 import { zustandMMKVStorage } from "../utils/storage";
 import { consolidateAndGroupIngredients } from "../services/grocery-service";
+import { generateId } from "../utils/uuid";
 
 interface GroceryState {
   sections: GrocerySection[];
@@ -71,7 +72,7 @@ export const useGroceryStore = create<GroceryState>()(
       addItem: (sectionName, text) =>
         set((state) => {
           const newItem = {
-            id: crypto.randomUUID(),
+            id: generateId(),
             text: text.trim(),
             checked: false,
           };

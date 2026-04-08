@@ -1,4 +1,5 @@
-import { fetchInstagramPost } from "../../src/services/instagram";
+import { fetchViaScraper } from "../../src/services/instagram-scraper";
+import { fetchViaOEmbed } from "../../src/services/instagram-oembed";
 
 export async function POST(request: Request): Promise<Response> {
   try {
@@ -12,7 +13,8 @@ export async function POST(request: Request): Promise<Response> {
       );
     }
 
-    const post = await fetchInstagramPost(url);
+    // Try the RapidAPI scraper first, fall back to oEmbed
+    const post = (await fetchViaScraper(url)) ?? (await fetchViaOEmbed(url));
 
     if (!post) {
       return Response.json({ error: "NOT_FOUND" }, { status: 422 });

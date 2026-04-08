@@ -3,6 +3,7 @@ import { persist, createJSONStorage } from "zustand/middleware";
 import { Recipe } from "../types/recipe";
 import { zustandMMKVStorage } from "../utils/storage";
 import { cacheImage, deleteCachedImage } from "../utils/image-cache";
+import { scaleIngredients } from "../utils/scale-recipe";
 
 interface RecipeState {
   recipes: Recipe[];
@@ -30,11 +31,16 @@ export const useRecipeStore = create<RecipeState>()(
             // Silently fail — remote URL still works
           }
         }
+        const ingredientsHalf = scaleIngredients(recipe.ingredients, 0.5);
+        const ingredientsDouble = scaleIngredients(recipe.ingredients, 2);
+        const finalRecipe = {
+          ...recipe,
+          ingredientsHalf,
+          ingredientsDouble,
+          ...(localImageUri ? { localImageUri } : {}),
+        };
         set((state) => ({
-          recipes: [
-            ...state.recipes,
-            localImageUri ? { ...recipe, localImageUri } : recipe,
-          ],
+          recipes: [...state.recipes, finalRecipe],
         }));
       },
       updateRecipe: (id, updates) =>

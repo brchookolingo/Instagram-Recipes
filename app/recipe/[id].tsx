@@ -18,6 +18,7 @@ import { useBoardStore } from "../../src/stores/board-store";
 import { useGroceryStore } from "../../src/stores/grocery-store";
 import { IngredientList } from "../../src/components/IngredientList";
 import { InstructionList } from "../../src/components/InstructionList";
+import { scaleIngredients, scaleTime } from "../../src/utils/scale-recipe";
 
 export default function RecipeDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -30,9 +31,8 @@ export default function RecipeDetailScreen() {
   const removeRecipeFromBoard = useBoardStore((s) => s.removeRecipeFromBoard);
   const [showBoardModal, setShowBoardModal] = useState(false);
   const [addingToGrocery, setAddingToGrocery] = useState(false);
+  const [scale, setScale] = useState<0.5 | 1 | 2>(1);
   const addRecipeIngredients = useGroceryStore((s) => s.addRecipeIngredients);
-
-  const apiKey = process.env.EXPO_PUBLIC_CLAUDE_API_KEY ?? "";
 
   if (!recipe) {
     return (
@@ -60,6 +60,13 @@ export default function RecipeDetailScreen() {
     );
   };
 
+  const scaledIngredients = scaleIngredients(recipe.ingredients, scale);
+  const scaledServings = recipe.servings
+    ? Math.round(recipe.servings * scale)
+    : undefined;
+  const scaledPrepTime = scaleTime(recipe.prepTime, scale);
+  const scaledCookTime = scaleTime(recipe.cookTime, scale);
+
   const handleAddToGrocery = async () => {
     if (!recipe.ingredients.length) {
       Alert.alert("No Ingredients", "This recipe has no ingredients to add.");
@@ -67,10 +74,11 @@ export default function RecipeDetailScreen() {
     }
     setAddingToGrocery(true);
     try {
-      await addRecipeIngredients(recipe.id, recipe.title, recipe.ingredients, apiKey);
+      // Send the currently-scaled quantities to the grocery list
+      await addRecipeIngredients(recipe.id, recipe.title, scaledIngredients, "");
       Alert.alert("Added!", "Ingredients added to your grocery list.");
     } catch {
-      Alert.alert("Error", "Failed to add ingredients. Check your Claude API key in Settings.");
+      Alert.alert("Error", "Failed to add ingredients. Please try again.");
     } finally {
       setAddingToGrocery(false);
     }
@@ -100,31 +108,31 @@ export default function RecipeDetailScreen() {
         {recipe.sourceUrl ? (
           <Pressable onPress={() => Linking.openURL(recipe.sourceUrl)}>
             <Text className="text-pink-500 text-sm mt-1">
-              View on Instagram ↗
+              View Original Post ↗
             </Text>
           </Pressable>
         ) : null}
 
         <View className="flex-row items-center mt-3">
           <View className="flex-1 flex-row flex-wrap gap-2">
-            {recipe.prepTime ? (
+            {scaledPrepTime ? (
               <View className="bg-pink-50 rounded-full px-3 py-1">
                 <Text className="text-xs text-pink-600">
-                  Prep: {recipe.prepTime} min
+                  Prep: {scaledPrepTime} min
                 </Text>
               </View>
             ) : null}
-            {recipe.cookTime ? (
+            {scaledCookTime ? (
               <View className="bg-orange-50 rounded-full px-3 py-1">
                 <Text className="text-xs text-orange-600">
-                  Cook: {recipe.cookTime} min
+                  Cook: {scaledCookTime} min
                 </Text>
               </View>
             ) : null}
-            {recipe.servings ? (
+            {scaledServings ? (
               <View className="bg-blue-50 rounded-full px-3 py-1">
                 <Text className="text-xs text-blue-600">
-                  Serves: {recipe.servings}
+                  Serves: {scaledServings}
                 </Text>
               </View>
             ) : null}
@@ -156,8 +164,25 @@ export default function RecipeDetailScreen() {
 
         {recipe.ingredients.length > 0 && (
           <View className="mt-6">
-            <Text className="text-lg font-bold mb-3">Ingredients</Text>
-            <IngredientList ingredients={recipe.ingredients} />
+            <View className="flex-row items-center justify-between mb-3">
+              <Text className="text-lg font-bold">Ingredients</Text>
+              <View className="flex-row bg-gray-100 rounded-xl p-1 gap-1">
+                {([0.5, 1, 2] as const).map((factor) => (
+                  <Pressable
+                    key={factor}
+                    onPress={() => setScale(factor)}
+                    className={`px-3 py-1 rounded-lg ${scale === factor ? "bg-white shadow-sm" : ""}`}
+                  >
+                    <Text
+                      className={`text-sm font-semibold ${scale === factor ? "text-pink-500" : "text-gray-400"}`}
+                    >
+                      {factor === 0.5 ? "½×" : factor === 1 ? "1×" : "2×"}
+                    </Text>
+                  </Pressable>
+                ))}
+              </View>
+            </View>
+            <IngredientList ingredients={scaledIngredients} />
           </View>
         )}
 

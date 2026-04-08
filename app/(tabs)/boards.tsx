@@ -16,7 +16,7 @@ export default function BoardsScreen() {
     Alert.prompt("New Board", "Enter a name for your board:", (name) => {
       if (name?.trim()) {
         addBoard({
-          id: Date.now().toString(),
+          id: crypto.randomUUID(),
           name: name.trim(),
           recipeIds: [],
           createdAt: new Date().toISOString(),

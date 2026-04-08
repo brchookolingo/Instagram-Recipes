@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { View, Text, Pressable } from "react-native";
 import { Image } from "expo-image";
 import { Board } from "../types/recipe";
@@ -9,7 +10,7 @@ interface BoardCardProps {
   onPress: () => void;
 }
 
-export function BoardCard({ board, recipeCount, recipeImages, onPress }: BoardCardProps) {
+export const BoardCard = memo(function BoardCard({ board, recipeCount, recipeImages, onPress }: BoardCardProps) {
   const slots = [0, 1, 2, 3];
 
   return (
@@ -47,4 +48,4 @@ export function BoardCard({ board, recipeCount, recipeImages, onPress }: BoardCa
       </View>
     </Pressable>
   );
-}
+});

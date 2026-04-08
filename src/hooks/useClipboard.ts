@@ -1,10 +1,9 @@
 import { useState, useEffect, useCallback } from "react";
 import * as Clipboard from "expo-clipboard";
+import { detectPlatform } from "../services/post-fetcher";
 
-const INSTAGRAM_URL_PATTERN = /instagram\.com\/(p|reel)\//i;
-
-export function isInstagramUrl(text: string): boolean {
-  return INSTAGRAM_URL_PATTERN.test(text);
+function isSupportedUrl(text: string): boolean {
+  return detectPlatform(text) !== "unknown";
 }
 
 export function useClipboard() {
@@ -16,7 +15,7 @@ export function useClipboard() {
       if (!hasString) return;
 
       const content = await Clipboard.getStringAsync();
-      if (content && isInstagramUrl(content)) {
+      if (content && isSupportedUrl(content)) {
         setClipboardUrl(content.trim());
       } else {
         setClipboardUrl(null);

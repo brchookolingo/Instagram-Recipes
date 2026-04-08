@@ -12,33 +12,26 @@ import { useRouter } from "expo-router";
 import { Image } from "expo-image";
 import { URLInput } from "../src/components/URLInput";
 import {
-  fetchInstagramPost,
-  RawInstagramPost,
-} from "../src/services/instagram";
-import {
-  parseRecipeWithAI,
-  cleanupRecipeExtraction,
-  isExtractionSufficient,
-} from "../src/services/recipe-parser-ai";
-import {
-  parseRecipeFromCaption,
-  hasRecipeContent,
-} from "../src/services/recipe-parser";
+  fetchPost,
+  type FetchResult,
+  RawPost,
+} from "../src/services/post-fetcher";
+import { extractRecipeFromPost } from "../src/services/recipe-extractor";
 import { useRecipeStore } from "../src/stores/recipe-store";
 import { Recipe, Ingredient, Instruction } from "../src/types/recipe";
-import { cacheImage } from "../src/utils/image-cache";
 
 type Step = "input" | "loading" | "preview";
 
 export default function AddRecipeScreen() {
   const router = useRouter();
   const addRecipe = useRecipeStore((s) => s.addRecipe);
+  const findBySourceUrl = useRecipeStore((s) => s.findBySourceUrl);
 
   const [step, setStep] = useState<Step>("input");
   const [loadingMessage, setLoadingMessage] = useState("");
   const [error, setError] = useState("");
   const [sourceUrl, setSourceUrl] = useState("");
-  const [postData, setPostData] = useState<RawInstagramPost | null>(null);
+  const [postData, setPostData] = useState<RawPost | null>(null);
 
   // Editable recipe fields
   const [title, setTitle] = useState("");
@@ -52,8 +45,6 @@ export default function AddRecipeScreen() {
   const [extractionSource, setExtractionSource] =
     useState<Recipe["extractionSource"]>("manual");
   const [saving, setSaving] = useState(false);
-
-  const apiKey = process.env.EXPO_PUBLIC_CLAUDE_API_KEY ?? "";
 
   const populateFromPartial = (partial: Partial<Recipe>) => {
     if (partial.title) setTitle(partial.title);
@@ -79,12 +70,12 @@ export default function AddRecipeScreen() {
       "Putting on the finishing touches... ✨",
     ],
     [
-      "Sliding into Instagram... 📱",
+      "Fetching your recipe... 📱",
       "Teaching Claude to cook... 🤖",
       "Almost ready to plate... 🍽️",
     ],
     [
-      "Raiding the 'gram... 📸",
+      "Raiding the recipe post... 📸",
       "Decoding the deliciousness... 🔬",
       "Sprinkling on the magic... ✨",
     ],
@@ -94,7 +85,7 @@ export default function AddRecipeScreen() {
       "Almost on the table... 🕯️",
     ],
     [
-      "Peeking at Instagram... 👀",
+      "Peeking at the post... 👀",
       "Putting on the chef's hat... 👨‍🍳",
       "Plating up nicely... 🍴",
     ],
@@ -104,7 +95,7 @@ export default function AddRecipeScreen() {
       "Garnishing the final dish... 🌿",
     ],
     [
-      "Borrowing that reel... 🎬",
+      "Borrowing that post... 🎬",
       "Extracting all the yumminess... 😋",
       "Final seasoning check... 🧂",
     ],
@@ -129,40 +120,29 @@ export default function AddRecipeScreen() {
 
     try {
       setLoadingMessage(theme[0]);
-      const post = await fetchInstagramPost(url);
+      const result: FetchResult = await fetchPost(url);
 
-      if (!post) {
-        setError("Could not fetch post. Check the URL and try again.");
+      if (!result.ok) {
+        setError(result.message);
         setStep("input");
         return;
       }
 
+      const post = result.post;
       setPostData(post);
 
-      // Tier 1 — AI caption parsing
-      if (post.caption && apiKey) {
-        setLoadingMessage(theme[1]);
-        const aiResult = await parseRecipeWithAI(post.caption, apiKey);
+      setLoadingMessage(theme[1]);
+      const extracted = await extractRecipeFromPost(post);
 
-        if (aiResult && isExtractionSufficient(aiResult)) {
-          setLoadingMessage(theme[2]);
-          const cleanedResult = await cleanupRecipeExtraction(aiResult, apiKey);
-          populateFromPartial(cleanedResult);
-          setStep("preview");
-          return;
-        }
+      setLoadingMessage(theme[2]);
+      if (extracted) {
+        populateFromPartial(extracted);
       }
 
-      // Fallback — regex parser
-      if (post.caption && hasRecipeContent(post.caption)) {
-        const regexResult = parseRecipeFromCaption(post.caption);
-        populateFromPartial(regexResult);
-      }
-
-      // Even if extraction was weak, go to preview so user can edit
-      if (post.authorName && !title) setTitle("");
+      // Always go to preview so the user can review and edit
       setStep("preview");
-    } catch {
+    } catch (error) {
+      console.error("[add-recipe] handleFetch failed:", error);
       setError("An unexpected error occurred. Please try again.");
       setStep("input");
     }
@@ -214,49 +194,65 @@ export default function AddRecipeScreen() {
       Alert.alert("Missing Title", "Please enter a recipe title.");
       return;
     }
+    const hasIngredients = ingredients.some((i) => i.text.trim());
+    const hasInstructions = instructions.some((i) => i.text.trim());
+    if (!hasIngredients && !hasInstructions) {
+      Alert.alert(
+        "Recipe Incomplete",
+        "Please add at least one ingredient or instruction before saving.",
+      );
+      return;
+    }
+    const doSave = async () => {
+      setSaving(true);
 
-    setSaving(true);
+      const now = new Date().toISOString();
+      const recipeId = crypto.randomUUID();
+      const rawImageUrl = postData?.imageUrl ?? postData?.thumbnailUrl;
 
-    const now = new Date().toISOString();
-    const recipeId = Date.now().toString();
-    const rawImageUrl = postData?.imageUrl ?? postData?.thumbnailUrl;
+      const recipe: Recipe = {
+        id: recipeId,
+        title: title.trim(),
+        description: description.trim(),
+        imageUrl: rawImageUrl ?? "",
+        videoUrl: postData?.videoUrl,
+        sourceUrl,
+        author: postData?.authorName ?? "",
+        ingredients: ingredients.filter((i) => i.text.trim()),
+        instructions: instructions.filter((i) => i.text.trim()),
+        tags: tags
+          .split(",")
+          .map((t) => t.trim())
+          .filter(Boolean),
+        prepTime: parseInt(prepTime, 10) || undefined,
+        cookTime: parseInt(cookTime, 10) || undefined,
+        servings: parseInt(servings, 10) || undefined,
+        extractionSource,
+        boardIds: [],
+        createdAt: now,
+        updatedAt: now,
+      };
 
-    // Cache the image now while the CDN URL is fresh
-    let localImageUri: string | undefined;
-    if (rawImageUrl) {
-      try {
-        localImageUri = await cacheImage(rawImageUrl, recipeId);
-      } catch {
-        // Silently fall back to remote URL
+      await addRecipe(recipe);
+      router.back();
+    };
+
+    if (sourceUrl) {
+      const existing = findBySourceUrl(sourceUrl);
+      if (existing) {
+        Alert.alert(
+          "Already Saved",
+          `"${existing.title}" was already saved from this URL. Save a duplicate anyway?`,
+          [
+            { text: "Cancel", style: "cancel" },
+            { text: "Save Anyway", onPress: () => void doSave() },
+          ],
+        );
+        return;
       }
     }
 
-    const recipe: Recipe = {
-      id: recipeId,
-      title: title.trim(),
-      description: description.trim(),
-      imageUrl: rawImageUrl ?? "",
-      localImageUri,
-      videoUrl: postData?.videoUrl,
-      sourceUrl,
-      author: postData?.authorName ?? "",
-      ingredients: ingredients.filter((i) => i.text.trim()),
-      instructions: instructions.filter((i) => i.text.trim()),
-      tags: tags
-        .split(",")
-        .map((t) => t.trim())
-        .filter(Boolean),
-      prepTime: parseInt(prepTime, 10) || undefined,
-      cookTime: parseInt(cookTime, 10) || undefined,
-      servings: parseInt(servings, 10) || undefined,
-      extractionSource,
-      boardIds: [],
-      createdAt: now,
-      updatedAt: now,
-    };
-
-    addRecipe(recipe);
-    router.back();
+    void doSave();
   };
 
   // Loading state

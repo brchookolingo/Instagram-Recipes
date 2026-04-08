@@ -1,12 +1,7 @@
-export interface RawInstagramPost {
-  caption?: string;
-  imageUrl?: string;
-  authorName?: string;
-  thumbnailUrl?: string;
-  html?: string;
-  videoUrl?: string;
-  isVideoPost?: boolean;
-}
+import { RawPost } from "../types/post";
+import { fetchWithTimeout } from "../utils/fetch-with-timeout";
+
+export type RawInstagramPost = RawPost;
 
 const OEMBED_ENDPOINT = "https://graph.facebook.com/v22.0/instagram_oembed";
 
@@ -26,8 +21,8 @@ function extractCaptionFromHtml(html: string): string | undefined {
 export async function fetchViaOEmbed(
   url: string,
 ): Promise<RawInstagramPost | null> {
-  const appId = process.env.EXPO_PUBLIC_FACEBOOK_APP_ID;
-  const appSecret = process.env.EXPO_PUBLIC_FACEBOOK_APP_SECRET;
+  const appId = process.env.FACEBOOK_APP_ID;
+  const appSecret = process.env.FACEBOOK_APP_SECRET;
 
   if (!appId || !appSecret) {
     return null;
@@ -42,7 +37,7 @@ export async function fetchViaOEmbed(
       fields: "thumbnail_url,author_name",
     });
 
-    const response = await fetch(`${OEMBED_ENDPOINT}?${params}`);
+    const response = await fetchWithTimeout(`${OEMBED_ENDPOINT}?${params}`, {}, 10_000);
 
     if (!response.ok) {
       return null;
@@ -51,6 +46,7 @@ export async function fetchViaOEmbed(
     const data = await response.json();
 
     const result: RawInstagramPost = {
+      platform: "instagram",
       authorName: data.author_name,
       thumbnailUrl: data.thumbnail_url,
       imageUrl: data.thumbnail_url,
@@ -62,7 +58,8 @@ export async function fetchViaOEmbed(
     }
 
     return result;
-  } catch {
+  } catch (error) {
+    console.error("[instagram-oembed] fetchViaOEmbed failed:", error);
     return null;
   }
 }

@@ -10,6 +10,7 @@ interface BoardState {
   deleteBoard: (id: string) => void;
   addRecipeToBoard: (boardId: string, recipeId: string) => void;
   removeRecipeFromBoard: (boardId: string, recipeId: string) => void;
+  clearAll: () => void;
 }
 
 export const useBoardStore = create<BoardState>()(
@@ -44,6 +45,7 @@ export const useBoardStore = create<BoardState>()(
               : b,
           ),
         })),
+      clearAll: () => set({ boards: [] }),
     }),
     {
       name: "board-store",

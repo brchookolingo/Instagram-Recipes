@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { View, Text, Pressable } from "react-native";
 import { Image } from "expo-image";
 import { Recipe } from "../types/recipe";
@@ -7,7 +8,7 @@ interface RecipeCardProps {
   onPress: () => void;
 }
 
-export function RecipeCard({ recipe, onPress }: RecipeCardProps) {
+export const RecipeCard = memo(function RecipeCard({ recipe, onPress }: RecipeCardProps) {
   const imageUri = recipe.localImageUri || recipe.imageUrl || null;
 
   return (
@@ -37,14 +38,14 @@ export function RecipeCard({ recipe, onPress }: RecipeCardProps) {
             {recipe.prepTime ? (
               <View className="bg-pink-50 rounded-full px-2 py-0.5">
                 <Text className="text-xs text-pink-600">
-                  Prep: {recipe.prepTime}
+                  Prep: {recipe.prepTime} min
                 </Text>
               </View>
             ) : null}
             {recipe.cookTime ? (
               <View className="bg-orange-50 rounded-full px-2 py-0.5">
                 <Text className="text-xs text-orange-600">
-                  Cook: {recipe.cookTime}
+                  Cook: {recipe.cookTime} min
                 </Text>
               </View>
             ) : null}
@@ -58,4 +59,4 @@ export function RecipeCard({ recipe, onPress }: RecipeCardProps) {
       </View>
     </Pressable>
   );
-}
+});

@@ -7,20 +7,26 @@ import {
 } from "react-native";
 import { useRecipeStore } from "../../src/stores/recipe-store";
 import { useBoardStore } from "../../src/stores/board-store";
+import { useGroceryStore } from "../../src/stores/grocery-store";
 
 export default function SettingsScreen() {
+  const clearRecipes = useRecipeStore((s) => s.clearAll);
+  const clearBoards = useBoardStore((s) => s.clearAll);
+  const clearGrocery = useGroceryStore((s) => s.clearAll);
+
   const handleClearData = () => {
     Alert.alert(
       "Clear All Data",
-      "This will delete all saved recipes and boards. This cannot be undone.",
+      "This will permanently delete all saved recipes, boards, and your grocery list. This cannot be undone.",
       [
         { text: "Cancel", style: "cancel" },
         {
           text: "Clear All Data",
           style: "destructive",
           onPress: () => {
-            useRecipeStore.setState({ recipes: [] });
-            useBoardStore.setState({ boards: [] });
+            clearRecipes();
+            clearBoards();
+            clearGrocery();
             Alert.alert("Done", "All data has been cleared.");
           },
         },

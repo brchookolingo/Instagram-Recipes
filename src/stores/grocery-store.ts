@@ -71,7 +71,7 @@ export const useGroceryStore = create<GroceryState>()(
       addItem: (sectionName, text) =>
         set((state) => {
           const newItem = {
-            id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+            id: crypto.randomUUID(),
             text: text.trim(),
             checked: false,
           };

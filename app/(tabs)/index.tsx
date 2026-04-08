@@ -3,6 +3,8 @@ import { View, FlatList, TextInput, Pressable, Text, Modal } from "react-native"
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useRecipeStore } from "../../src/stores/recipe-store";
+import { useFilterStore } from "../../src/stores/filter-store";
+import { useDebounce } from "../../src/hooks/useDebounce";
 import { RecipeCard } from "../../src/components/RecipeCard";
 import { EmptyState } from "../../src/components/EmptyState";
 import { applyFilters } from "../../src/utils/recipe-filters";
@@ -10,12 +12,21 @@ import { Recipe } from "../../src/types/recipe";
 
 export default function HomeScreen() {
   const recipes = useRecipeStore((s) => s.recipes);
-  const [search, setSearch] = useState("");
+  const {
+    search,
+    filterFavourites,
+    filterDietary,
+    filterProtein,
+    filterPrep,
+    setSearch,
+    setFilterFavourites,
+    setFilterDietary,
+    setFilterProtein,
+    setFilterPrep,
+    clearAll: clearFilters,
+  } = useFilterStore();
   const [showFilter, setShowFilter] = useState(false);
-  const [filterFavourites, setFilterFavourites] = useState(false);
-  const [filterDietary, setFilterDietary] = useState<string[]>([]);
-  const [filterProtein, setFilterProtein] = useState<string[]>([]);
-  const [filterPrep, setFilterPrep] = useState<string[]>([]);
+  const debouncedSearch = useDebounce(search, 300);
   const router = useRouter();
 
   const activeFilterCount =
@@ -24,23 +35,18 @@ export default function HomeScreen() {
     filterProtein.length +
     filterPrep.length;
 
-  const togglePill = (arr: string[], val: string, set: (v: string[]) => void) =>
-    set(arr.includes(val) ? arr.filter((x) => x !== val) : [...arr, val]);
+  const togglePill = (arr: string[], val: string, setter: (v: string[]) => void) =>
+    setter(arr.includes(val) ? arr.filter((x) => x !== val) : [...arr, val]);
 
   const filtered = applyFilters(recipes, {
-    search,
+    search: debouncedSearch,
     filterFavourites,
     filterDietary,
     filterProtein,
     filterPrep,
   });
 
-  const handleClearFilters = () => {
-    setFilterFavourites(false);
-    setFilterDietary([]);
-    setFilterProtein([]);
-    setFilterPrep([]);
-  };
+  const handleClearFilters = () => clearFilters();
 
   const renderItem = ({ item }: { item: Recipe | null }) => {
     if (!item) return <View className="flex-1 m-1.5" />;
@@ -154,7 +160,7 @@ export default function HomeScreen() {
             {/* Header */}
             <View className="flex-row items-center justify-between mb-5">
               <Text className="text-lg font-bold">Filter Recipes</Text>
-              <Pressable onPress={handleClearFilters}>
+              <Pressable onPress={clearFilters}>
                 <Text className="text-pink-500 font-semibold">Clear All</Text>
               </Pressable>
             </View>
@@ -167,7 +173,7 @@ export default function HomeScreen() {
               <PillButton
                 label="Show Favourites Only"
                 active={filterFavourites}
-                onPress={() => setFilterFavourites((v) => !v)}
+                onPress={() => setFilterFavourites(!filterFavourites)}
               />
             </View>
 

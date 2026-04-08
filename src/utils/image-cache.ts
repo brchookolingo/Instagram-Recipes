@@ -3,6 +3,7 @@ import {
   getInfoAsync,
   makeDirectoryAsync,
   downloadAsync,
+  deleteAsync,
 } from "expo-file-system/legacy";
 
 const IMAGE_DIR = `${documentDirectory}images/`;
@@ -31,15 +32,18 @@ export async function cacheImage(
   return downloadResult.uri;
 }
 
-export function getCachedImageUri(recipeId: string): string | null {
+/**
+ * Deletes the cached image for a recipe. Safe to call even if no image
+ * was cached — silently ignores missing files.
+ */
+export async function deleteCachedImage(recipeId: string): Promise<void> {
   const localUri = `${IMAGE_DIR}${recipeId}.jpg`;
-  return localUri;
-}
-
-export async function getCachedImageUriAsync(
-  recipeId: string,
-): Promise<string | null> {
-  const localUri = `${IMAGE_DIR}${recipeId}.jpg`;
-  const fileInfo = await getInfoAsync(localUri);
-  return fileInfo.exists ? localUri : null;
+  try {
+    const fileInfo = await getInfoAsync(localUri);
+    if (fileInfo.exists) {
+      await deleteAsync(localUri, { idempotent: true });
+    }
+  } catch (error) {
+    console.error("[image-cache] deleteCachedImage failed:", error);
+  }
 }

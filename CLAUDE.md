@@ -30,13 +30,7 @@ This file is read by Claude Code as persistent context. Keep it up to date as ta
 
 ### 🟡 MEDIUM SEVERITY
 
-- [ ] **M3 — Enforce image cache size limit and clean up orphans**
-  `deleteCachedImage(id)` is already called on recipe delete, but there's no maximum cache size and no cleanup for orphaned image files (e.g. left behind if a crash prevents the delete path from running). Add a 200 MB cap enforced on write and a startup sweep that removes files with no matching recipe.
-  _File: src/utils/image-cache.ts_
-
-- [ ] **M4 — Replace index-based keys in `IngredientList`**
-  `IngredientList.tsx` uses `` key={`${index}-${ingredient.text}`} ``, which causes incorrect re-renders when ingredients are reordered or deleted. Add a stable `id` field to the `Ingredient` type (assigned at parse time) and key on that. `InstructionList` already keys on `stepNumber` and is fine.
-  _Files: src/components/IngredientList.tsx, src/types/recipe.ts_
+_(No open medium-severity items)_
 
 ---
 
@@ -51,9 +45,7 @@ This file is read by Claude Code as persistent context. Keep it up to date as ta
 - **L7** — No nutritional information or macro tracking.
 - **L8** — No undo for ingredient/instruction deletes in the grocery list.
 - **L9** — No MMKV schema migration strategy; corrupted storage has no recovery path.
-- **L10** — Inline loading messages (`LOADING_THEMES`) are hardcoded in `add-recipe.tsx`; should live in `constants.ts`.
 - **L11** — Grocery list AI consolidation has no preview/undo before committing changes.
-- **L12** — `extractionSource: "video"` remains in the type even though video extraction was removed.
 
 ---
 
@@ -123,3 +115,9 @@ This file is read by Claude Code as persistent context. Keep it up to date as ta
 - `add-recipe.tsx` checks `findBySourceUrl` before saving and prompts on duplicate (M6)
 - `RawPost` in `src/types/post.ts` is now a discriminated union over `platform` (`InstagramPost | TikTokPost | PinterestPost`) (M7)
 - `URLInput.tsx` validates URL format + supported platform inline before submit (M8)
+
+### Backlog Cleanup (completed)
+- Enforced 200 MB image cache cap in `image-cache.ts`: `cacheImage` evicts oldest files before each download; `sweepOrphanedImages(ids)` exported and called once at app startup (`_layout.tsx`) to remove files with no matching recipe (M3)
+- Added stable `id: string` field to `Ingredient` type; assigned via `generateId()` at parse time in `recipe-parser-ai.ts`, `recipe-parser.ts`, `web-recipe-fetcher.ts`, `add-recipe.tsx`, and `edit/[id].tsx`; `IngredientList` now keys on `ingredient.id` (M4)
+- Moved `LOADING_THEMES` array from inline constant in `add-recipe.tsx` into `src/utils/constants.ts` (L10)
+- Removed `"video"` from `extractionSource` union type — only `"caption" | "manual"` remain (L12)

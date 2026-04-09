@@ -113,6 +113,36 @@ This file is read by Claude Code as persistent context. Keep it up to date as ta
 
 ---
 
+### 🆕 Feature Requests (logged by user)
+
+- [ ] **F1 — Onboarding flow for first-time users**
+  On first launch, show a series of images/screens walking the user through how to use the app. Also add an "Instructions / How to use" section in Settings so users can revisit it anytime.
+
+- [ ] **F2 — In-app feedback via Google Form**
+  Add a feedback link in Settings that opens a Google Form for collecting user feedback. Create a dedicated Gmail account for the app so users can email directly with questions or issues.
+
+- [ ] **F3 — Rename "Boards" to "Collections"**
+  UX change throughout the app — rename all instances of "Boards" / "boards" to "Collections" / "collections" including tab labels, screen titles, store names, and type definitions.
+
+- [ ] **F4 — Cooking-themed loading animations**
+  Replace the current loading spinner with fun cooking-themed animations (e.g. Lottie animations of a chef, bubbling pot, stirring spoon) to make the recipe fetch experience more engaging.
+
+- [ ] **F5 — Storage stats in Settings**
+  Add a section in Settings showing the user how many recipes they have saved and the approximate storage the app is using on their device.
+
+- [ ] **F6 — Update dietary filters and add meal type filters**
+  Remove "Lactose Free" from dietary filter options. Add a new "Meal Type" filter section with options: Salad, Appetizer, Dessert, Main, Soup.
+
+- [ ] **F7 — Grocery list respects ingredient multiplier**
+  When the user taps "Add to Grocery List" on the recipe detail screen, use the currently selected multiplier scale (½x, 1x, 2x) to determine which ingredient quantities are added, rather than always using the base amounts.
+  _File: app/recipe/[id].tsx_
+
+- [ ] **F8 — Regenerate scaled ingredients on manual edit**
+  When a user adds, removes, or edits an ingredient on a recipe, automatically regenerate the `ingredientsHalf` and `ingredientsDouble` arrays to keep them in sync with the updated base ingredients.
+  _Files: src/stores/recipe-store.ts, src/types/recipe.ts_
+
+---
+
 ## Completed Work
 
 ### Code Cleanup (completed)

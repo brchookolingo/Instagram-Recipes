@@ -1,6 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { Recipe } from "../types/recipe";
 import { CLAUDE_MODEL } from "../utils/constants";
+import { generateId } from "../utils/uuid";
 
 const SYSTEM_PROMPT = `You are a recipe extraction assistant. Given an Instagram post caption, extract recipe information and return ONLY a valid JSON object with no additional text.
 
@@ -75,7 +76,9 @@ export async function parseRecipeWithAI(
     return {
       title: parsed.title,
       description: parsed.description,
-      ingredients: parsed.ingredients,
+      ingredients: Array.isArray(parsed.ingredients)
+        ? parsed.ingredients.map((ing: object) => ({ ...ing, id: generateId() }))
+        : parsed.ingredients,
       instructions: parsed.instructions,
       tags: parsed.tags,
       prepTime: toNum(parsed.prepTime),

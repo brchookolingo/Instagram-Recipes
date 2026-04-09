@@ -1,5 +1,6 @@
 import { Recipe, Ingredient, Instruction } from "../types/recipe";
 import { fetchWithTimeout } from "../utils/fetch-with-timeout";
+import { generateId } from "../utils/uuid";
 
 // Schema.org Recipe JSON-LD structure (partial)
 interface SchemaRecipe {
@@ -52,7 +53,7 @@ function mapSchemaToPartialRecipe(
   schema: SchemaRecipe,
 ): Partial<Recipe> & { imageUrl?: string } {
   const ingredients: Ingredient[] = (schema.recipeIngredient ?? []).map(
-    (text) => ({ text, checked: false }),
+    (text) => ({ id: generateId(), text, checked: false }),
   );
 
   const instructions: Instruction[] = (schema.recipeInstructions ?? [])

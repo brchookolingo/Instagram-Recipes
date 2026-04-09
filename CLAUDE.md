@@ -30,30 +30,22 @@ This file is read by Claude Code as persistent context. Keep it up to date as ta
 
 ### 🟡 MEDIUM SEVERITY
 
-- [ ] **M3 — Enforce image cache size limit and clean up orphans**
-  `deleteCachedImage(id)` is already called on recipe delete, but there's no maximum cache size and no cleanup for orphaned image files (e.g. left behind if a crash prevents the delete path from running). Add a 200 MB cap enforced on write and a startup sweep that removes files with no matching recipe.
-  _File: src/utils/image-cache.ts_
+- [x] **M3 — Enforce image cache size limit and clean up orphans**
+  _Completed: 200 MB cap enforced in `cacheImage()` via `enforceCacheLimit()`; startup orphan sweep added to `_layout.tsx`._
 
-- [ ] **M4 — Replace index-based keys in `IngredientList`**
-  `IngredientList.tsx` uses `` key={`${index}-${ingredient.text}`} ``, which causes incorrect re-renders when ingredients are reordered or deleted. Add a stable `id` field to the `Ingredient` type (assigned at parse time) and key on that. `InstructionList` already keys on `stepNumber` and is fine.
-  _Files: src/components/IngredientList.tsx, src/types/recipe.ts_
+- [x] **M4 — Replace index-based keys in `IngredientList`**
+  _Completed: `id?: string` added to `Ingredient` type; all parse paths assign `generateId()`; `IngredientList` keys on `ingredient.id` with index fallback for legacy data._
 
 ---
 
-### 🟢 LOW PRIORITY (logged, not scheduled)
+### 🟢 LOW PRIORITY
 
-- **L1** — No cloud backup / cross-device sync. Reinstalling loses all data.
-- **L2** — No recipe sharing (URL scheme, export, social share).
 - **L3** — No recipe scaling (e.g. double ingredients for more servings).
 - **L4** — Hardcoded dietary filter tags in `index.tsx` won't reflect custom user tags.
-- **L5** — `isFavourite` uses British spelling inconsistently with the codebase.
 - **L6** — No full-text search; current search only matches title and author.
-- **L7** — No nutritional information or macro tracking.
-- **L8** — No undo for ingredient/instruction deletes in the grocery list.
 - **L9** — No MMKV schema migration strategy; corrupted storage has no recovery path.
-- **L10** — Inline loading messages (`LOADING_THEMES`) are hardcoded in `add-recipe.tsx`; should live in `constants.ts`.
-- **L11** — Grocery list AI consolidation has no preview/undo before committing changes.
-- **L12** — `extractionSource: "video"` remains in the type even though video extraction was removed.
+- ~~**L10**~~ — Completed: `LOADING_THEMES` moved to `src/utils/constants.ts` and imported in `add-recipe.tsx`.
+- ~~**L12**~~ — Completed: `"video"` removed from `extractionSource` union in `src/types/recipe.ts`.
 
 ---
 

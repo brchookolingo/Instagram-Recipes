@@ -1,32 +1,39 @@
 import { useState } from "react";
-import { View, Text, Pressable, Dimensions } from "react-native";
+import { View, Text, Pressable, StyleSheet, StatusBar } from "react-native";
+import { Image } from "expo-image";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { markOnboardingSeen } from "../src/utils/onboarding";
 
-const { width } = Dimensions.get("window");
-
 const SLIDES = [
   {
-    emoji: "🍽️",
-    title: "Welcome to ReciGrams",
-    description: "Save recipes from Instagram, TikTok & Pinterest in seconds.",
-  },
-  {
-    emoji: "📲",
-    title: "Paste Any Recipe Link",
+    image: require("../assets/onboarding/slide2.png"),
+    title: "Save recipes you love",
     description:
-      "We'll automatically extract the ingredients and instructions for you.",
+      "Found something delicious on Instagram, TikTok or Pinterest? ReciGrams saves it as a proper recipe.",
   },
   {
-    emoji: "🛒",
-    title: "Smart Grocery Lists",
+    image: require("../assets/onboarding/slide1.png"),
+    title: "Just copy the link",
     description:
-      "Add ingredients to your grocery list with one tap. Claude organises them by store section.",
+      "Tap Share on any post, copy the link, and paste it into ReciGrams — that's all it takes.",
   },
   {
-    emoji: "📚",
-    title: "Stay Organised",
-    description: "Group your recipes into Collections to find them easily.",
+    image: require("../assets/onboarding/slide3.png"),
+    title: "Recipe extracted instantly",
+    description:
+      "We automatically pull out the title, ingredients, instructions, and timing.",
+  },
+  {
+    image: require("../assets/onboarding/slide4.png"),
+    title: "Stay organised",
+    description:
+      "Group your saved recipes into Collections for easy browsing.",
+  },
+  {
+    image: require("../assets/onboarding/slide5.png"),
+    title: "Smart grocery lists",
+    description:
+      "Add ingredients to your list and Claude organises them by store section.",
   },
 ];
 
@@ -63,94 +70,46 @@ export default function OnboardingScreen() {
   const slide = SLIDES[currentIndex];
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#fff" }}>
+    <View style={styles.container}>
+      <StatusBar barStyle="light-content" />
+
+      {/* Full-screen screenshot */}
+      <Image
+        source={slide.image}
+        style={StyleSheet.absoluteFillObject}
+        contentFit="cover"
+        transition={300}
+      />
+
       {/* Skip button */}
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "flex-end",
-          paddingHorizontal: 24,
-          paddingTop: 60,
-        }}
-      >
-        {isLast ? (
-          <View style={{ width: 48 }} />
-        ) : (
-          <Pressable onPress={handleSkip} hitSlop={8}>
-            <Text style={{ color: "#9ca3af", fontSize: 15, fontWeight: "500" }}>
-              {isReview ? "Done" : "Skip"}
-            </Text>
+      <View style={styles.skipRow}>
+        {!isLast && (
+          <Pressable onPress={handleSkip} hitSlop={12} style={styles.skipBtn}>
+            <Text style={styles.skipText}>{isReview ? "Done" : "Skip"}</Text>
           </Pressable>
         )}
       </View>
 
-      {/* Slide content */}
-      <View
-        style={{
-          flex: 1,
-          alignItems: "center",
-          justifyContent: "center",
-          paddingHorizontal: 32,
-        }}
-      >
-        <Text style={{ fontSize: 80, marginBottom: 32 }}>{slide.emoji}</Text>
-        <Text
-          style={{
-            fontSize: 26,
-            fontWeight: "700",
-            textAlign: "center",
-            color: "#111827",
-            marginBottom: 16,
-          }}
-        >
-          {slide.title}
-        </Text>
-        <Text
-          style={{
-            fontSize: 16,
-            textAlign: "center",
-            color: "#6b7280",
-            lineHeight: 24,
-          }}
-        >
-          {slide.description}
-        </Text>
-      </View>
+      {/* Bottom card */}
+      <View style={styles.card}>
+        {/* Dots */}
+        <View style={styles.dotsRow}>
+          {SLIDES.map((_, i) => (
+            <View
+              key={i}
+              style={[
+                styles.dot,
+                i === currentIndex ? styles.dotActive : styles.dotInactive,
+              ]}
+            />
+          ))}
+        </View>
 
-      {/* Dots */}
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "center",
-          gap: 8,
-          marginBottom: 32,
-        }}
-      >
-        {SLIDES.map((_, i) => (
-          <View
-            key={i}
-            style={{
-              width: i === currentIndex ? 20 : 8,
-              height: 8,
-              borderRadius: 4,
-              backgroundColor: i === currentIndex ? "#ec4899" : "#e5e7eb",
-            }}
-          />
-        ))}
-      </View>
+        <Text style={styles.title}>{slide.title}</Text>
+        <Text style={styles.description}>{slide.description}</Text>
 
-      {/* Next / Get Started button */}
-      <View style={{ paddingHorizontal: 24, paddingBottom: 48 }}>
-        <Pressable
-          onPress={handleNext}
-          style={{
-            backgroundColor: "#ec4899",
-            borderRadius: 16,
-            paddingVertical: 16,
-            alignItems: "center",
-          }}
-        >
-          <Text style={{ color: "#fff", fontSize: 16, fontWeight: "700" }}>
+        <Pressable onPress={handleNext} style={styles.button}>
+          <Text style={styles.buttonText}>
             {isLast ? (isReview ? "Done" : "Get Started") : "Next"}
           </Text>
         </Pressable>
@@ -158,3 +117,83 @@ export default function OnboardingScreen() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#000",
+  },
+  skipRow: {
+    position: "absolute",
+    top: 60,
+    right: 24,
+    zIndex: 10,
+  },
+  skipBtn: {
+    backgroundColor: "rgba(0,0,0,0.35)",
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    borderRadius: 20,
+  },
+  skipText: {
+    color: "#fff",
+    fontSize: 14,
+    fontWeight: "600",
+  },
+  card: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: "#fff",
+    borderTopLeftRadius: 28,
+    borderTopRightRadius: 28,
+    paddingHorizontal: 28,
+    paddingTop: 24,
+    paddingBottom: 48,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: -4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+  },
+  dotsRow: {
+    flexDirection: "row",
+    gap: 6,
+    marginBottom: 20,
+  },
+  dot: {
+    height: 7,
+    borderRadius: 4,
+  },
+  dotActive: {
+    width: 22,
+    backgroundColor: "#ec4899",
+  },
+  dotInactive: {
+    width: 7,
+    backgroundColor: "#e5e7eb",
+  },
+  title: {
+    fontSize: 22,
+    fontWeight: "700",
+    color: "#111827",
+    marginBottom: 8,
+  },
+  description: {
+    fontSize: 15,
+    color: "#6b7280",
+    lineHeight: 22,
+    marginBottom: 24,
+  },
+  button: {
+    backgroundColor: "#ec4899",
+    borderRadius: 14,
+    paddingVertical: 15,
+    alignItems: "center",
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "700",
+  },
+});

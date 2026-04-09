@@ -10,6 +10,7 @@ import {
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useRecipeStore } from "../../../src/stores/recipe-store";
 import { Ingredient, Instruction } from "../../../src/types/recipe";
+import { generateId } from "../../../src/utils/uuid";
 
 export default function EditRecipeScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -40,7 +41,7 @@ export default function EditRecipeScreen() {
   }
 
   const handleAddIngredient = () => {
-    setIngredients([...ingredients, { text: "", checked: false }]);
+    setIngredients([...ingredients, { id: generateId(), text: "", checked: false }]);
   };
 
   const handleUpdateIngredient = (index: number, text: string) => {

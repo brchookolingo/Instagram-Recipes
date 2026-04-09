@@ -1,4 +1,5 @@
 export interface Ingredient {
+  id: string;
   text: string;
   quantity?: string;
   unit?: string;
@@ -29,7 +30,7 @@ export interface Recipe {
   prepTime?: number;
   cookTime?: number;
   servings?: number;
-  extractionSource: "caption" | "video" | "manual";
+  extractionSource: "caption" | "manual";
   boardIds: string[];
   createdAt: string;
   updatedAt: string;

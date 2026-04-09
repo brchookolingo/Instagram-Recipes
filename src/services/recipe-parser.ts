@@ -1,4 +1,5 @@
 import { Recipe, Ingredient, Instruction } from "../types/recipe";
+import { generateId } from "../utils/uuid";
 
 const MEASUREMENT_WORDS = [
   "cup",
@@ -117,6 +118,7 @@ function parseIngredientLine(line: string): Ingredient {
 
   if (match) {
     return {
+      id: generateId(),
       text: cleaned,
       quantity: match[1],
       unit: MEASUREMENT_WORDS.includes(match[2].toLowerCase())
@@ -126,7 +128,7 @@ function parseIngredientLine(line: string): Ingredient {
     };
   }
 
-  return { text: cleaned, checked: false };
+  return { id: generateId(), text: cleaned, checked: false };
 }
 
 function extractIngredients(lines: string[]): Ingredient[] {

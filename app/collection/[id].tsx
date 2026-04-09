@@ -6,7 +6,7 @@ import { RecipeCard } from "../../src/components/RecipeCard";
 import { EmptyState } from "../../src/components/EmptyState";
 import { Recipe } from "../../src/types/recipe";
 
-export default function BoardDetailScreen() {
+export default function CollectionDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const boards = useBoardStore((s) => s.boards);
@@ -19,7 +19,7 @@ export default function BoardDetailScreen() {
   if (!board) {
     return (
       <View className="flex-1 items-center justify-center bg-white">
-        <Text className="text-gray-500">Board not found</Text>
+        <Text className="text-gray-500">Collection not found</Text>
       </View>
     );
   }
@@ -27,16 +27,16 @@ export default function BoardDetailScreen() {
   const boardRecipes = recipes.filter((r) => board.recipeIds.includes(r.id));
 
   const handleRename = () => {
-    Alert.prompt("Rename Board", "Enter a new name:", (name) => {
+    Alert.prompt("Rename Collection", "Enter a new name:", (name) => {
       if (name?.trim()) {
         updateBoard(board.id, { name: name.trim() });
       }
     });
   };
 
-  const handleDeleteBoard = () => {
+  const handleDeleteCollection = () => {
     Alert.alert(
-      "Delete Board",
+      "Delete Collection",
       `Delete "${board.name}"? Recipes won't be deleted.`,
       [
         { text: "Cancel", style: "cancel" },
@@ -53,7 +53,7 @@ export default function BoardDetailScreen() {
   };
 
   const handleLongPressRecipe = (recipeId: string) => {
-    Alert.alert("Remove from Board", "Remove this recipe from the board?", [
+    Alert.alert("Remove from Collection", "Remove this recipe from the collection?", [
       { text: "Cancel", style: "cancel" },
       {
         text: "Remove",
@@ -85,7 +85,7 @@ export default function BoardDetailScreen() {
           <Pressable onPress={handleRename}>
             <Text className="text-pink-500 font-semibold">Rename</Text>
           </Pressable>
-          <Pressable onPress={handleDeleteBoard}>
+          <Pressable onPress={handleDeleteCollection}>
             <Text className="text-red-500 font-semibold">Delete</Text>
           </Pressable>
         </View>
@@ -94,7 +94,7 @@ export default function BoardDetailScreen() {
       {boardRecipes.length === 0 ? (
         <EmptyState
           icon="📂"
-          title="Board is empty"
+          title="Collection is empty"
           subtitle="Add recipes from the recipe detail screen"
         />
       ) : (

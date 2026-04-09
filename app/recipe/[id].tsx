@@ -224,7 +224,7 @@ export default function RecipeDetailScreen() {
               className="flex-1 bg-pink-50 rounded-xl py-3 items-center"
               onPress={() => setShowBoardModal(true)}
             >
-              <Text className="text-pink-600 font-semibold">Add to Board</Text>
+              <Text className="text-pink-600 font-semibold">Add to Collection</Text>
             </Pressable>
             <Pressable
               className="flex-1 bg-green-50 rounded-xl py-3 items-center flex-row justify-center gap-2"
@@ -263,10 +263,10 @@ export default function RecipeDetailScreen() {
             onPress={() => setShowBoardModal(false)}
           />
           <View className="bg-white rounded-t-3xl px-4 pt-6 pb-10 max-h-96">
-            <Text className="text-lg font-bold mb-4">Add to Board</Text>
+            <Text className="text-lg font-bold mb-4">Add to Collection</Text>
             {boards.length === 0 ? (
               <Text className="text-gray-400 text-center py-4">
-                No boards yet. Create one from the Boards tab.
+                No collections yet. Create one from the Collections tab.
               </Text>
             ) : (
               <FlatList

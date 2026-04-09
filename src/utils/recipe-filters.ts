@@ -29,11 +29,20 @@ export function applyFilters(
     filterDietary: string[];
     filterProtein: string[];
     filterPrep: string[];
+    filterMealType?: string[];
   },
 ): Recipe[] {
   return recipes.filter((r) => {
-    if (opts.search && !r.title.toLowerCase().includes(opts.search.toLowerCase()))
-      return false;
+    if (opts.search) {
+      const q = opts.search.toLowerCase();
+      const matchesSearch =
+        r.title.toLowerCase().includes(q) ||
+        (r.author ?? "").toLowerCase().includes(q) ||
+        (r.description ?? "").toLowerCase().includes(q) ||
+        r.tags.join(" ").toLowerCase().includes(q) ||
+        r.ingredients.map((i) => i.text).join(" ").toLowerCase().includes(q);
+      if (!matchesSearch) return false;
+    }
     if (opts.filterFavourites && !r.isFavourite) return false;
     if (
       opts.filterDietary.length > 0 &&
@@ -60,6 +69,12 @@ export function applyFilters(
         }
         return false;
       });
+      if (!passes) return false;
+    }
+    if (opts.filterMealType && opts.filterMealType.length > 0) {
+      const passes = opts.filterMealType.some((mealType) =>
+        r.tags.some((t) => t.toLowerCase() === mealType.toLowerCase()),
+      );
       if (!passes) return false;
     }
     return true;

@@ -5,12 +5,12 @@ import {
   ScrollView,
   TextInput,
   Pressable,
-  ActivityIndicator,
   Alert,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { Image } from "expo-image";
 import { URLInput } from "../src/components/URLInput";
+import { CookingSpinner } from "../src/components/CookingSpinner";
 import {
   fetchPost,
   type FetchResult,
@@ -208,8 +208,7 @@ export default function AddRecipeScreen() {
   if (step === "loading") {
     return (
       <View className="flex-1 items-center justify-center bg-white px-8">
-        <ActivityIndicator size="large" color="#ec4899" />
-        <Text className="text-gray-600 mt-4 text-center">{loadingMessage}</Text>
+        <CookingSpinner message={loadingMessage} />
       </View>
     );
   }

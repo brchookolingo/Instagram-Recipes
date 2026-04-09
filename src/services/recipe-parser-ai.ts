@@ -34,7 +34,7 @@ Required fields — always include these, inferring from context if not explicit
 - "servings": Estimate from ingredient quantities or dish type. Return as a whole number (e.g. 4). If a range like "5-6", use the higher value (6). Never use strings or units.
 
 Tags rules — maximum 10 tags total:
-- FIRST, include any applicable dietary tags from: vegetarian, vegan, gluten free, lactose free
+- FIRST, include any applicable dietary tags from: vegetarian, vegan, gluten free
 - SECOND, include the primary protein(s) from: beef, chicken, pork, lamb, fish, shellfish
 - THEN add other relevant tags (cuisine type, cooking method, occasion, etc.) up to the 10 tag limit
 - All tags lowercase`;

@@ -27,7 +27,7 @@ async function enforceCacheLimit(): Promise<void> {
     const infos = await Promise.all(
       files.map(async (file) => {
         const path = `${IMAGE_DIR}${file}`;
-        const info = await getInfoAsync(path, { size: true });
+        const info = await getInfoAsync(path);
         return { path, size: info.exists ? (info as { size?: number }).size ?? 0 : 0, exists: info.exists };
       }),
     );

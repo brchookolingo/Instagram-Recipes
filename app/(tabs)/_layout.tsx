@@ -19,9 +19,9 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="boards"
+        name="collections"
         options={{
-          title: "Boards",
+          title: "Collections",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="albums-outline" size={size} color={color} />
           ),

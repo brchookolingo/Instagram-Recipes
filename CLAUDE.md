@@ -28,54 +28,9 @@ This file is read by Claude Code as persistent context. Keep it up to date as ta
 
 ---
 
-### 🟡 MEDIUM SEVERITY
-
-- [x] **M3 — Enforce image cache size limit and clean up orphans**
-  _Completed: 200 MB cap enforced in `cacheImage()` via `enforceCacheLimit()`; startup orphan sweep added to `_layout.tsx`._
-
-- [x] **M4 — Replace index-based keys in `IngredientList`**
-  _Completed: `id?: string` added to `Ingredient` type; all parse paths assign `generateId()`; `IngredientList` keys on `ingredient.id` with index fallback for legacy data._
-
----
-
 ### 🟢 LOW PRIORITY
 
-- **L3** — No recipe scaling (e.g. double ingredients for more servings).
-- **L4** — Hardcoded dietary filter tags in `index.tsx` won't reflect custom user tags.
-- **L6** — No full-text search; current search only matches title and author.
-- **L9** — No MMKV schema migration strategy; corrupted storage has no recovery path.
-- ~~**L10**~~ — Completed: `LOADING_THEMES` moved to `src/utils/constants.ts` and imported in `add-recipe.tsx`.
-- ~~**L12**~~ — Completed: `"video"` removed from `extractionSource` union in `src/types/recipe.ts`.
-
----
-
-### 🆕 Feature Requests (logged by user)
-
-- [ ] **F1 — Onboarding flow for first-time users**
-  On first launch, show a series of images/screens walking the user through how to use the app. Also add an "Instructions / How to use" section in Settings so users can revisit it anytime.
-
-- [ ] **F2 — In-app feedback via Google Form**
-  Add a feedback link in Settings that opens a Google Form for collecting user feedback. Create a dedicated Gmail account for the app so users can email directly with questions or issues.
-
-- [ ] **F3 — Rename "Boards" to "Collections"**
-  UX change throughout the app — rename all instances of "Boards" / "boards" to "Collections" / "collections" including tab labels, screen titles, store names, and type definitions.
-
-- [ ] **F4 — Cooking-themed loading animations**
-  Replace the current loading spinner with fun cooking-themed animations (e.g. Lottie animations of a chef, bubbling pot, stirring spoon) to make the recipe fetch experience more engaging.
-
-- [ ] **F5 — Storage stats in Settings**
-  Add a section in Settings showing the user how many recipes they have saved and the approximate storage the app is using on their device.
-
-- [ ] **F6 — Update dietary filters and add meal type filters**
-  Remove "Lactose Free" from dietary filter options. Add a new "Meal Type" filter section with options: Salad, Appetizer, Dessert, Main, Soup.
-
-- [ ] **F7 — Grocery list respects ingredient multiplier**
-  When the user taps "Add to Grocery List" on the recipe detail screen, use the currently selected multiplier scale (½x, 1x, 2x) to determine which ingredient quantities are added, rather than always using the base amounts.
-  _File: app/recipe/[id].tsx_
-
-- [ ] **F8 — Regenerate scaled ingredients on manual edit**
-  When a user adds, removes, or edits an ingredient on a recipe, automatically regenerate the `ingredientsHalf` and `ingredientsDouble` arrays to keep them in sync with the updated base ingredients.
-  _Files: src/stores/recipe-store.ts, src/types/recipe.ts_
+- **L9** — No MMKV schema migration strategy; corrupted storage has no recovery path. _(skipped by user — too complex for personal app at this stage)_
 
 ---
 
@@ -101,6 +56,13 @@ This file is read by Claude Code as persistent context. Keep it up to date as ta
 - Updated `recipe-parser-ai.ts` prompt to be platform-agnostic
 - Updated `URLInput.tsx` placeholder and `recipe/[id].tsx` "View Original Post" link
 
+### Cache, Type & Code Quality (completed)
+- Enforced 200 MB image cache limit in `src/utils/image-cache.ts` via `enforceCacheLimit()`; added startup orphan sweep in `app/_layout.tsx` (M3)
+- Added `id?: string` to `Ingredient` type; all parse paths assign `generateId()`; `IngredientList` keys on stable id with index fallback for legacy data (M4)
+- Moved `LOADING_THEMES` from `app/add-recipe.tsx` to `src/utils/constants.ts` (L10)
+- Removed dead `"video"` member from `extractionSource` union in `src/types/recipe.ts` (L12)
+- Switched all Claude API calls from `claude-opus-4-6` to `claude-sonnet-4-5` in `src/utils/constants.ts`
+
 ### Stability, Performance & UX (completed)
 - Added `src/utils/fetch-with-timeout.ts` — AbortController + 10s timeout wrapper used by all services (C3)
 - Fixed image-cache race in `recipe-store.ts` `addRecipe` — image is cached before persist (H1)
@@ -115,3 +77,15 @@ This file is read by Claude Code as persistent context. Keep it up to date as ta
 - `add-recipe.tsx` checks `findBySourceUrl` before saving and prompts on duplicate (M6)
 - `RawPost` in `src/types/post.ts` is now a discriminated union over `platform` (`InstagramPost | TikTokPost | PinterestPost`) (M7)
 - `URLInput.tsx` validates URL format + supported platform inline before submit (M8)
+- Recipe scaling added (half and double)
+
+### Features & UX (completed)
+- Full-text search extended to match description, tags, and ingredient text in addition to title and author (L6)
+- Onboarding flow added (`app/onboarding.tsx`) — 4-slide pager shown on first launch; MMKV-backed `hasSeenOnboarding()` / `markOnboardingSeen()` in `src/utils/onboarding.ts`; `app/_layout.tsx` redirects to `/onboarding` on first launch; Settings "How to Use" row reopens onboarding in review mode (F1)
+- "Send Feedback" row added to Settings — opens Google Form via `Linking.openURL()` (F2)
+- Renamed "Boards" → "Collections" throughout UI: `boards.tsx` → `collections.tsx`, `board/[id].tsx` → `collection/[id].tsx`, tab label/title updated, all nav routes updated; internal store/MMKV keys unchanged to preserve persisted data (F3)
+- Replaced `ActivityIndicator` loading state in `add-recipe.tsx` with animated `CookingSpinner` component (`src/components/CookingSpinner.tsx`) using react-native-reanimated rotating 🍳 emoji (F4)
+- Storage stats section added to Settings — shows recipe count and image cache size in MB using `expo-file-system/legacy` (F5)
+- Removed "Lactose Free" from dietary filter pills; added Meal Type section (Salad, Appetizer, Dessert, Main, Soup); `filterMealType` added to `filter-store.ts`; removed "lactose free" from Claude system prompt (F6)
+- "Add to Grocery List" uses currently selected scale (½×/1×/2×) — `scaledIngredients` passed to `addRecipeIngredients` (F7)
+- `updateRecipe()` in `recipe-store.ts` regenerates `ingredientsHalf` and `ingredientsDouble` via `scaleIngredients()` whenever `ingredients` is updated (F8)

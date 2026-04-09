@@ -7,14 +7,14 @@ import { BoardCard } from "../../src/components/BoardCard";
 import { EmptyState } from "../../src/components/EmptyState";
 import { Board } from "../../src/types/recipe";
 
-export default function BoardsScreen() {
+export default function CollectionsScreen() {
   const boards = useBoardStore((s) => s.boards);
   const addBoard = useBoardStore((s) => s.addBoard);
   const recipes = useRecipeStore((s) => s.recipes);
   const router = useRouter();
 
-  const handleNewBoard = () => {
-    Alert.prompt("New Board", "Enter a name for your board:", (name) => {
+  const handleNewCollection = () => {
+    Alert.prompt("New Collection", "Enter a name for your collection:", (name) => {
       if (name?.trim()) {
         addBoard({
           id: generateId(),
@@ -39,7 +39,7 @@ export default function BoardsScreen() {
         board={item}
         recipeCount={item.recipeIds.length}
         recipeImages={recipeImages}
-        onPress={() => router.push(`/board/${item.id}`)}
+        onPress={() => router.push(`/collection/${item.id}`)}
       />
     );
   };
@@ -49,10 +49,10 @@ export default function BoardsScreen() {
       {boards.length === 0 ? (
         <EmptyState
           icon="📋"
-          title="No boards yet"
-          subtitle="Create a board to organize your recipes"
-          actionLabel="Create Board"
-          onAction={handleNewBoard}
+          title="No collections yet"
+          subtitle="Create a collection to organise your recipes"
+          actionLabel="Create Collection"
+          onAction={handleNewCollection}
         />
       ) : (
         <>
@@ -65,7 +65,7 @@ export default function BoardsScreen() {
           />
           <Pressable
             className="absolute bottom-6 right-6 w-14 h-14 bg-pink-500 rounded-full items-center justify-center shadow-lg"
-            onPress={handleNewBoard}
+            onPress={handleNewCollection}
           >
             <Text className="text-white text-3xl font-light">+</Text>
           </Pressable>

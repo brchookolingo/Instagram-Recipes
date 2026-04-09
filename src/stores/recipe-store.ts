@@ -43,14 +43,19 @@ export const useRecipeStore = create<RecipeState>()(
           recipes: [...state.recipes, finalRecipe],
         }));
       },
-      updateRecipe: (id, updates) =>
+      updateRecipe: (id, updates) => {
+        if (updates.ingredients) {
+          updates.ingredientsHalf = scaleIngredients(updates.ingredients, 0.5);
+          updates.ingredientsDouble = scaleIngredients(updates.ingredients, 2);
+        }
         set((state) => ({
           recipes: state.recipes.map((r) =>
             r.id === id
               ? { ...r, ...updates, updatedAt: new Date().toISOString() }
               : r,
           ),
-        })),
+        }));
+      },
       deleteRecipe: (id) => {
         set((state) => ({
           recipes: state.recipes.filter((r) => r.id !== id),

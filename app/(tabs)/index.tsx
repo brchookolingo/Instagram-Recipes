@@ -18,11 +18,13 @@ export default function HomeScreen() {
     filterDietary,
     filterProtein,
     filterPrep,
+    filterMealType,
     setSearch,
     setFilterFavourites,
     setFilterDietary,
     setFilterProtein,
     setFilterPrep,
+    setFilterMealType,
     clearAll: clearFilters,
   } = useFilterStore();
   const [showFilter, setShowFilter] = useState(false);
@@ -33,7 +35,8 @@ export default function HomeScreen() {
     (filterFavourites ? 1 : 0) +
     filterDietary.length +
     filterProtein.length +
-    filterPrep.length;
+    filterPrep.length +
+    filterMealType.length;
 
   const togglePill = (arr: string[], val: string, setter: (v: string[]) => void) =>
     setter(arr.includes(val) ? arr.filter((x) => x !== val) : [...arr, val]);
@@ -44,6 +47,7 @@ export default function HomeScreen() {
     filterDietary,
     filterProtein,
     filterPrep,
+    filterMealType,
   });
 
   const handleClearFilters = () => clearFilters();
@@ -182,7 +186,7 @@ export default function HomeScreen() {
               Dietary
             </Text>
             <View className="flex-row flex-wrap gap-2 mb-5">
-              {["Vegetarian", "Vegan", "Gluten Free", "Lactose Free"].map((diet) => (
+              {["Vegetarian", "Vegan", "Gluten Free"].map((diet) => (
                 <PillButton
                   key={diet}
                   label={diet}
@@ -211,13 +215,28 @@ export default function HomeScreen() {
             <Text className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">
               Preparation
             </Text>
-            <View className="flex-row flex-wrap gap-2 mb-4">
+            <View className="flex-row flex-wrap gap-2 mb-5">
               {["Under 30 min", "Under 1 hour", "Serves 6+"].map((prep) => (
                 <PillButton
                   key={prep}
                   label={prep}
                   active={filterPrep.includes(prep)}
                   onPress={() => togglePill(filterPrep, prep, setFilterPrep)}
+                />
+              ))}
+            </View>
+
+            {/* Meal Type */}
+            <Text className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">
+              Meal Type
+            </Text>
+            <View className="flex-row flex-wrap gap-2 mb-4">
+              {["Salad", "Appetizer", "Dessert", "Main", "Soup"].map((mealType) => (
+                <PillButton
+                  key={mealType}
+                  label={mealType}
+                  active={filterMealType.includes(mealType)}
+                  onPress={() => togglePill(filterMealType, mealType, setFilterMealType)}
                 />
               ))}
             </View>

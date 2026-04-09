@@ -1,16 +1,24 @@
 import "../global.css";
 
 import { useEffect } from "react";
-import { Stack } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import { sweepOrphanedImages } from "../src/utils/image-cache";
 import { useRecipeStore } from "../src/stores/recipe-store";
+import { hasSeenOnboarding } from "../src/utils/onboarding";
 
 export default function RootLayout() {
   const recipes = useRecipeStore((s) => s.recipes);
+  const router = useRouter();
 
   useEffect(() => {
     const ids = recipes.map((r) => r.id);
     sweepOrphanedImages(ids);
+  }, []);
+
+  useEffect(() => {
+    if (!hasSeenOnboarding()) {
+      router.replace("/onboarding");
+    }
   }, []);
 
   return (
@@ -21,7 +29,8 @@ export default function RootLayout() {
         options={{ title: "Add Recipe", presentation: "modal" }}
       />
       <Stack.Screen name="recipe/[id]" options={{ title: "Recipe", headerBackButtonDisplayMode: "minimal" }} />
-      <Stack.Screen name="board/[id]" options={{ title: "Board", headerBackButtonDisplayMode: "minimal" }} />
+      <Stack.Screen name="collection/[id]" options={{ title: "Collection", headerBackButtonDisplayMode: "minimal" }} />
+      <Stack.Screen name="onboarding" options={{ headerShown: false }} />
     </Stack>
   );
 }

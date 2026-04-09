@@ -20,79 +20,23 @@ This file is read by Claude Code as persistent context. Keep it up to date as ta
 
 - [ ] **C1 — Move API keys to a backend proxy**
   All `EXPO_PUBLIC_*` secrets (Claude, RapidAPI, Facebook) are exposed in the client bundle and readable from any decompiled APK. Build a lightweight backend (e.g. Expo API routes or a simple Node/Edge function) that holds the secrets and proxies requests. The client exchanges a session token only.
-  _Files: app/add-recipe.tsx:56, app/recipe/[id].tsx:35, src/services/instagram-oembed.ts:23-24_
+  _Files: src/services/recipe-extractor.ts:40, app/recipe/[id].tsx:85, src/services/instagram-scraper.ts:14, src/services/instagram-oembed.ts:24-25_
 
 - [ ] **C2 — Replace silent catch blocks with typed errors**
   Every `catch { return null }` swallows errors silently. Introduce a typed `ServiceResult<T>` pattern (`{ ok: true, data } | { ok: false, error: { code, message } }`) so callers can distinguish rate limits, bad URLs, network failures, and invalid API keys.
   _Files: src/services/recipe-parser-ai.ts:86, src/services/instagram-oembed.ts:59, src/services/tiktok.ts, src/services/pinterest.ts, src/services/web-recipe-fetcher.ts_
 
-- [ ] **C3 — Add request timeouts to all fetch calls**
-  No `AbortController` is used anywhere. On slow/offline connections the loading spinner runs forever. Wrap every `fetch` with a 10-second timeout using `AbortController` + `setTimeout`.
-  _Files: src/services/instagram-scraper.ts, src/services/instagram-oembed.ts, src/services/tiktok.ts, src/services/pinterest.ts, src/services/web-recipe-fetcher.ts, src/utils/image-cache.ts_
-
----
-
-### 🟠 HIGH SEVERITY
-
-- [ ] **H1 — Fix race condition in image caching**
-  `addRecipe` saves the recipe to MMKV first, then caches the image in the background. If the app is killed between these two steps, `localImageUri` is never set. Fix: cache the image first, then persist the recipe atomically.
-  _File: src/stores/recipe-store.ts:21-30_
-
-- [ ] **H2 — Refactor handleFetch in add-recipe.tsx**
-  The `handleFetch` function mixes URL routing, network calls, multi-tier parsing, and state updates in ~50 lines. Extract the tier-fallback logic into a dedicated `RecipeExtractionService` so `add-recipe.tsx` only handles UI state.
-  _File: app/add-recipe.tsx:123-177_
-
-- [ ] **H3 — Fix "Clear All Data" in settings**
-  `useRecipeStore.setState({ recipes: [] })` bypasses the store API and doesn't clear the grocery list, leaving stale data. Add explicit `clearAll()` actions to all three stores and call them from settings.
-  _File: app/(tabs)/settings.tsx:22-23, src/stores/grocery-store.ts_
-
-- [ ] **H4 — Add minimum recipe validation before saving**
-  A recipe with empty title, no ingredients, and no instructions satisfies the TypeScript type and saves successfully. Enforce a minimum: title required + at least one ingredient OR one instruction. Show inline validation errors rather than an alert.
-  _File: app/add-recipe.tsx:219-264_
-
-- [ ] **H5 — Persist filter state across navigation**
-  Search query and active filters in the recipes tab are local component state. Navigating to a recipe and back resets them. Move filter state to Zustand or React Context.
-  _File: app/(tabs)/index.tsx:11-18_
-
-- [ ] **H6 — Make retry logic error-aware**
-  `withRetry` retries all errors uniformly, including `401 Unauthorized` and `404 Not Found` which will never succeed. Add error classification so only transient errors (network timeout, `5xx`) are retried. Switch to exponential backoff: `delay * 2^(attempt-1)`.
-  _File: src/utils/retry.ts_
-
 ---
 
 ### 🟡 MEDIUM SEVERITY
 
-- [ ] **M1 — Memoize RecipeCard and BoardCard**
-  Neither component is wrapped in `React.memo`, causing full FlatList re-renders on any parent state change. Wrap both with `React.memo` and audit all inline callbacks for `useCallback`.
-  _Files: src/components/RecipeCard.tsx, src/components/BoardCard.tsx_
-
-- [ ] **M2 — Debounce search input**
-  Every keystroke in the search box synchronously recomputes the full filtered recipe list. Add a 300ms debounce to the search state update.
-  _File: app/(tabs)/index.tsx_
-
-- [ ] **M3 — Add image cache eviction**
-  `cacheImage()` writes to disk but nothing ever deletes files. Implement a cleanup function that removes images for deleted recipes and enforce a maximum cache size (e.g. 200 MB).
+- [ ] **M3 — Enforce image cache size limit and clean up orphans**
+  `deleteCachedImage(id)` is already called on recipe delete, but there's no maximum cache size and no cleanup for orphaned image files (e.g. left behind if a crash prevents the delete path from running). Add a 200 MB cap enforced on write and a startup sweep that removes files with no matching recipe.
   _File: src/utils/image-cache.ts_
 
-- [ ] **M4 — Replace index-based keys in lists**
-  `key={index}` in `IngredientList` and `InstructionList` causes incorrect re-renders when items are reordered or deleted. Assign stable IDs to ingredients and instructions at parse time.
-  _Files: src/components/IngredientList.tsx, src/components/InstructionList.tsx_
-
-- [ ] **M5 — Replace Date.now() IDs with crypto.randomUUID()**
-  ID generation using `Date.now()` + `Math.random()` is collision-prone when two items are created rapidly. Replace with `crypto.randomUUID()` throughout.
-  _Files: src/stores/grocery-store.ts, app/add-recipe.tsx_
-
-- [ ] **M6 — Prevent duplicate recipe saves**
-  Pasting the same URL twice saves two identical recipes. Before saving, check if a recipe with the same `sourceUrl` already exists and warn the user.
-  _File: app/add-recipe.tsx, src/stores/recipe-store.ts_
-
-- [ ] **M7 — Strengthen RawPost type with discriminated union**
-  All fields on `RawPost` are optional, forcing defensive null-checking everywhere. Replace with a discriminated union: `{ type: 'structured', recipe } | { type: 'caption', text, meta } | { type: 'empty', meta }`.
-  _File: src/types/post.ts_
-
-- [ ] **M8 — Add input validation on URL submission**
-  `URLInput` submits any non-empty string. Validate that the input matches a supported platform pattern before calling `fetchPost`, and show an inline error if not.
-  _File: src/components/URLInput.tsx_
+- [ ] **M4 — Replace index-based keys in `IngredientList`**
+  `IngredientList.tsx` uses `` key={`${index}-${ingredient.text}`} ``, which causes incorrect re-renders when ingredients are reordered or deleted. Add a stable `id` field to the `Ingredient` type (assigned at parse time) and key on that. `InstructionList` already keys on `stepNumber` and is fine.
+  _Files: src/components/IngredientList.tsx, src/types/recipe.ts_
 
 ---
 
@@ -134,3 +78,18 @@ This file is read by Claude Code as persistent context. Keep it up to date as ta
 - Updated `add-recipe.tsx` with Tier 0 (pre-extracted recipe data bypass)
 - Updated `recipe-parser-ai.ts` prompt to be platform-agnostic
 - Updated `URLInput.tsx` placeholder and `recipe/[id].tsx` "View Original Post" link
+
+### Stability, Performance & UX (completed)
+- Added `src/utils/fetch-with-timeout.ts` — AbortController + 10s timeout wrapper used by all services (C3)
+- Fixed image-cache race in `recipe-store.ts` `addRecipe` — image is cached before persist (H1)
+- Extracted tier-fallback logic into `src/services/recipe-extractor.ts`; `add-recipe.tsx` `handleFetch` is now UI-only (H2)
+- Added `clearAll()` to recipe/board/grocery stores; `settings.tsx` calls all three (H3)
+- Added minimum recipe validation in `add-recipe.tsx` save handler — title required + at least one ingredient or instruction (H4)
+- Added `src/stores/filter-store.ts`; search + filters now persist across navigation (H5)
+- `src/utils/retry.ts` now uses exponential backoff and short-circuits on 4xx (H6)
+- `RecipeCard` and `BoardCard` wrapped in `React.memo` (M1)
+- Added `src/hooks/useDebounce.ts`; search is debounced 300ms in the recipes tab (M2)
+- Added `src/utils/uuid.ts` `generateId()`; used for recipe and grocery IDs (M5)
+- `add-recipe.tsx` checks `findBySourceUrl` before saving and prompts on duplicate (M6)
+- `RawPost` in `src/types/post.ts` is now a discriminated union over `platform` (`InstagramPost | TikTokPost | PinterestPost`) (M7)
+- `URLInput.tsx` validates URL format + supported platform inline before submit (M8)

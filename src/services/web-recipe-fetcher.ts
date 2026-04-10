@@ -117,29 +117,24 @@ export async function fetchRecipeFromWebPage(url: string): Promise<{
   partialRecipe?: Partial<Recipe> & { imageUrl?: string };
   captionFallback?: string;
 } | null> {
-  try {
-    const response = await fetchWithTimeout(
-      url,
-      { headers: { "User-Agent": "Mozilla/5.0 (compatible; RecipeBot/1.0)" } },
-      15_000,
-    );
+  const response = await fetchWithTimeout(
+    url,
+    { headers: { "User-Agent": "Mozilla/5.0 (compatible; RecipeBot/1.0)" } },
+    15_000,
+  );
 
-    if (!response.ok) return null;
+  if (!response.ok) return null;
 
-    const html = await response.text();
+  const html = await response.text();
 
-    const schema = extractJsonLdRecipe(html);
-    if (schema && schema.recipeIngredient?.length) {
-      return { partialRecipe: mapSchemaToPartialRecipe(schema) };
-    }
-
-    // No schema found — return page text for AI fallback
-    const text = extractPageText(html);
-    return text.length > 100 ? { captionFallback: text } : null;
-  } catch (error) {
-    console.error("[web-recipe-fetcher] fetchRecipeFromWebPage failed:", error);
-    return null;
+  const schema = extractJsonLdRecipe(html);
+  if (schema && schema.recipeIngredient?.length) {
+    return { partialRecipe: mapSchemaToPartialRecipe(schema) };
   }
+
+  // No schema found — return page text for AI fallback
+  const text = extractPageText(html);
+  return text.length > 100 ? { captionFallback: text } : null;
 }
 
 /**
@@ -149,22 +144,17 @@ export async function fetchRecipeFromWebPage(url: string): Promise<{
 export async function getPinterestDestinationUrl(
   pinUrl: string,
 ): Promise<string | null> {
-  try {
-    const response = await fetchWithTimeout(
-      pinUrl,
-      { headers: { "User-Agent": "Mozilla/5.0 (compatible; RecipeBot/1.0)" } },
-      10_000,
-    );
+  const response = await fetchWithTimeout(
+    pinUrl,
+    { headers: { "User-Agent": "Mozilla/5.0 (compatible; RecipeBot/1.0)" } },
+    10_000,
+  );
 
-    if (!response.ok) return null;
+  if (!response.ok) return null;
 
-    const html = await response.text();
+  const html = await response.text();
 
-    // Pinterest embeds pin data as JSON — look for the outbound link field
-    const match = html.match(/"link"\s*:\s*"(https?:\/\/[^"]+)"/);
-    return match?.[1] ?? null;
-  } catch (error) {
-    console.error("[web-recipe-fetcher] getPinterestDestinationUrl failed:", error);
-    return null;
-  }
+  // Pinterest embeds pin data as JSON — look for the outbound link field
+  const match = html.match(/"link"\s*:\s*"(https?:\/\/[^"]+)"/);
+  return match?.[1] ?? null;
 }

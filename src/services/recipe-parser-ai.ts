@@ -1,5 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { Recipe } from "../types/recipe";
+import { ParseResult, PARSE_ERROR_MESSAGES } from "../types/result";
 import { CLAUDE_MODEL } from "../utils/constants";
 import { generateId } from "../utils/uuid";
 
@@ -42,7 +43,7 @@ Tags rules — maximum 10 tags total:
 export async function parseRecipeWithAI(
   caption: string,
   apiKey: string,
-): Promise<Partial<Recipe> | null> {
+): Promise<ParseResult<Partial<Recipe>>> {
   try {
     const client = new Anthropic({ apiKey, dangerouslyAllowBrowser: true });
 
@@ -59,7 +60,9 @@ export async function parseRecipeWithAI(
     });
 
     const textBlock = message.content.find((block) => block.type === "text");
-    if (!textBlock || textBlock.type !== "text") return null;
+    if (!textBlock || textBlock.type !== "text") {
+      return { ok: false, code: "PARSE_FAILED", message: PARSE_ERROR_MESSAGES.PARSE_FAILED };
+    }
 
     const jsonText = textBlock.text
       .trim()
@@ -74,20 +77,33 @@ export async function parseRecipeWithAI(
     };
 
     return {
-      title: parsed.title,
-      description: parsed.description,
-      ingredients: Array.isArray(parsed.ingredients)
-        ? parsed.ingredients.map((ing: object) => ({ ...ing, id: generateId() }))
-        : parsed.ingredients,
-      instructions: parsed.instructions,
-      tags: parsed.tags,
-      prepTime: toNum(parsed.prepTime),
-      cookTime: toNum(parsed.cookTime),
-      servings: toNum(parsed.servings),
-      extractionSource: "caption",
+      ok: true,
+      data: {
+        title: parsed.title,
+        description: parsed.description,
+        ingredients: Array.isArray(parsed.ingredients)
+          ? parsed.ingredients.map((ing: object) => ({ ...ing, id: generateId() }))
+          : parsed.ingredients,
+        instructions: parsed.instructions,
+        tags: parsed.tags,
+        prepTime: toNum(parsed.prepTime),
+        cookTime: toNum(parsed.cookTime),
+        servings: toNum(parsed.servings),
+        extractionSource: "caption",
+      },
     };
-  } catch {
-    return null;
+  } catch (error) {
+    if (error instanceof Anthropic.AuthenticationError) {
+      return { ok: false, code: "INVALID_API_KEY", message: PARSE_ERROR_MESSAGES.INVALID_API_KEY };
+    }
+    if (error instanceof Anthropic.RateLimitError) {
+      return { ok: false, code: "RATE_LIMITED", message: PARSE_ERROR_MESSAGES.RATE_LIMITED };
+    }
+    if (error instanceof Anthropic.APIConnectionError || error instanceof Anthropic.APIConnectionTimeoutError) {
+      return { ok: false, code: "NETWORK_ERROR", message: PARSE_ERROR_MESSAGES.NETWORK_ERROR };
+    }
+    console.error("[recipe-parser-ai] parseRecipeWithAI failed:", error);
+    return { ok: false, code: "UNKNOWN", message: PARSE_ERROR_MESSAGES.UNKNOWN };
   }
 }
 

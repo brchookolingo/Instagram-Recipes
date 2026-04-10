@@ -1,5 +1,6 @@
 import { Recipe } from "../types/recipe";
 import { RawPost } from "../types/post";
+import { ParseResult, ParseErrorCode, PARSE_ERROR_MESSAGES } from "../types/result";
 import {
   parseRecipeWithAI,
   cleanupRecipeExtraction,
@@ -9,6 +10,10 @@ import { parseRecipeFromCaption, hasRecipeContent, extractUrlsFromCaption } from
 import { fetchRecipeFromWebPage } from "./web-recipe-fetcher";
 
 export type ExtractionResult = Partial<Recipe> & { imageUrl?: string };
+
+// Error codes that represent a service-level failure worth surfacing to the user
+// (as opposed to simply "no recipe found in this post").
+const CRITICAL_CODES: ParseErrorCode[] = ["INVALID_API_KEY", "RATE_LIMITED", "NETWORK_ERROR"];
 
 /**
  * Attempts to extract recipe data from a fetched post using a four-tier pipeline:
@@ -26,29 +31,32 @@ export type ExtractionResult = Partial<Recipe> & { imageUrl?: string };
  *  Fallback — Regex-based caption parser. Catches simple structured captions that
  *             list ingredients/steps explicitly without needing AI.
  *
- * Returns a partial Recipe (always), or null if there is nothing to work with.
+ * Returns a ParseResult — either extracted data or a typed error the UI can act on.
  */
 export async function extractRecipeFromPost(
   post: RawPost,
-): Promise<ExtractionResult | null> {
+): Promise<ParseResult<ExtractionResult>> {
   // Tier 0 — schema.org / pre-extracted structured data
   if (post.partialRecipe) {
-    return post.partialRecipe;
+    return { ok: true, data: post.partialRecipe };
   }
 
   const caption = post.caption;
   const apiKey = process.env.EXPO_PUBLIC_CLAUDE_API_KEY ?? "";
 
+  // Track the most significant AI error seen across tiers so we can surface it
+  // if no tier succeeds.
+  let lastAiError: { code: ParseErrorCode; message: string } | null = null;
+
   // Tier 1 — AI extraction from caption
   if (caption) {
-    try {
-      const aiResult = await parseRecipeWithAI(caption, apiKey);
-      if (aiResult && isExtractionSufficient(aiResult)) {
-        const cleaned = await cleanupRecipeExtraction(aiResult, apiKey);
-        return cleaned;
-      }
-    } catch (error) {
-      console.error("[recipe-extractor] AI extraction failed:", error);
+    const aiResult = await parseRecipeWithAI(caption, apiKey);
+    if (aiResult.ok && isExtractionSufficient(aiResult.data)) {
+      const cleaned = await cleanupRecipeExtraction(aiResult.data, apiKey);
+      return { ok: true, data: cleaned };
+    }
+    if (!aiResult.ok) {
+      lastAiError = { code: aiResult.code, message: aiResult.message };
     }
   }
 
@@ -62,15 +70,18 @@ export async function extractRecipeFromPost(
 
         // Schema.org found on the linked page — use it directly
         if (webResult.partialRecipe && isExtractionSufficient(webResult.partialRecipe)) {
-          return webResult.partialRecipe;
+          return { ok: true, data: webResult.partialRecipe };
         }
 
         // No schema, but we got page text — run AI on it
         if (webResult.captionFallback) {
           const aiResult = await parseRecipeWithAI(webResult.captionFallback, apiKey);
-          if (aiResult && isExtractionSufficient(aiResult)) {
-            const cleaned = await cleanupRecipeExtraction(aiResult, apiKey);
-            return cleaned;
+          if (aiResult.ok && isExtractionSufficient(aiResult.data)) {
+            const cleaned = await cleanupRecipeExtraction(aiResult.data, apiKey);
+            return { ok: true, data: cleaned };
+          }
+          if (!aiResult.ok && !lastAiError) {
+            lastAiError = { code: aiResult.code, message: aiResult.message };
           }
         }
       } catch (error) {
@@ -81,8 +92,13 @@ export async function extractRecipeFromPost(
 
   // Fallback — regex parser
   if (caption && hasRecipeContent(caption)) {
-    return parseRecipeFromCaption(caption);
+    return { ok: true, data: parseRecipeFromCaption(caption) };
   }
 
-  return null;
+  // Surface a critical AI error (bad key, rate limit) if that's why all tiers failed
+  if (lastAiError && CRITICAL_CODES.includes(lastAiError.code)) {
+    return { ok: false, code: lastAiError.code, message: lastAiError.message };
+  }
+
+  return { ok: false, code: "PARSE_FAILED", message: PARSE_ERROR_MESSAGES.PARSE_FAILED };
 }

@@ -99,7 +99,7 @@ export async function fetchPost(url: string): Promise<FetchResult> {
     if (isTimeoutError(error)) {
       return { ok: false, code: "TIMEOUT", message: FETCH_ERROR_MESSAGES.TIMEOUT };
     }
-    if (error instanceof Response && error.status === 429) {
+    if ((error as NodeJS.ErrnoException)?.code === "429") {
       return { ok: false, code: "RATE_LIMITED", message: FETCH_ERROR_MESSAGES.RATE_LIMITED };
     }
     return { ok: false, code: "UNKNOWN", message: FETCH_ERROR_MESSAGES.UNKNOWN };

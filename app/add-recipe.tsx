@@ -84,9 +84,15 @@ export default function AddRecipeScreen() {
       const extracted = await extractRecipeFromPost(post);
 
       setLoadingMessage(theme[2]);
-      if (extracted) {
-        populateFromPartial(extracted);
+      if (extracted.ok) {
+        populateFromPartial(extracted.data);
+      } else if (extracted.code === "INVALID_API_KEY" || extracted.code === "RATE_LIMITED" || extracted.code === "NETWORK_ERROR") {
+        // Critical service error — surface it instead of showing an empty preview
+        setError(extracted.message);
+        setStep("input");
+        return;
       }
+      // For PARSE_FAILED / UNKNOWN — go to preview so the user can fill in manually
 
       // Always go to preview so the user can review and edit
       setStep("preview");

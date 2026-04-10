@@ -22,3 +22,31 @@ export const FETCH_ERROR_MESSAGES: Record<FetchErrorCode, string> = {
   NOT_FOUND: "Could not find that post. It may have been deleted or made private.",
   UNKNOWN: "Could not fetch the post. Check the URL and try again.",
 };
+
+// ---------------------------------------------------------------------------
+// Recipe extraction result
+// ---------------------------------------------------------------------------
+
+export type ParseErrorCode =
+  | "INVALID_API_KEY"
+  | "RATE_LIMITED"
+  | "NETWORK_ERROR"
+  | "PARSE_FAILED"
+  | "UNKNOWN";
+
+export type ParseResult<T> =
+  | { ok: true; data: T }
+  | { ok: false; code: ParseErrorCode; message: string };
+
+export const PARSE_ERROR_MESSAGES: Record<ParseErrorCode, string> = {
+  INVALID_API_KEY:
+    "Recipe extraction failed: invalid API key. Check your app settings.",
+  RATE_LIMITED:
+    "The AI service is busy. Please wait a moment and try again.",
+  NETWORK_ERROR:
+    "Could not reach the AI service. Check your connection and try again.",
+  PARSE_FAILED:
+    "Could not extract a recipe from this post. You can add the details manually.",
+  UNKNOWN:
+    "Recipe extraction failed. You can add the details manually.",
+};

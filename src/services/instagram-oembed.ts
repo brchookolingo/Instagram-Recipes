@@ -30,36 +30,37 @@ export async function fetchViaOEmbed(
 
   const accessToken = `${appId}|${appSecret}`;
 
-  try {
-    const params = new URLSearchParams({
-      url,
-      access_token: accessToken,
-      fields: "thumbnail_url,author_name",
-    });
+  const params = new URLSearchParams({
+    url,
+    access_token: accessToken,
+    fields: "thumbnail_url,author_name",
+  });
 
-    const response = await fetchWithTimeout(`${OEMBED_ENDPOINT}?${params}`, {}, 10_000);
+  const response = await fetchWithTimeout(`${OEMBED_ENDPOINT}?${params}`, {}, 10_000);
 
-    if (!response.ok) {
-      return null;
-    }
+  if (response.status === 429) {
+    const err = new Error("Rate limited by Instagram oEmbed");
+    (err as NodeJS.ErrnoException).code = "429";
+    throw err;
+  }
 
-    const data = await response.json();
-
-    const result: RawInstagramPost = {
-      platform: "instagram",
-      authorName: data.author_name,
-      thumbnailUrl: data.thumbnail_url,
-      imageUrl: data.thumbnail_url,
-      html: data.html,
-    };
-
-    if (data.html) {
-      result.caption = extractCaptionFromHtml(data.html);
-    }
-
-    return result;
-  } catch (error) {
-    console.error("[instagram-oembed] fetchViaOEmbed failed:", error);
+  if (!response.ok) {
     return null;
   }
+
+  const data = await response.json();
+
+  const result: RawInstagramPost = {
+    platform: "instagram",
+    authorName: data.author_name,
+    thumbnailUrl: data.thumbnail_url,
+    imageUrl: data.thumbnail_url,
+    html: data.html,
+  };
+
+  if (data.html) {
+    result.caption = extractCaptionFromHtml(data.html);
+  }
+
+  return result;
 }

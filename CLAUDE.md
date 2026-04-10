@@ -22,9 +22,6 @@ This file is read by Claude Code as persistent context. Keep it up to date as ta
   All `EXPO_PUBLIC_*` secrets (Claude, RapidAPI, Facebook) are exposed in the client bundle and readable from any decompiled APK. Build a lightweight backend (e.g. Expo API routes or a simple Node/Edge function) that holds the secrets and proxies requests. The client exchanges a session token only.
   _Files: src/services/recipe-extractor.ts:40, app/recipe/[id].tsx:85, src/services/instagram-scraper.ts:14, src/services/instagram-oembed.ts:24-25_
 
-- [ ] **C2 — Replace silent catch blocks with typed errors**
-  Every `catch { return null }` swallows errors silently. Introduce a typed `ServiceResult<T>` pattern (`{ ok: true, data } | { ok: false, error: { code, message } }`) so callers can distinguish rate limits, bad URLs, network failures, and invalid API keys.
-  _Files: src/services/recipe-parser-ai.ts:86, src/services/instagram-oembed.ts:59, src/services/tiktok.ts, src/services/pinterest.ts, src/services/web-recipe-fetcher.ts_
 
 ---
 
@@ -78,6 +75,14 @@ This file is read by Claude Code as persistent context. Keep it up to date as ta
 - `RawPost` in `src/types/post.ts` is now a discriminated union over `platform` (`InstagramPost | TikTokPost | PinterestPost`) (M7)
 - `URLInput.tsx` validates URL format + supported platform inline before submit (M8)
 - Recipe scaling added (half and double)
+
+### Error Handling (completed)
+- Replaced all silent `catch { return null }` blocks with typed `ParseResult<T>` pattern (C2)
+- `parseRecipeWithAI` classifies Anthropic errors: 401 → `INVALID_API_KEY`, 429 → `RATE_LIMITED`, network → `NETWORK_ERROR`
+- `extractRecipeFromPost` returns `ParseResult<ExtractionResult>` — surfaces critical AI errors to UI if all tiers fail
+- `add-recipe.tsx` shows specific error messages for `INVALID_API_KEY`, `RATE_LIMITED`, `NETWORK_ERROR`; proceeds to manual preview for `PARSE_FAILED`
+- Post-fetching services (`instagram-oembed`, `tiktok`, `pinterest`, `web-recipe-fetcher`) no longer swallow network/timeout errors; 429 responses thrown explicitly and classified by `post-fetcher.ts`
+- `ParseErrorCode` and `ParseResult<T>` added to `src/types/result.ts`
 
 ### Features & UX (completed)
 - Full-text search extended to match description, tags, and ingredient text in addition to title and author (L6)

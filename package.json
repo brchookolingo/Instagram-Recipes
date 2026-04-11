@@ -21,7 +21,7 @@
     "expo-system-ui": "^55.0.13",
     "expo-video-thumbnails": "~55.0.12",
     "nativewind": "^4.2.3",
-    "react": "19.2.0",
+    "react": "19.2.4",
     "react-native": "0.83.4",
     "react-native-gesture-handler": "~2.30.0",
     "react-native-mmkv": "^4.3.0",

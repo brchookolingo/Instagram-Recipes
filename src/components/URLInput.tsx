@@ -33,7 +33,7 @@ export function URLInput({ onSubmit }: URLInputProps) {
 
     const platform = detectPlatform(trimmed);
     if (platform === "unknown") {
-      setValidationError("Only Instagram, TikTok, and Pinterest URLs are supported.");
+      setValidationError("Please enter a valid recipe URL.");
       return;
     }
 
@@ -45,7 +45,7 @@ export function URLInput({ onSubmit }: URLInputProps) {
     <View className="px-4 py-3">
       <TextInput
         className={`border rounded-xl px-4 py-3 text-base bg-white ${validationError ? "border-red-400" : "border-gray-300"}`}
-        placeholder="Paste Instagram, TikTok or Pinterest URL..."
+        placeholder="Paste a recipe URL from Instagram, TikTok, Pinterest, or any website..."
         value={url}
         onChangeText={(text) => {
           setUrl(text);

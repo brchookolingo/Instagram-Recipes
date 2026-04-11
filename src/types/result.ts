@@ -14,7 +14,7 @@ export type FetchResult =
 
 export const FETCH_ERROR_MESSAGES: Record<FetchErrorCode, string> = {
   UNSUPPORTED_PLATFORM:
-    "This URL isn't from Instagram, TikTok, or Pinterest. Please paste a supported link.",
+    "This doesn't look like a supported URL. Please paste a link to a recipe website or social media post.",
   NETWORK_ERROR:
     "A network error occurred. Check your connection and try again.",
   TIMEOUT: "The request timed out. Check your connection and try again.",

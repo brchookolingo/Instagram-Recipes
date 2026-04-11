@@ -25,5 +25,9 @@ export interface PinterestPost extends BasePost {
   platform: "pinterest";
 }
 
+export interface WebPost extends BasePost {
+  platform: "website";
+}
+
 /** A post fetched from any supported platform. */
-export type RawPost = InstagramPost | TikTokPost | PinterestPost;
+export type RawPost = InstagramPost | TikTokPost | PinterestPost | WebPost;

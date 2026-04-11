@@ -1,14 +1,16 @@
 import { fetchInstagramPost } from "./instagram";
 import { fetchTikTokPost } from "./tiktok";
 import { fetchPinterestPost } from "./pinterest";
+import { fetchRecipeFromWebPage } from "./web-recipe-fetcher";
 import { withRetry } from "../utils/retry";
 import { fetchWithTimeout, isTimeoutError } from "../utils/fetch-with-timeout";
 import { FetchResult, FETCH_ERROR_MESSAGES } from "../types/result";
+import { WebPost } from "../types/post";
 
 export type { RawPost } from "../types/post";
 export type { FetchResult } from "../types/result";
 
-export type Platform = "instagram" | "tiktok" | "pinterest" | "unknown";
+export type Platform = "instagram" | "tiktok" | "pinterest" | "website" | "unknown";
 
 const PLATFORM_PATTERNS: Array<{ platform: Platform; pattern: RegExp }> = [
   { platform: "instagram", pattern: /instagram\.com\/(p|reel)\//i },
@@ -26,6 +28,7 @@ export function detectPlatform(url: string): Platform {
   for (const { platform, pattern } of PLATFORM_PATTERNS) {
     if (pattern.test(url)) return platform;
   }
+  if (/^https?:\/\//i.test(url)) return "website";
   return "unknown";
 }
 
@@ -86,6 +89,18 @@ export async function fetchPost(url: string): Promise<FetchResult> {
       const resolvedUrl = isPinItUrl(url) ? await resolveShortUrl(url) : url;
       const cleanUrl = normalizePinterestUrl(resolvedUrl) ?? url;
       post = await withRetry(() => fetchPinterestPost(cleanUrl), 3, 1000);
+    } else if (platform === "website") {
+      const webResult = await fetchRecipeFromWebPage(url);
+      if (!webResult) {
+        return { ok: false, code: "NOT_FOUND", message: FETCH_ERROR_MESSAGES.NOT_FOUND };
+      }
+      const webPost: WebPost = {
+        platform: "website",
+        ...(webResult.partialRecipe
+          ? { partialRecipe: webResult.partialRecipe, imageUrl: webResult.partialRecipe.imageUrl }
+          : { caption: webResult.captionFallback }),
+      };
+      return { ok: true, post: webPost };
     }
 
     if (!post) {

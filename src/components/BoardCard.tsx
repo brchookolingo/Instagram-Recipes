@@ -12,9 +12,16 @@ interface BoardCardProps {
 
 export const BoardCard = memo(function BoardCard({ board, recipeCount, recipeImages, onPress }: BoardCardProps) {
   const slots = [0, 1, 2, 3];
+  const recipesLabel = recipeCount === 1 ? "1 recipe" : `${recipeCount} recipes`;
 
   return (
-    <Pressable className="flex-1 m-1.5" onPress={onPress}>
+    <Pressable
+      className="flex-1 m-1.5"
+      onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={`${board.name}, ${recipesLabel}`}
+      accessibilityHint="Opens the collection"
+    >
       <View className="bg-white rounded-2xl shadow-sm overflow-hidden">
         {recipeImages.length === 0 ? (
           <View className="w-full aspect-square bg-gray-100 items-center justify-center">

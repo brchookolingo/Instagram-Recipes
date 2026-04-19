@@ -7,6 +7,7 @@ import {
   Alert,
   Linking,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import * as FileSystem from "expo-file-system/legacy";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
@@ -64,7 +65,11 @@ export default function SettingsScreen() {
   };
 
   return (
-    <ScrollView className="flex-1 bg-gray-50">
+    <SafeAreaView className="flex-1 bg-gray-50" edges={["bottom"]}>
+      <ScrollView
+        className="flex-1"
+        keyboardShouldPersistTaps="handled"
+      >
       <View className="mt-6 px-4">
         <Text className="text-xs font-semibold text-gray-400 uppercase mb-2 ml-1">
           App Info
@@ -107,6 +112,9 @@ export default function SettingsScreen() {
           <Pressable
             className="flex-row items-center py-4 gap-3"
             onPress={() => router.push("/onboarding?mode=review")}
+            accessibilityRole="button"
+            accessibilityLabel="How to Use"
+            accessibilityHint="Re-opens the onboarding walkthrough"
           >
             <Ionicons name="help-circle-outline" size={22} color="#ec4899" />
             <Text className="text-gray-800 flex-1">How to Use</Text>
@@ -119,6 +127,9 @@ export default function SettingsScreen() {
                 "https://docs.google.com/forms/d/e/1FAIpQLSetETqXQ0aU5zb7PiaTtsWrKaV2bdjkkttPYdPUNKpApPiOqQ/viewform?usp=publish-editor",
               )
             }
+            accessibilityRole="link"
+            accessibilityLabel="Send feedback"
+            accessibilityHint="Opens a feedback form in the browser"
           >
             <Ionicons name="chatbubble-outline" size={22} color="#ec4899" />
             <Text className="text-gray-800 flex-1">Send Feedback</Text>
@@ -135,11 +146,15 @@ export default function SettingsScreen() {
           <Pressable
             className="bg-red-50 rounded-xl py-3 items-center"
             onPress={handleClearData}
+            accessibilityRole="button"
+            accessibilityLabel="Clear all data"
+            accessibilityHint="Deletes recipes, collections, and grocery list"
           >
             <Text className="text-red-600 font-semibold">Clear All Data</Text>
           </Pressable>
         </View>
       </View>
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 }

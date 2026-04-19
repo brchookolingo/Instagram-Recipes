@@ -1,5 +1,10 @@
 export const CLAUDE_MODEL = "claude-sonnet-4-5";
 
+export const FILTER_DIETARY = ["Vegetarian", "Vegan", "Gluten Free"] as const;
+export const FILTER_PROTEIN = ["Beef", "Chicken", "Pork", "Lamb", "Fish", "Shellfish"] as const;
+export const FILTER_PREP = ["Under 30 min", "Under 1 hour", "Serves 6+"] as const;
+export const FILTER_MEAL_TYPE = ["Salad", "Appetizer", "Dessert", "Main", "Soup"] as const;
+
 export const LOADING_THEMES: [string, string, string][] = [
   [
     "Hunting down that post... 🔍",

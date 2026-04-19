@@ -1,4 +1,5 @@
 import { View, Text, FlatList, Alert, Pressable } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useBoardStore } from "../../src/stores/board-store";
 import { useRecipeStore } from "../../src/stores/recipe-store";
@@ -45,7 +46,7 @@ export default function CollectionsScreen() {
   };
 
   return (
-    <View className="flex-1 bg-gray-50">
+    <SafeAreaView className="flex-1 bg-gray-50" edges={["bottom"]}>
       {boards.length === 0 ? (
         <EmptyState
           icon="📋"
@@ -62,15 +63,22 @@ export default function CollectionsScreen() {
             keyExtractor={(item) => item.id}
             numColumns={2}
             contentContainerStyle={{ padding: 4 }}
+            removeClippedSubviews
+            initialNumToRender={8}
+            maxToRenderPerBatch={8}
+            windowSize={5}
           />
           <Pressable
             className="absolute bottom-6 right-6 w-14 h-14 bg-pink-500 rounded-full items-center justify-center shadow-lg"
             onPress={handleNewCollection}
+            accessibilityRole="button"
+            accessibilityLabel="Create collection"
+            accessibilityHint="Prompts for a collection name"
           >
             <Text className="text-white text-3xl font-light">+</Text>
           </Pressable>
         </>
       )}
-    </View>
+    </SafeAreaView>
   );
 }

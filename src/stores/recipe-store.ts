@@ -5,6 +5,11 @@ import { zustandMMKVStorage } from "../utils/storage";
 import { cacheImage, deleteCachedImage } from "../utils/image-cache";
 import { scaleIngredients } from "../utils/scale-recipe";
 
+// In-flight save dedup: protects against the race where two concurrent
+// addRecipe() calls for the same sourceUrl both pass a findBySourceUrl()
+// check, then both await cacheImage(), then both set() — producing duplicates.
+const pendingSourceUrls = new Set<string>();
+
 interface RecipeState {
   recipes: Recipe[];
   addRecipe: (recipe: Recipe) => Promise<void>;
@@ -20,28 +25,36 @@ export const useRecipeStore = create<RecipeState>()(
     (set, get) => ({
       recipes: [],
       addRecipe: async (recipe) => {
-        // Cache the image before persisting so the recipe is stored atomically
-        // with a local URI — eliminating the window where a recipe exists without
-        // a cached image. If caching fails, fall back to the remote URL.
-        let localImageUri = recipe.localImageUri;
-        if (!localImageUri && recipe.imageUrl) {
-          try {
-            localImageUri = await cacheImage(recipe.imageUrl, recipe.id);
-          } catch {
-            // Silently fail — remote URL still works
-          }
+        if (recipe.sourceUrl) {
+          if (pendingSourceUrls.has(recipe.sourceUrl)) return;
+          pendingSourceUrls.add(recipe.sourceUrl);
         }
-        const ingredientsHalf = scaleIngredients(recipe.ingredients, 0.5);
-        const ingredientsDouble = scaleIngredients(recipe.ingredients, 2);
-        const finalRecipe = {
-          ...recipe,
-          ingredientsHalf,
-          ingredientsDouble,
-          ...(localImageUri ? { localImageUri } : {}),
-        };
-        set((state) => ({
-          recipes: [...state.recipes, finalRecipe],
-        }));
+        try {
+          // Cache the image before persisting so the recipe is stored atomically
+          // with a local URI — eliminating the window where a recipe exists without
+          // a cached image. If caching fails, fall back to the remote URL.
+          let localImageUri = recipe.localImageUri;
+          if (!localImageUri && recipe.imageUrl) {
+            try {
+              localImageUri = await cacheImage(recipe.imageUrl, recipe.id);
+            } catch {
+              // Silently fail — remote URL still works
+            }
+          }
+          const ingredientsHalf = scaleIngredients(recipe.ingredients, 0.5);
+          const ingredientsDouble = scaleIngredients(recipe.ingredients, 2);
+          const finalRecipe = {
+            ...recipe,
+            ingredientsHalf,
+            ingredientsDouble,
+            ...(localImageUri ? { localImageUri } : {}),
+          };
+          set((state) => ({
+            recipes: [...state.recipes, finalRecipe],
+          }));
+        } finally {
+          if (recipe.sourceUrl) pendingSourceUrls.delete(recipe.sourceUrl);
+        }
       },
       updateRecipe: (id, updates) => {
         if (updates.ingredients) {

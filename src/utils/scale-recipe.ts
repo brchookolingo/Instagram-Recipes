@@ -133,9 +133,12 @@ function parseLeadingQuantity(
  * Scale a single ingredient text by `factor`.
  * Quantities embedded in the text (e.g. "2 cups", "1/2 tsp", "1½ oz")
  * are multiplied; purely descriptive text is returned unchanged.
+ *
+ * Rejects non-positive factors (returns the text unchanged) so accidental
+ * zero/negative scaling can't produce "0 cups" ingredient lists.
  */
 export function scaleIngredientText(text: string, factor: number): string {
-  if (factor === 1) return text;
+  if (factor === 1 || !Number.isFinite(factor) || factor <= 0) return text;
 
   const parsed = parseLeadingQuantity(text);
   if (!parsed) return text;
@@ -149,7 +152,7 @@ export function scaleIngredients(
   ingredients: Ingredient[],
   factor: number,
 ): Ingredient[] {
-  if (factor === 1) return ingredients;
+  if (factor === 1 || !Number.isFinite(factor) || factor <= 0) return ingredients;
   return ingredients.map((ing) => ({
     ...ing,
     text: scaleIngredientText(ing.text, factor),
@@ -162,5 +165,6 @@ export function scaleTime(
   factor: number,
 ): number | undefined {
   if (minutes === undefined) return undefined;
+  if (!Number.isFinite(factor) || factor <= 0) return minutes;
   return Math.round(minutes * factor);
 }

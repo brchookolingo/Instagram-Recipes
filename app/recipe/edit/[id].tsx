@@ -6,6 +6,7 @@ import {
   TextInput,
   Pressable,
   Alert,
+  Keyboard,
 } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useRecipeStore } from "../../../src/stores/recipe-store";
@@ -75,6 +76,7 @@ export default function EditRecipeScreen() {
   };
 
   const handleSave = () => {
+    Keyboard.dismiss();
     if (!title.trim()) {
       Alert.alert("Missing Title", "Please enter a recipe title.");
       return;
@@ -112,6 +114,7 @@ export default function EditRecipeScreen() {
             value={title}
             onChangeText={setTitle}
             placeholder="Recipe title"
+            accessibilityLabel="Recipe title"
           />
         </View>
 
@@ -126,6 +129,7 @@ export default function EditRecipeScreen() {
             onChangeText={setDescription}
             placeholder="Brief description"
             multiline
+            accessibilityLabel="Recipe description"
           />
         </View>
 
@@ -141,6 +145,7 @@ export default function EditRecipeScreen() {
               onChangeText={setPrepTime}
               placeholder="e.g. 15"
               keyboardType="numeric"
+              accessibilityLabel="Prep time in minutes"
             />
           </View>
           <View className="flex-1">
@@ -153,6 +158,7 @@ export default function EditRecipeScreen() {
               onChangeText={setCookTime}
               placeholder="e.g. 30"
               keyboardType="numeric"
+              accessibilityLabel="Cook time in minutes"
             />
           </View>
           <View className="flex-1">
@@ -165,6 +171,7 @@ export default function EditRecipeScreen() {
               onChangeText={setServings}
               placeholder="e.g. 4"
               keyboardType="numeric"
+              accessibilityLabel="Number of servings"
             />
           </View>
         </View>
@@ -172,8 +179,14 @@ export default function EditRecipeScreen() {
         {/* Ingredients */}
         <View>
           <View className="flex-row items-center justify-between mb-2">
-            <Text className="text-lg font-bold">Ingredients</Text>
-            <Pressable onPress={handleAddIngredient}>
+            <Text className="text-lg font-bold" accessibilityRole="header">
+              Ingredients
+            </Text>
+            <Pressable
+              onPress={handleAddIngredient}
+              accessibilityRole="button"
+              accessibilityLabel="Add ingredient"
+            >
               <Text className="text-pink-500 font-semibold">+ Add</Text>
             </Pressable>
           </View>
@@ -184,8 +197,13 @@ export default function EditRecipeScreen() {
                 value={ing.text}
                 onChangeText={(text) => handleUpdateIngredient(i, text)}
                 placeholder={`Ingredient ${i + 1}`}
+                accessibilityLabel={`Ingredient ${i + 1}`}
               />
-              <Pressable onPress={() => handleRemoveIngredient(i)}>
+              <Pressable
+                onPress={() => handleRemoveIngredient(i)}
+                accessibilityRole="button"
+                accessibilityLabel={`Remove ingredient ${i + 1}`}
+              >
                 <Text className="text-red-400 text-lg px-2">✕</Text>
               </Pressable>
             </View>
@@ -195,8 +213,14 @@ export default function EditRecipeScreen() {
         {/* Instructions */}
         <View>
           <View className="flex-row items-center justify-between mb-2">
-            <Text className="text-lg font-bold">Instructions</Text>
-            <Pressable onPress={handleAddInstruction}>
+            <Text className="text-lg font-bold" accessibilityRole="header">
+              Instructions
+            </Text>
+            <Pressable
+              onPress={handleAddInstruction}
+              accessibilityRole="button"
+              accessibilityLabel="Add instruction step"
+            >
               <Text className="text-pink-500 font-semibold">+ Add</Text>
             </Pressable>
           </View>
@@ -213,8 +237,13 @@ export default function EditRecipeScreen() {
                 onChangeText={(text) => handleUpdateInstruction(i, text)}
                 placeholder={`Step ${i + 1}`}
                 multiline
+                accessibilityLabel={`Step ${i + 1}`}
               />
-              <Pressable onPress={() => handleRemoveInstruction(i)}>
+              <Pressable
+                onPress={() => handleRemoveInstruction(i)}
+                accessibilityRole="button"
+                accessibilityLabel={`Remove step ${i + 1}`}
+              >
                 <Text className="text-red-400 text-lg px-2 mt-2">✕</Text>
               </Pressable>
             </View>
@@ -236,6 +265,7 @@ export default function EditRecipeScreen() {
             numberOfLines={4}
             textAlignVertical="top"
             maxLength={500}
+            accessibilityLabel="Notes"
           />
         </View>
 
@@ -249,12 +279,15 @@ export default function EditRecipeScreen() {
             value={tags}
             onChangeText={setTags}
             placeholder="e.g. pasta, italian, quick"
+            accessibilityLabel="Tags, comma separated"
           />
         </View>
 
         <Pressable
           className="bg-pink-500 rounded-xl py-4 items-center mt-2 mb-8"
           onPress={handleSave}
+          accessibilityRole="button"
+          accessibilityLabel="Save changes"
         >
           <Text className="text-white font-bold text-base">Save Changes</Text>
         </Pressable>

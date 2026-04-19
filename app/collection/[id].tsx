@@ -67,6 +67,7 @@ export default function CollectionDetailScreen() {
     <Pressable
       className="flex-1"
       onLongPress={() => handleLongPressRecipe(item.id)}
+      accessibilityHint="Long press to remove from collection"
     >
       <RecipeCard
         recipe={item}
@@ -78,14 +79,26 @@ export default function CollectionDetailScreen() {
   return (
     <View className="flex-1 bg-gray-50">
       <View className="px-4 py-3 flex-row items-center justify-between bg-white border-b border-gray-100">
-        <Text className="text-lg font-bold flex-1" numberOfLines={1}>
+        <Text
+          className="text-lg font-bold flex-1"
+          numberOfLines={1}
+          accessibilityRole="header"
+        >
           {board.name}
         </Text>
         <View className="flex-row gap-3">
-          <Pressable onPress={handleRename}>
+          <Pressable
+            onPress={handleRename}
+            accessibilityRole="button"
+            accessibilityLabel="Rename collection"
+          >
             <Text className="text-pink-500 font-semibold">Rename</Text>
           </Pressable>
-          <Pressable onPress={handleDeleteCollection}>
+          <Pressable
+            onPress={handleDeleteCollection}
+            accessibilityRole="button"
+            accessibilityLabel="Delete collection"
+          >
             <Text className="text-red-500 font-semibold">Delete</Text>
           </Pressable>
         </View>
@@ -104,6 +117,10 @@ export default function CollectionDetailScreen() {
           keyExtractor={(item) => item.id}
           numColumns={2}
           contentContainerStyle={{ padding: 4 }}
+          removeClippedSubviews
+          initialNumToRender={8}
+          maxToRenderPerBatch={8}
+          windowSize={5}
         />
       )}
     </View>

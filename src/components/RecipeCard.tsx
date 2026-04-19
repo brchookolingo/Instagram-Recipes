@@ -2,6 +2,7 @@ import { memo } from "react";
 import { View, Text, Pressable } from "react-native";
 import { Image } from "expo-image";
 import { Recipe } from "../types/recipe";
+import { colors } from "../utils/colors";
 
 interface RecipeCardProps {
   recipe: Recipe;
@@ -10,20 +11,33 @@ interface RecipeCardProps {
 
 export const RecipeCard = memo(function RecipeCard({ recipe, onPress }: RecipeCardProps) {
   const imageUri = recipe.localImageUri || recipe.imageUrl || null;
+  const accessibilityLabel = [
+    recipe.title,
+    recipe.author ? `by ${recipe.author}` : null,
+    recipe.prepTime ? `prep ${recipe.prepTime} minutes` : null,
+    recipe.cookTime ? `cook ${recipe.cookTime} minutes` : null,
+  ]
+    .filter(Boolean)
+    .join(", ");
 
   return (
-    <Pressable className="flex-1 m-1.5" onPress={onPress}>
+    <Pressable
+      className="flex-1 m-1.5"
+      onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={accessibilityLabel}
+      accessibilityHint="Opens recipe details"
+    >
       <View className="bg-white rounded-2xl shadow-sm overflow-hidden">
         {imageUri ? (
           <Image
             source={{ uri: imageUri }}
-            style={{ width: "100%", aspectRatio: 1 }}
+            style={{ width: "100%", aspectRatio: 1, backgroundColor: colors.surfaceAlt }}
             contentFit="cover"
-            placeholder={{ blurhash: "L6PZfSi_.AyE_3t7t7R**0o#DgR4" }}
             transition={200}
           />
         ) : (
-          <View style={{ width: "100%", aspectRatio: 1, backgroundColor: "#f3f4f6" }} />
+          <View style={{ width: "100%", aspectRatio: 1, backgroundColor: colors.surfaceAlt }} />
         )}
         <View className="p-3">
           <Text className="text-base font-semibold" numberOfLines={2}>

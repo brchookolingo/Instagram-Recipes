@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { View, Text, ScrollView, Pressable, Alert, ActivityIndicator, TextInput } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useGroceryStore } from "../../src/stores/grocery-store";
@@ -48,12 +49,15 @@ export default function GroceryScreen() {
   };
 
   return (
-    <View className="flex-1 bg-white">
+    <SafeAreaView className="flex-1 bg-white" edges={["bottom"]}>
       {/* Action buttons */}
       <View className="flex-row gap-3 px-4 pt-4 pb-2">
         <Pressable
           className={`flex-1 rounded-xl py-3 items-center ${isEditing ? "bg-black" : "bg-gray-100"}`}
           onPress={() => setIsEditing((v) => !v)}
+          accessibilityRole="button"
+          accessibilityLabel={isEditing ? "Finish editing" : "Edit grocery list"}
+          accessibilityState={{ selected: isEditing }}
         >
           <Text className={`font-semibold text-sm ${isEditing ? "text-white" : "text-gray-700"}`}>
             {isEditing ? "Done" : "Edit List"}
@@ -62,12 +66,16 @@ export default function GroceryScreen() {
         <Pressable
           className="flex-1 bg-gray-100 rounded-xl py-3 items-center"
           onPress={clearChecked}
+          accessibilityRole="button"
+          accessibilityLabel="Clear checked items"
         >
           <Text className="text-gray-700 font-semibold text-sm">Clear Crossed Out</Text>
         </Pressable>
         <Pressable
           className="flex-1 bg-red-50 rounded-xl py-3 items-center"
           onPress={handleClearAll}
+          accessibilityRole="button"
+          accessibilityLabel="Clear entire grocery list"
         >
           <Text className="text-red-600 font-semibold text-sm">Clear All</Text>
         </Pressable>
@@ -85,7 +93,11 @@ export default function GroceryScreen() {
           subtitle="Open a recipe and tap 'Add to Grocery List' to get started"
         />
       ) : (
-        <ScrollView className="flex-1" contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 32 }}>
+        <ScrollView
+          className="flex-1"
+          contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 32 }}
+          keyboardShouldPersistTaps="handled"
+        >
           {/* Recipe refs */}
           {recipeRefs.length > 0 && (
             <View className="mt-4 mb-6">
@@ -98,6 +110,8 @@ export default function GroceryScreen() {
                     key={ref.id}
                     onPress={() => router.push(`/recipe/${ref.id}`)}
                     className="bg-pink-50 rounded-full px-3 py-1 flex-row items-center gap-1"
+                    accessibilityRole="link"
+                    accessibilityLabel={`Open recipe ${ref.title}`}
                   >
                     <Text className="text-pink-600 text-sm font-medium">{ref.title}</Text>
                     <Text className="text-pink-400 text-xs">↗</Text>
@@ -129,6 +143,8 @@ export default function GroceryScreen() {
                 <Pressable
                   className="bg-pink-500 rounded-lg px-3 py-2"
                   onPress={() => handleAddItem("Manual")}
+                  accessibilityRole="button"
+                  accessibilityLabel="Add manual item"
                 >
                   <Ionicons name="add" size={20} color="white" />
                 </Pressable>
@@ -139,7 +155,10 @@ export default function GroceryScreen() {
           {/* Grocery sections */}
           {sections.map((section) => (
             <View key={section.name} className="mb-6">
-              <Text className="text-base font-bold text-gray-800 mb-2 border-b border-gray-100 pb-1">
+              <Text
+                className="text-base font-bold text-gray-800 mb-2 border-b border-gray-100 pb-1"
+                accessibilityRole="header"
+              >
                 {section.name}
               </Text>
 
@@ -147,7 +166,11 @@ export default function GroceryScreen() {
                 isEditing ? (
                   // Edit mode row
                   <View key={item.id} className="flex-row items-center py-1 gap-2">
-                    <Pressable onPress={() => removeItem(section.name, item.id)}>
+                    <Pressable
+                      onPress={() => removeItem(section.name, item.id)}
+                      accessibilityRole="button"
+                      accessibilityLabel={`Remove ${item.text}`}
+                    >
                       <Ionicons name="remove-circle" size={22} color="#f87171" />
                     </Pressable>
                     <TextInput
@@ -155,6 +178,7 @@ export default function GroceryScreen() {
                       value={item.text}
                       onChangeText={(text) => updateItem(section.name, item.id, text)}
                       placeholder="Item name"
+                      accessibilityLabel="Edit item name"
                     />
                   </View>
                 ) : (
@@ -163,6 +187,9 @@ export default function GroceryScreen() {
                     key={item.id}
                     className="flex-row items-center py-2 gap-3"
                     onPress={() => toggleItem(section.name, item.id)}
+                    accessibilityRole="checkbox"
+                    accessibilityLabel={item.text}
+                    accessibilityState={{ checked: item.checked }}
                   >
                     <Ionicons
                       name={item.checked ? "checkbox" : "checkbox-outline"}
@@ -192,10 +219,13 @@ export default function GroceryScreen() {
                     }
                     onSubmitEditing={() => handleAddItem(section.name)}
                     returnKeyType="done"
+                    accessibilityLabel={`Add item to ${section.name}`}
                   />
                   <Pressable
                     className="bg-pink-500 rounded-lg px-3 py-2"
                     onPress={() => handleAddItem(section.name)}
+                    accessibilityRole="button"
+                    accessibilityLabel={`Add to ${section.name}`}
                   >
                     <Ionicons name="add" size={20} color="white" />
                   </Pressable>
@@ -205,6 +235,6 @@ export default function GroceryScreen() {
           ))}
         </ScrollView>
       )}
-    </View>
+    </SafeAreaView>
   );
 }

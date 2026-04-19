@@ -54,14 +54,22 @@ export function URLInput({ onSubmit }: URLInputProps) {
         autoCapitalize="none"
         autoCorrect={false}
         keyboardType="url"
+        accessibilityLabel="Recipe URL"
       />
       {validationError ? (
-        <Text className="text-red-500 text-sm mt-1 ml-1">{validationError}</Text>
+        <Text
+          className="text-red-500 text-sm mt-1 ml-1"
+          accessibilityLiveRegion="polite"
+        >
+          {validationError}
+        </Text>
       ) : null}
       {hasClipboardContent && !url && (
         <Pressable
           className="mt-2 bg-pink-50 rounded-lg px-4 py-2"
           onPress={handlePasteFromClipboard}
+          accessibilityRole="button"
+          accessibilityLabel="Paste URL from clipboard"
         >
           <Text className="text-pink-600 text-sm">Paste from clipboard</Text>
         </Pressable>
@@ -69,6 +77,8 @@ export function URLInput({ onSubmit }: URLInputProps) {
       <Pressable
         className="mt-3 bg-pink-500 rounded-xl py-3 items-center"
         onPress={handleSubmit}
+        accessibilityRole="button"
+        accessibilityLabel="Fetch recipe from URL"
       >
         <Text className="text-white font-semibold text-base">Fetch Recipe</Text>
       </Pressable>

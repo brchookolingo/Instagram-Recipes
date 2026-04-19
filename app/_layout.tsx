@@ -12,7 +12,9 @@ export default function RootLayout() {
 
   useEffect(() => {
     const ids = recipes.map((r) => r.id);
-    sweepOrphanedImages(ids);
+    sweepOrphanedImages(ids).catch(() => {
+      // Already logs internally; swallow so the tree mounts regardless.
+    });
   }, []);
 
   useEffect(() => {

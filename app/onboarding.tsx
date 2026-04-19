@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { View, Text, Pressable, StyleSheet } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { markOnboardingSeen } from "../src/utils/onboarding";
 
@@ -67,11 +68,16 @@ export default function OnboardingScreen() {
   const slide = SLIDES[currentIndex];
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container} edges={["top", "bottom"]}>
       {/* Skip button */}
       <View style={styles.skipRow}>
         {!isLast ? (
-          <Pressable onPress={handleSkip} hitSlop={8}>
+          <Pressable
+            onPress={handleSkip}
+            hitSlop={8}
+            accessibilityRole="button"
+            accessibilityLabel={isReview ? "Done" : "Skip onboarding"}
+          >
             <Text style={styles.skipText}>{isReview ? "Done" : "Skip"}</Text>
           </Pressable>
         ) : (
@@ -81,13 +87,20 @@ export default function OnboardingScreen() {
 
       {/* Slide content */}
       <View style={styles.content}>
-        <Text style={styles.emoji}>{slide.emoji}</Text>
-        <Text style={styles.title}>{slide.title}</Text>
+        <Text style={styles.emoji} accessibilityElementsHidden>
+          {slide.emoji}
+        </Text>
+        <Text style={styles.title} accessibilityRole="header">
+          {slide.title}
+        </Text>
         <Text style={styles.description}>{slide.description}</Text>
       </View>
 
       {/* Dots */}
-      <View style={styles.dotsRow}>
+      <View
+        style={styles.dotsRow}
+        accessibilityLabel={`Slide ${currentIndex + 1} of ${SLIDES.length}`}
+      >
         {SLIDES.map((_, i) => (
           <View
             key={i}
@@ -101,13 +114,20 @@ export default function OnboardingScreen() {
 
       {/* Button */}
       <View style={styles.buttonContainer}>
-        <Pressable onPress={handleNext} style={styles.button}>
+        <Pressable
+          onPress={handleNext}
+          style={styles.button}
+          accessibilityRole="button"
+          accessibilityLabel={
+            isLast ? (isReview ? "Done" : "Get Started") : "Next slide"
+          }
+        >
           <Text style={styles.buttonText}>
             {isLast ? (isReview ? "Done" : "Get Started") : "Next"}
           </Text>
         </Pressable>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -120,7 +140,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-end",
     paddingHorizontal: 24,
-    paddingTop: 60,
+    paddingTop: 16,
   },
   skipText: {
     color: "#9ca3af",
@@ -170,7 +190,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     paddingHorizontal: 24,
-    paddingBottom: 48,
+    paddingBottom: 16,
   },
   button: {
     backgroundColor: "#ec4899",

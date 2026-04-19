@@ -1,4 +1,6 @@
 import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
+import { zustandMMKVStorage } from "../utils/storage";
 
 interface FilterState {
   search: string;
@@ -16,25 +18,33 @@ interface FilterState {
   clearAll: () => void;
 }
 
-export const useFilterStore = create<FilterState>()((set) => ({
-  search: "",
-  filterFavourites: false,
-  filterDietary: [],
-  filterProtein: [],
-  filterPrep: [],
-  filterMealType: [],
-  setSearch: (value) => set({ search: value }),
-  setFilterFavourites: (value) => set({ filterFavourites: value }),
-  setFilterDietary: (value) => set({ filterDietary: value }),
-  setFilterProtein: (value) => set({ filterProtein: value }),
-  setFilterPrep: (value) => set({ filterPrep: value }),
-  setFilterMealType: (value) => set({ filterMealType: value }),
-  clearAll: () =>
-    set({
+export const useFilterStore = create<FilterState>()(
+  persist(
+    (set) => ({
+      search: "",
       filterFavourites: false,
       filterDietary: [],
       filterProtein: [],
       filterPrep: [],
       filterMealType: [],
+      setSearch: (value) => set({ search: value }),
+      setFilterFavourites: (value) => set({ filterFavourites: value }),
+      setFilterDietary: (value) => set({ filterDietary: value }),
+      setFilterProtein: (value) => set({ filterProtein: value }),
+      setFilterPrep: (value) => set({ filterPrep: value }),
+      setFilterMealType: (value) => set({ filterMealType: value }),
+      clearAll: () =>
+        set({
+          filterFavourites: false,
+          filterDietary: [],
+          filterProtein: [],
+          filterPrep: [],
+          filterMealType: [],
+        }),
     }),
-}));
+    {
+      name: "filter-store",
+      storage: createJSONStorage(() => zustandMMKVStorage),
+    },
+  ),
+);

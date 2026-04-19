@@ -7,7 +7,9 @@ import {
   Pressable,
   Alert,
   ActivityIndicator,
+  Keyboard,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { Image } from "expo-image";
 import { URLInput } from "../src/components/URLInput";
@@ -145,6 +147,7 @@ export default function AddRecipeScreen() {
 
   const handleSave = async () => {
     if (saving) return;
+    Keyboard.dismiss();
     if (!title.trim()) {
       Alert.alert("Missing Title", "Please enter a recipe title.");
       return;
@@ -213,25 +216,27 @@ export default function AddRecipeScreen() {
   // Loading state
   if (step === "loading") {
     return (
-      <View className="flex-1 items-center justify-center bg-white px-8">
+      <SafeAreaView className="flex-1 items-center justify-center bg-white px-8" edges={["bottom"]}>
         <ActivityIndicator size="large" color="#ec4899" />
         {loadingMessage ? (
           <Text className="mt-4 text-gray-500 text-sm text-center">{loadingMessage}</Text>
         ) : null}
-      </View>
+      </SafeAreaView>
     );
   }
 
   // Input state
   if (step === "input") {
     return (
-      <View className="flex-1 bg-white">
+      <SafeAreaView className="flex-1 bg-white" edges={["bottom"]}>
         <View className="pt-6">
           <URLInput onSubmit={handleFetch} />
         </View>
         {error ? (
           <View className="mx-4 mt-2 bg-red-50 rounded-xl px-4 py-3">
-            <Text className="text-red-600 text-sm">{error}</Text>
+            <Text className="text-red-600 text-sm" accessibilityLiveRegion="polite">
+              {error}
+            </Text>
           </View>
         ) : null}
         <View className="items-center mt-8">
@@ -239,162 +244,198 @@ export default function AddRecipeScreen() {
           <Pressable
             className="bg-gray-100 rounded-xl px-6 py-3"
             onPress={handleManualEntry}
+            accessibilityRole="button"
+            accessibilityLabel="Enter recipe manually"
           >
             <Text className="text-gray-600 font-semibold">Enter Manually</Text>
           </Pressable>
         </View>
-      </View>
+      </SafeAreaView>
     );
   }
 
   // Preview/edit state
   return (
-    <ScrollView className="flex-1 bg-white" keyboardShouldPersistTaps="handled">
-      {postData?.imageUrl && (
-        <Image
-          source={{ uri: postData.imageUrl }}
-          className="w-full aspect-video"
-          contentFit="cover"
-        />
-      )}
-
-      <View className="px-4 py-4 gap-4">
-        <View>
-          <Text className="text-sm font-medium text-gray-500 mb-1">Title</Text>
-          <TextInput
-            className="border border-gray-200 rounded-xl px-4 py-3 text-base"
-            value={title}
-            onChangeText={setTitle}
-            placeholder="Recipe title"
+    <SafeAreaView className="flex-1 bg-white" edges={["bottom"]}>
+      <ScrollView className="flex-1 bg-white" keyboardShouldPersistTaps="handled">
+        {postData?.imageUrl && (
+          <Image
+            source={{ uri: postData.imageUrl }}
+            className="w-full aspect-video"
+            contentFit="cover"
+            accessibilityLabel="Recipe photo"
           />
-        </View>
+        )}
 
-        <View>
-          <Text className="text-sm font-medium text-gray-500 mb-1">
-            Description
-          </Text>
-          <TextInput
-            className="border border-gray-200 rounded-xl px-4 py-3 text-base"
-            value={description}
-            onChangeText={setDescription}
-            placeholder="Brief description"
-            multiline
-          />
-        </View>
+        <View className="px-4 py-4 gap-4">
+          <View>
+            <Text className="text-sm font-medium text-gray-500 mb-1">Title</Text>
+            <TextInput
+              className="border border-gray-200 rounded-xl px-4 py-3 text-base"
+              value={title}
+              onChangeText={setTitle}
+              placeholder="Recipe title"
+              accessibilityLabel="Recipe title"
+            />
+          </View>
 
-        <View className="flex-row gap-3">
-          <View className="flex-1">
+          <View>
             <Text className="text-sm font-medium text-gray-500 mb-1">
-              Prep Time
+              Description
             </Text>
             <TextInput
               className="border border-gray-200 rounded-xl px-4 py-3 text-base"
-              value={prepTime}
-              onChangeText={setPrepTime}
-              placeholder="e.g. 15"
-              keyboardType="numeric"
+              value={description}
+              onChangeText={setDescription}
+              placeholder="Brief description"
+              multiline
+              accessibilityLabel="Recipe description"
             />
           </View>
-          <View className="flex-1">
-            <Text className="text-sm font-medium text-gray-500 mb-1">
-              Cook Time
-            </Text>
-            <TextInput
-              className="border border-gray-200 rounded-xl px-4 py-3 text-base"
-              value={cookTime}
-              onChangeText={setCookTime}
-              placeholder="e.g. 30"
-              keyboardType="numeric"
-            />
-          </View>
-          <View className="flex-1">
-            <Text className="text-sm font-medium text-gray-500 mb-1">
-              Servings
-            </Text>
-            <TextInput
-              className="border border-gray-200 rounded-xl px-4 py-3 text-base"
-              value={servings}
-              onChangeText={setServings}
-              placeholder="e.g. 4"
-              keyboardType="numeric"
-            />
-          </View>
-        </View>
 
-        {/* Ingredients */}
-        <View>
-          <View className="flex-row items-center justify-between mb-2">
-            <Text className="text-lg font-bold">Ingredients</Text>
-            <Pressable onPress={handleAddIngredient}>
-              <Text className="text-pink-500 font-semibold">+ Add</Text>
-            </Pressable>
-          </View>
-          {ingredients.map((ing, i) => (
-            <View key={i} className="flex-row items-center gap-2 mb-2">
+          <View className="flex-row gap-3">
+            <View className="flex-1">
+              <Text className="text-sm font-medium text-gray-500 mb-1">
+                Prep Time
+              </Text>
               <TextInput
-                className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-base"
-                value={ing.text}
-                onChangeText={(text) => handleUpdateIngredient(i, text)}
-                placeholder={`Ingredient ${i + 1}`}
+                className="border border-gray-200 rounded-xl px-4 py-3 text-base"
+                value={prepTime}
+                onChangeText={setPrepTime}
+                placeholder="e.g. 15"
+                keyboardType="numeric"
+                accessibilityLabel="Prep time in minutes"
               />
-              <Pressable onPress={() => handleRemoveIngredient(i)}>
-                <Text className="text-red-400 text-lg px-2">✕</Text>
+            </View>
+            <View className="flex-1">
+              <Text className="text-sm font-medium text-gray-500 mb-1">
+                Cook Time
+              </Text>
+              <TextInput
+                className="border border-gray-200 rounded-xl px-4 py-3 text-base"
+                value={cookTime}
+                onChangeText={setCookTime}
+                placeholder="e.g. 30"
+                keyboardType="numeric"
+                accessibilityLabel="Cook time in minutes"
+              />
+            </View>
+            <View className="flex-1">
+              <Text className="text-sm font-medium text-gray-500 mb-1">
+                Servings
+              </Text>
+              <TextInput
+                className="border border-gray-200 rounded-xl px-4 py-3 text-base"
+                value={servings}
+                onChangeText={setServings}
+                placeholder="e.g. 4"
+                keyboardType="numeric"
+                accessibilityLabel="Number of servings"
+              />
+            </View>
+          </View>
+
+          {/* Ingredients */}
+          <View>
+            <View className="flex-row items-center justify-between mb-2">
+              <Text className="text-lg font-bold" accessibilityRole="header">
+                Ingredients
+              </Text>
+              <Pressable
+                onPress={handleAddIngredient}
+                accessibilityRole="button"
+                accessibilityLabel="Add ingredient"
+              >
+                <Text className="text-pink-500 font-semibold">+ Add</Text>
               </Pressable>
             </View>
-          ))}
-        </View>
-
-        {/* Instructions */}
-        <View>
-          <View className="flex-row items-center justify-between mb-2">
-            <Text className="text-lg font-bold">Instructions</Text>
-            <Pressable onPress={handleAddInstruction}>
-              <Text className="text-pink-500 font-semibold">+ Add</Text>
-            </Pressable>
-          </View>
-          {instructions.map((inst, i) => (
-            <View key={i} className="flex-row items-start gap-2 mb-2">
-              <View className="w-7 h-7 rounded-full bg-pink-100 items-center justify-center mt-2">
-                <Text className="text-pink-600 text-xs font-bold">
-                  {inst.stepNumber}
-                </Text>
+            {ingredients.map((ing, i) => (
+              <View key={i} className="flex-row items-center gap-2 mb-2">
+                <TextInput
+                  className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-base"
+                  value={ing.text}
+                  onChangeText={(text) => handleUpdateIngredient(i, text)}
+                  placeholder={`Ingredient ${i + 1}`}
+                  accessibilityLabel={`Ingredient ${i + 1}`}
+                />
+                <Pressable
+                  onPress={() => handleRemoveIngredient(i)}
+                  accessibilityRole="button"
+                  accessibilityLabel={`Remove ingredient ${i + 1}`}
+                >
+                  <Text className="text-red-400 text-lg px-2">✕</Text>
+                </Pressable>
               </View>
-              <TextInput
-                className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-base"
-                value={inst.text}
-                onChangeText={(text) => handleUpdateInstruction(i, text)}
-                placeholder={`Step ${i + 1}`}
-                multiline
-              />
-              <Pressable onPress={() => handleRemoveInstruction(i)}>
-                <Text className="text-red-400 text-lg px-2 mt-2">✕</Text>
+            ))}
+          </View>
+
+          {/* Instructions */}
+          <View>
+            <View className="flex-row items-center justify-between mb-2">
+              <Text className="text-lg font-bold" accessibilityRole="header">
+                Instructions
+              </Text>
+              <Pressable
+                onPress={handleAddInstruction}
+                accessibilityRole="button"
+                accessibilityLabel="Add instruction step"
+              >
+                <Text className="text-pink-500 font-semibold">+ Add</Text>
               </Pressable>
             </View>
-          ))}
-        </View>
+            {instructions.map((inst, i) => (
+              <View key={i} className="flex-row items-start gap-2 mb-2">
+                <View className="w-7 h-7 rounded-full bg-pink-100 items-center justify-center mt-2">
+                  <Text className="text-pink-600 text-xs font-bold">
+                    {inst.stepNumber}
+                  </Text>
+                </View>
+                <TextInput
+                  className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-base"
+                  value={inst.text}
+                  onChangeText={(text) => handleUpdateInstruction(i, text)}
+                  placeholder={`Step ${i + 1}`}
+                  multiline
+                  accessibilityLabel={`Step ${i + 1}`}
+                />
+                <Pressable
+                  onPress={() => handleRemoveInstruction(i)}
+                  accessibilityRole="button"
+                  accessibilityLabel={`Remove step ${i + 1}`}
+                >
+                  <Text className="text-red-400 text-lg px-2 mt-2">✕</Text>
+                </Pressable>
+              </View>
+            ))}
+          </View>
 
-        <View>
-          <Text className="text-sm font-medium text-gray-500 mb-1">
-            Tags (comma-separated)
-          </Text>
-          <TextInput
-            className="border border-gray-200 rounded-xl px-4 py-3 text-base"
-            value={tags}
-            onChangeText={setTags}
-            placeholder="e.g. pasta, italian, quick"
-          />
-        </View>
+          <View>
+            <Text className="text-sm font-medium text-gray-500 mb-1">
+              Tags (comma-separated)
+            </Text>
+            <TextInput
+              className="border border-gray-200 rounded-xl px-4 py-3 text-base"
+              value={tags}
+              onChangeText={setTags}
+              placeholder="e.g. pasta, italian, quick"
+              accessibilityLabel="Recipe tags, comma separated"
+            />
+          </View>
 
-        <Pressable
-          className={`rounded-xl py-4 items-center mt-2 mb-8 ${saving ? "bg-pink-300" : "bg-pink-500"}`}
-          onPress={handleSave}
-          disabled={saving}
-        >
-          <Text className="text-white font-bold text-base">
-            {saving ? "Saving..." : "Save Recipe"}
-          </Text>
-        </Pressable>
-      </View>
-    </ScrollView>
+          <Pressable
+            className={`rounded-xl py-4 items-center mt-2 mb-8 ${saving ? "bg-pink-300" : "bg-pink-500"}`}
+            onPress={handleSave}
+            disabled={saving}
+            accessibilityRole="button"
+            accessibilityLabel={saving ? "Saving recipe" : "Save recipe"}
+            accessibilityState={{ disabled: saving, busy: saving }}
+          >
+            <Text className="text-white font-bold text-base">
+              {saving ? "Saving..." : "Save Recipe"}
+            </Text>
+          </Pressable>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }

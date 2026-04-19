@@ -37,6 +37,9 @@
         "projectId": "7098a2e4-b1cf-46a8-bd93-a98500daa298"
       }
     },
-    "owner": "bchookolingo"
+    "owner": "bchookolingo",
+    "plugins": [
+      "expo-secure-store"
+    ]
   }
 }

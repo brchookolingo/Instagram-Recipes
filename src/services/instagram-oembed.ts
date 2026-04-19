@@ -1,5 +1,6 @@
 import { RawPost } from "../types/post";
 import { fetchWithTimeout } from "../utils/fetch-with-timeout";
+import { env } from "../utils/env";
 
 export type RawInstagramPost = RawPost;
 
@@ -21,14 +22,11 @@ function extractCaptionFromHtml(html: string): string | undefined {
 export async function fetchViaOEmbed(
   url: string,
 ): Promise<RawInstagramPost | null> {
-  const appId = process.env.EXPO_PUBLIC_FACEBOOK_APP_ID;
-  const appSecret = process.env.EXPO_PUBLIC_FACEBOOK_APP_SECRET;
-
-  if (!appId || !appSecret) {
+  if (!env.FACEBOOK_APP_ID || !env.FACEBOOK_CLIENT_TOKEN) {
     return null;
   }
 
-  const accessToken = `${appId}|${appSecret}`;
+  const accessToken = `${env.FACEBOOK_APP_ID}|${env.FACEBOOK_CLIENT_TOKEN}`;
 
   const params = new URLSearchParams({
     url,

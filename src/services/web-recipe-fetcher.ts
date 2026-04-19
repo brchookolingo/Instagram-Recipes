@@ -1,6 +1,7 @@
 import { Recipe, Ingredient, Instruction } from "../types/recipe";
 import { fetchWithTimeout } from "../utils/fetch-with-timeout";
 import { generateId } from "../utils/uuid";
+import { isSafePublicUrl } from "../utils/url-safety";
 
 // Schema.org Recipe JSON-LD structure (partial)
 interface SchemaRecipe {
@@ -117,6 +118,8 @@ export async function fetchRecipeFromWebPage(url: string): Promise<{
   partialRecipe?: Partial<Recipe> & { imageUrl?: string };
   captionFallback?: string;
 } | null> {
+  if (!isSafePublicUrl(url)) return null;
+
   const response = await fetchWithTimeout(
     url,
     { headers: { "User-Agent": "Mozilla/5.0 (compatible; RecipeBot/1.0)" } },
@@ -125,7 +128,9 @@ export async function fetchRecipeFromWebPage(url: string): Promise<{
 
   if (!response.ok) return null;
 
-  const html = await response.text();
+  // Cap HTML body to 400 KB before regex work — prevents catastrophic backtracking
+  // and keeps memory bounded for hostile pages.
+  const html = (await response.text()).slice(0, 400_000);
 
   const schema = extractJsonLdRecipe(html);
   if (schema && schema.recipeIngredient?.length) {
@@ -144,6 +149,8 @@ export async function fetchRecipeFromWebPage(url: string): Promise<{
 export async function getPinterestDestinationUrl(
   pinUrl: string,
 ): Promise<string | null> {
+  if (!isSafePublicUrl(pinUrl)) return null;
+
   const response = await fetchWithTimeout(
     pinUrl,
     { headers: { "User-Agent": "Mozilla/5.0 (compatible; RecipeBot/1.0)" } },
@@ -152,9 +159,11 @@ export async function getPinterestDestinationUrl(
 
   if (!response.ok) return null;
 
-  const html = await response.text();
+  const html = (await response.text()).slice(0, 400_000);
 
   // Pinterest embeds pin data as JSON — look for the outbound link field
   const match = html.match(/"link"\s*:\s*"(https?:\/\/[^"]+)"/);
-  return match?.[1] ?? null;
+  const extracted = match?.[1];
+  if (!extracted) return null;
+  return isSafePublicUrl(extracted) ? extracted : null;
 }

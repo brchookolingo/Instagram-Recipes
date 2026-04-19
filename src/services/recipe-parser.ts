@@ -1,5 +1,6 @@
 import { Recipe, Ingredient, Instruction } from "../types/recipe";
 import { generateId } from "../utils/uuid";
+import { isSafePublicUrl } from "../utils/url-safety";
 
 const MEASUREMENT_WORDS = [
   "cup",
@@ -68,19 +69,43 @@ const SOCIAL_MEDIA_HOSTS = [
   "snapchat.com",
 ];
 
+// URL shorteners are blocked because they hide the real destination, which
+// defeats SSRF / host checks at this layer (a shortener could redirect to a
+// private IP). `resolveShortUrl` handles specific known shorteners where that
+// behavior is intentional.
+const URL_SHORTENER_HOSTS = [
+  "bit.ly",
+  "tinyurl.com",
+  "goo.gl",
+  "t.co",
+  "ow.ly",
+  "is.gd",
+  "buff.ly",
+  "rebrand.ly",
+  "lnkd.in",
+  "cutt.ly",
+];
+
 /**
- * Extracts HTTP(S) URLs from a social media caption, filtering out links
- * back to social media platforms (which won't contain recipe content).
- * Returns up to 3 candidate URLs to try.
+ * Extracts HTTP(S) URLs from a social media caption for recipe following.
+ * Filters:
+ *  - invalid / malformed URLs
+ *  - private / loopback / link-local hosts (SSRF)
+ *  - social-media platforms (won't host recipe content)
+ *  - URL shorteners (opaque destinations bypass SSRF checks)
+ * Returns up to 3 candidate URLs.
  */
 export function extractUrlsFromCaption(caption: string): string[] {
   const matches = caption.match(/https?:\/\/[^\s<>"{}|\\^`\[\]]+/g) ?? [];
   return matches
     .map((url) => url.replace(/[.,;:!?]+$/, "")) // strip trailing punctuation
     .filter((url) => {
+      if (!isSafePublicUrl(url)) return false;
       try {
-        const host = new URL(url).hostname.replace(/^www\./, "");
-        return !SOCIAL_MEDIA_HOSTS.some((h) => host === h || host.endsWith(`.${h}`));
+        const host = new URL(url).hostname.replace(/^www\./, "").toLowerCase();
+        if (SOCIAL_MEDIA_HOSTS.some((h) => host === h || host.endsWith(`.${h}`))) return false;
+        if (URL_SHORTENER_HOSTS.some((h) => host === h || host.endsWith(`.${h}`))) return false;
+        return true;
       } catch {
         return false;
       }

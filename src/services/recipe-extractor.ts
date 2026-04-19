@@ -8,6 +8,8 @@ import {
 } from "./recipe-parser-ai";
 import { parseRecipeFromCaption, hasRecipeContent, extractUrlsFromCaption } from "./recipe-parser";
 import { fetchRecipeFromWebPage } from "./web-recipe-fetcher";
+import { redactError, redactUrl } from "../utils/log-redact";
+import { env } from "../utils/env";
 
 export type ExtractionResult = Partial<Recipe> & { imageUrl?: string };
 
@@ -42,7 +44,7 @@ export async function extractRecipeFromPost(
   }
 
   const caption = post.caption;
-  const apiKey = process.env.EXPO_PUBLIC_CLAUDE_API_KEY ?? "";
+  const apiKey = env.CLAUDE_API_KEY;
 
   // Track the most significant AI error seen across tiers so we can surface it
   // if no tier succeeds.
@@ -85,7 +87,9 @@ export async function extractRecipeFromPost(
           }
         }
       } catch (error) {
-        console.error(`[recipe-extractor] Web fetch failed for ${url}:`, error);
+        console.error(
+          `[recipe-extractor] Web fetch failed for ${redactUrl(url)}: ${redactError(error)}`,
+        );
       }
     }
   }

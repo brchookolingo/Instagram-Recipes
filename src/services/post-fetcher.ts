@@ -6,6 +6,8 @@ import { withRetry } from "../utils/retry";
 import { fetchWithTimeout, isTimeoutError } from "../utils/fetch-with-timeout";
 import { FetchResult, FETCH_ERROR_MESSAGES } from "../types/result";
 import { WebPost } from "../types/post";
+import { isSafePublicUrl } from "../utils/url-safety";
+import { redactError, redactUrl } from "../utils/log-redact";
 
 export type { RawPost } from "../types/post";
 export type { FetchResult } from "../types/result";
@@ -33,16 +35,27 @@ export function detectPlatform(url: string): Platform {
 }
 
 async function resolveShortUrl(url: string): Promise<string> {
-  // Use GET instead of HEAD — HEAD redirect following is unreliable in React Native
+  // Manually follow redirects so we can validate each hop against SSRF.
+  // Caps at 3 hops; rejects non-http(s) schemes and private/loopback/link-local hosts.
   try {
-    const response = await fetchWithTimeout(url, { method: "GET", redirect: "follow" }, 8_000);
-    const resolved = response.url;
-    if (resolved && resolved !== url) return resolved;
-    // Fallback: check the Location header from the raw response
-    const location = response.headers.get("location");
-    return location ?? url;
+    let current = url;
+    for (let hop = 0; hop < 3; hop++) {
+      if (!isSafePublicUrl(current)) return url;
+      const response = await fetchWithTimeout(
+        current,
+        { method: "GET", redirect: "manual" },
+        8_000,
+      );
+      if (response.status < 300 || response.status >= 400) {
+        return current;
+      }
+      const location = response.headers.get("location");
+      if (!location) return current;
+      current = new URL(location, current).toString();
+    }
+    return current;
   } catch (error) {
-    console.error("[post-fetcher] resolveShortUrl failed:", error);
+    console.error("[post-fetcher] resolveShortUrl failed:", redactError(error));
     return url;
   }
 }
@@ -109,7 +122,9 @@ export async function fetchPost(url: string): Promise<FetchResult> {
 
     return { ok: true, post };
   } catch (error) {
-    console.error("[post-fetcher] fetchPost failed:", error);
+    console.error(
+      `[post-fetcher] fetchPost failed for ${redactUrl(url)}: ${redactError(error)}`,
+    );
 
     if (isTimeoutError(error)) {
       return { ok: false, code: "TIMEOUT", message: FETCH_ERROR_MESSAGES.TIMEOUT };

@@ -1,5 +1,7 @@
 import { RawInstagramPost } from "./instagram-oembed";
 import { fetchWithTimeout } from "../utils/fetch-with-timeout";
+import { redactError } from "../utils/log-redact";
+import { env } from "../utils/env";
 
 const SCRAPER_HOST = "instagram-scraper21.p.rapidapi.com";
 
@@ -11,8 +13,8 @@ function extractShortcode(url: string): string | null {
 export async function fetchViaScraper(
   url: string,
 ): Promise<RawInstagramPost | null> {
-  const apiKey = process.env.EXPO_PUBLIC_RAPIDAPI_KEY;
-  if (!apiKey) return null;
+  if (!env.RAPIDAPI_KEY) return null;
+  const apiKey = env.RAPIDAPI_KEY;
 
   const shortcode = extractShortcode(url);
   if (!shortcode) return null;
@@ -55,7 +57,7 @@ export async function fetchViaScraper(
       authorName,
     };
   } catch (error) {
-    console.error("[instagram-scraper] fetchViaScraper failed:", error);
+    console.error("[instagram-scraper] fetchViaScraper failed:", redactError(error));
     return null;
   }
 }

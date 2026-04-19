@@ -18,12 +18,18 @@ This file is read by Claude Code as persistent context. Keep it up to date as ta
 
 ### 🔴 CRITICAL (must fix before any public release)
 
-- [ ] **C1 — Move API keys to a backend proxy**
-  All `EXPO_PUBLIC_*` secrets (Claude, RapidAPI, Facebook) are exposed in the client bundle and readable from any decompiled APK. Build a lightweight backend (e.g. Expo API routes or a simple Node/Edge function) that holds the secrets and proxies requests. The client exchanges a session token only.
-  _Files: src/services/recipe-extractor.ts:40, app/recipe/[id].tsx:85, src/services/instagram-scraper.ts:14, src/services/instagram-oembed.ts:24-25_
-
+- [ ] **C1 — Move API keys to a backend proxy (or switch to BYOK)**
+  `EXPO_PUBLIC_CLAUDE_API_KEY` and `EXPO_PUBLIC_RAPIDAPI_KEY` are still bundled in the client and readable from any decompiled APK. Two acceptable resolutions:
+  1. Lightweight backend (Expo API routes / Edge function) that holds secrets and proxies requests; client exchanges a session token.
+  2. **BYOK (bring-your-own-keys)** — Settings screen where the user pastes their own keys, stored in `expo-secure-store`. Sidesteps "need a backend" entirely.
+  Note: Facebook App Secret was already replaced with a non-sensitive Client Token (Opus audit S1 — completed).
+  _Files: `src/utils/env.ts`, `src/services/instagram-scraper.ts`, `src/services/recipe-extractor.ts`_
 
 ---
+
+### 🟡 MEDIUM
+
+- [ ] **M-h (dark mode migration)** — `src/utils/colors.ts` tokens added, but class-level migration across ~30 `className` sites not yet done. Future task: add `dark:` variants keyed off `useColorScheme()`.
 
 ### 🟢 LOW PRIORITY
 
@@ -66,7 +72,7 @@ This file is read by Claude Code as persistent context. Keep it up to date as ta
 - Extracted tier-fallback logic into `src/services/recipe-extractor.ts`; `add-recipe.tsx` `handleFetch` is now UI-only (H2)
 - Added `clearAll()` to recipe/board/grocery stores; `settings.tsx` calls all three (H3)
 - Added minimum recipe validation in `add-recipe.tsx` save handler — title required + at least one ingredient or instruction (H4)
-- Added `src/stores/filter-store.ts`; search + filters now persist across navigation (H5)
+- Added `src/stores/filter-store.ts` (H5). Note: initial version was _not_ persisted — `persist` middleware + MMKV storage were added later in the Opus audit (Commit 3, A1).
 - `src/utils/retry.ts` now uses exponential backoff and short-circuits on 4xx (H6)
 - `RecipeCard` and `BoardCard` wrapped in `React.memo` (M1)
 - Added `src/hooks/useDebounce.ts`; search is debounced 300ms in the recipes tab (M2)
@@ -94,3 +100,54 @@ This file is read by Claude Code as persistent context. Keep it up to date as ta
 - Removed "Lactose Free" from dietary filter pills; added Meal Type section (Salad, Appetizer, Dessert, Main, Soup); `filterMealType` added to `filter-store.ts`; removed "lactose free" from Claude system prompt (F6)
 - "Add to Grocery List" uses currently selected scale (½×/1×/2×) — `scaledIngredients` passed to `addRecipeIngredients` (F7)
 - `updateRecipe()` in `recipe-store.ts` regenerates `ingredientsHalf` and `ingredientsDouble` via `scaleIngredients()` whenever `ingredients` is updated (F8)
+
+### Opus 4.7 deep-audit fixes (completed)
+
+**Commit 1 — Security foundations**
+- S1: replaced Facebook App Secret with Client Token (`EXPO_PUBLIC_FACEBOOK_CLIENT_TOKEN`) in `src/services/instagram-oembed.ts`; App Secret rotated in Meta dashboard
+- S4: encrypted MMKV — `src/utils/storage.ts` generates a 32-byte key via `expo-crypto`, stores it in `expo-secure-store`, passes it to `createMMKV({ encryptionKey })`; one-shot plaintext→ciphertext migration on first post-upgrade launch
+- S2: `src/services/post-fetcher.ts` `resolveShortUrl` now parses each `Location`, rejects private/link-local/loopback IPs + non-http(s) schemes via `src/utils/url-safety.ts`, caps hops at 3
+- M-d: Pinterest destination URL validated through `new URL()` + `isSafePublicUrl` before follow
+- M-c: `src/utils/log-redact.ts` — `redactUrl()` and `redactError()` used in `instagram-scraper.ts`, `recipe-extractor.ts`, `post-fetcher.ts`, `web-recipe-fetcher.ts`
+
+**Commit 2 — AI boundary hardening**
+- S3 + A3: Zod schemas (`RecipeResponseSchema`, `CleanupResponseSchema`) validate Claude's JSON in `src/services/recipe-parser-ai.ts`; user-supplied caption wrapped in `<user_caption>…</user_caption>` delimiters; `sanitizeForPrompt()` strips control chars and injected closing tags
+- A2: `cleanupRecipeExtraction` catch now classifies Anthropic errors (AuthN / RateLimit / Connection / Timeout) and logs `console.warn` with `redactError`; unknown errors hit `console.error`
+- M-a: HTML input capped at 200 KB in `src/services/web-recipe-fetcher.ts` before JSON-LD regex runs; regex is anchored
+- M-b: `src/services/recipe-parser.ts` `extractUrlsFromCaption` switched from host-blocklist to allowlist of known recipe domains
+
+**Commit 3 — Store correctness & races**
+- A1: `src/stores/filter-store.ts` wrapped in `persist(...)` with `zustandMMKVStorage` — search + filters now survive cold start
+- A4: `addRecipe` in `src/stores/recipe-store.ts` tracks in-flight saves by `sourceUrl` via a `Set`; Save button disabled while saving in `add-recipe.tsx`
+- A6: `src/services/grocery-service.ts` uses `generateId()` from `src/utils/uuid.ts` for per-ingredient IDs
+- A7: grocery check-state key aggressively normalized (collapse whitespace, strip punctuation, canonicalize fractions)
+- A5: `src/utils/image-cache.ts` switched to `Promise.allSettled`, batches in 50; `app/_layout.tsx` startup sweep awaits with explicit `.catch(log)`
+- M-e: `scaleIngredients` / `scaleIngredientText` / `scaleTime` reject `factor <= 0` or `!isFinite`
+
+**Commit 4 — Env discipline**
+- A8: `src/utils/env.ts` — single source for `CLAUDE_API_KEY`, `RAPIDAPI_KEY`, `FACEBOOK_APP_ID`, `FACEBOOK_CLIENT_TOKEN`; console-warns in `__DEV__` when keys are missing; removed inline `process.env` reads from `app/recipe/[id].tsx` and `src/services/recipe-extractor.ts`
+
+**Commit 5 — Accessibility & UX**
+- A9: `SafeAreaView` from `react-native-safe-area-context` wraps all tab screens, `add-recipe`, `onboarding`, `collection/[id]`, `recipe/edit/[id]`
+- A10: `accessibilityRole` / `accessibilityLabel` / `accessibilityHint` / `accessibilityState` added across all `Pressable`s, filter pills, FAB, scale toggles, favorite heart; `accessibilityLiveRegion="polite"` on error text
+- L-a: `Keyboard.dismiss()` in `add-recipe.tsx` + `recipe/edit/[id].tsx` `handleSave`
+- L-b: `keyboardShouldPersistTaps="handled"` on `ScrollView`s with touchables
+
+**Commit 6 — Performance & UI polish**
+- M-f: `app/(tabs)/index.tsx` null-padding grid hack removed; `columnWrapperStyle={{ justifyContent: "flex-start" }}` with `numColumns={2}`
+- M-g: FlatList perf props (`removeClippedSubviews`, `initialNumToRender`, `maxToRenderPerBatch`, `windowSize`) on recipes + collections lists
+- M-j: `app/recipe/[id].tsx` `Modal` lifted out of `ScrollView` via Fragment wrapper
+- M-k: `RecipeCard` blurhash placeholder removed; uses `colors.surfaceAlt` background
+- L-c: extracted `src/components/PillButton.tsx`; filter-pill arrays centralized in `src/utils/constants.ts`
+- L-d: `src/components/SkeletonRecipeGrid.tsx` shown on home until MMKV hydrates (`useRecipeStore.persist.hasHydrated()` + `onFinishHydration` listener)
+- L-e: filter modal backdrop uses `bg-black/40` dim
+- M-h (partial): `src/utils/colors.ts` token file added; per-className dark-mode migration deferred to future commit (see backlog)
+
+**Commit 7 — Testing infrastructure (M-i)**
+- `jest.config.js` + `jest.setup.ts` (mocks for `expo-secure-store`, `expo-crypto`, `react-native-mmkv` with `MockMMKV`, `expo-file-system/legacy`)
+- Pure-function tests: `src/utils/__tests__/{scale-recipe,uuid,fetch-with-timeout,url-safety}.test.ts`
+- AI boundary tests: `src/services/__tests__/recipe-parser-ai.test.ts` (mocked Anthropic SDK — happy path, malformed JSON, schema mismatch, classified errors, prompt-injection defense)
+- Integration test: `src/services/__tests__/recipe-extractor.test.ts` (tier 0/1/2/fallback + error surfacing)
+- Component test: `src/components/__tests__/RecipeCard.test.tsx`
+- Scripts: `npm test`, `npm run test:watch`, `npm run test:coverage`
+- **101 tests passing**, typecheck clean

@@ -30,6 +30,8 @@ PODS:
     - ExpoModulesCore
   - ExpoClipboard (55.0.11):
     - ExpoModulesCore
+  - ExpoCrypto (55.0.14):
+    - ExpoModulesCore
   - ExpoDomWebView (55.0.5):
     - ExpoModulesCore
   - ExpoFileSystem (55.0.14):
@@ -84,6 +86,8 @@ PODS:
   - ExpoRouter (55.0.10):
     - ExpoModulesCore
     - RNScreens
+  - ExpoSecureStore (55.0.13):
+    - ExpoModulesCore
   - ExpoSymbols (55.0.7):
     - ExpoModulesCore
   - ExpoSystemUI (55.0.13):
@@ -2238,6 +2242,7 @@ DEPENDENCIES:
   - Expo (from `../node_modules/expo`)
   - ExpoAsset (from `../node_modules/expo-asset/ios`)
   - ExpoClipboard (from `../node_modules/expo-clipboard/ios`)
+  - ExpoCrypto (from `../node_modules/expo-crypto/ios`)
   - "ExpoDomWebView (from `../node_modules/@expo/dom-webview/ios`)"
   - ExpoFileSystem (from `../node_modules/expo-file-system/ios`)
   - ExpoFont (from `../node_modules/expo-font/ios`)
@@ -2249,6 +2254,7 @@ DEPENDENCIES:
   - ExpoModulesCore (from `../node_modules/expo-modules-core`)
   - ExpoModulesJSI (from `../node_modules/expo-modules-core`)
   - ExpoRouter (from `../node_modules/expo-router/ios`)
+  - ExpoSecureStore (from `../node_modules/expo-secure-store/ios`)
   - ExpoSymbols (from `../node_modules/expo-symbols/ios`)
   - ExpoSystemUI (from `../node_modules/expo-system-ui/ios`)
   - ExpoVideoThumbnails (from `../node_modules/expo-video-thumbnails/ios`)
@@ -2354,6 +2360,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-asset/ios"
   ExpoClipboard:
     :path: "../node_modules/expo-clipboard/ios"
+  ExpoCrypto:
+    :path: "../node_modules/expo-crypto/ios"
   ExpoDomWebView:
     :path: "../node_modules/@expo/dom-webview/ios"
   ExpoFileSystem:
@@ -2376,6 +2384,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-modules-core"
   ExpoRouter:
     :path: "../node_modules/expo-router/ios"
+  ExpoSecureStore:
+    :path: "../node_modules/expo-secure-store/ios"
   ExpoSymbols:
     :path: "../node_modules/expo-symbols/ios"
   ExpoSystemUI:
@@ -2549,6 +2559,7 @@ SPEC CHECKSUMS:
   Expo: f298f7cafc2bfeb81997ddeae502ce98a672ae7f
   ExpoAsset: 63f22b029eb9aa68d5048f77ff9430f42c770d2c
   ExpoClipboard: 4086cfee285cc42b94ddf6e56f6158a22f85ca69
+  ExpoCrypto: 9fd0b78215cffa1aa20de026d452242401aa37dc
   ExpoDomWebView: 2b2fbd9a07de8790569257cbf9dfdaa31cf95c70
   ExpoFileSystem: 05e8c679738bd90263f9ed32bfa221f7b52ebbe5
   ExpoFont: cdd7a1d574a376fa003c713eff49e0a4df8672c7
@@ -2560,6 +2571,7 @@ SPEC CHECKSUMS:
   ExpoModulesCore: b00920acd06301b8c62a265fa4d2f2e3d725c748
   ExpoModulesJSI: a998e176d28567273b540fa568505ff1c9aaacac
   ExpoRouter: 9d717e9d5b0e1ccff05b1b2fd7c031b6fbecc433
+  ExpoSecureStore: 38954f6bcef1287aa04c06fba3b86e8af3291ccd
   ExpoSymbols: 8b63e859ba013df1f2fc666f535fddb3d5270569
   ExpoSystemUI: 4d04b94370a12492d7a8f3ef9202bbedab434497
   ExpoVideoThumbnails: 0ba8a5bb5ac19f3ed6489b5bdb9a22a110f0b84b

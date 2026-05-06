@@ -231,118 +231,450 @@ These are blocked on a human choice, an external account, a purchase, or a destr
 
 ## Completed Work
 
+Each entry uses the shape: **Summary** (one line), **Shipped** (commit hash or `pre-loop` for work predating the task loop), **Files** (key paths). Synthetic IDs prefixed `CC*`, `MP*`, `EH*`, `MODEL*`, `SCALE*`, `TEST*` were assigned to entries that lacked an original ID.
+
 ### Task hygiene
-- DOC1: verified every outstanding task in `TASKS.md` carries all six format fields (Status / Estimate / Scope / Acceptance / Suggested approach / Output / Files) in consistent order; no rewrites needed since entries were authored in the format.
+
+#### DOC1 — Normalize outstanding TASKS.md entries to the task format
+- **Summary:** verified every outstanding task in `TASKS.md` carries all six format fields (Status / Estimate / Scope / Acceptance / Suggested approach / Output / Files) in consistent order; no rewrites needed since entries were authored in the format.
+- **Shipped:** c78266c
+- **Files:** `TASKS.md`
+
+#### DOC2 — Normalize the Completed Work section
+- **Summary:** rewrote every completed-work entry to the three-field shape (Summary / Shipped / Files); preserved existing IDs, assigned synthetic IDs (CC*, MP*, EH*, MODEL*, SCALE*, TEST*) to legacy bullets that lacked them; flattened the per-Commit groupings under "Opus 4.7 deep-audit fixes" — commit refs now live in each entry's Shipped field.
+- **Shipped:** this loop tick
+- **Files:** `TASKS.md`
 
 ### Code Cleanup
-- Removed `App.tsx`, `index.ts` (legacy entry points superseded by expo-router)
-- Removed `src/services/video-extractor.ts` (implemented but never wired up)
-- Removed `getCachedImageUri`, `getCachedImageUriAsync` from `image-cache.ts` (unused exports)
-- Removed `APP_NAME` from `constants.ts` (unused)
-- Unexported `isInstagramUrl` in `useClipboard.ts` (internal only)
-- Removed `coverImageUri` from `Board` type (never set or read)
-- Deleted dev artifacts: `IMPLEMENTATION_PLAN.md`, `SCHEDULER_PROMPT.md`, `TASKS.json`
+
+#### CC1 — Remove legacy entry points
+- **Summary:** deleted `App.tsx` and `index.ts`; expo-router supersedes them.
+- **Shipped:** pre-loop
+- **Files:** `App.tsx`, `index.ts`
+
+#### CC2 — Remove unused video-extractor service
+- **Summary:** deleted `src/services/video-extractor.ts` — implemented but never wired up.
+- **Shipped:** pre-loop
+- **Files:** `src/services/video-extractor.ts`
+
+#### CC3 — Remove unused image-cache exports
+- **Summary:** dropped `getCachedImageUri` and `getCachedImageUriAsync` from `image-cache.ts` (unused).
+- **Shipped:** pre-loop
+- **Files:** `src/utils/image-cache.ts`
+
+#### CC4 — Remove unused APP_NAME constant
+- **Summary:** dropped `APP_NAME` from `constants.ts` (unused).
+- **Shipped:** pre-loop
+- **Files:** `src/utils/constants.ts`
+
+#### CC5 — Unexport internal `isInstagramUrl`
+- **Summary:** made `isInstagramUrl` in `useClipboard.ts` module-internal.
+- **Shipped:** pre-loop
+- **Files:** `src/hooks/useClipboard.ts`
+
+#### CC6 — Remove unused `coverImageUri` from Board type
+- **Summary:** dropped `coverImageUri` field — never set or read.
+- **Shipped:** pre-loop
+- **Files:** `src/types/board.ts`
+
+#### CC7 — Delete dev artifacts
+- **Summary:** removed `IMPLEMENTATION_PLAN.md`, `SCHEDULER_PROMPT.md`, `TASKS.json`.
+- **Shipped:** pre-loop
+- **Files:** repo root
 
 ### Multi-Platform Support
-- Added `src/types/post.ts` with shared `RawPost` type
-- Added `src/services/tiktok.ts` (TikTok oEmbed, `vt.tiktok.com` short links)
-- Added `src/services/pinterest.ts` (Pinterest oEmbed + schema.org JSON-LD web scraping)
-- Added `src/services/post-fetcher.ts` (platform router with `detectPlatform`, `normalizePinterestUrl`)
-- Added `src/services/web-recipe-fetcher.ts` (schema.org JSON-LD parser + page text fallback)
-- Updated `useClipboard.ts` to detect all 3 platforms
-- Updated `add-recipe.tsx` with Tier 0 (pre-extracted recipe data bypass)
-- Updated `recipe-parser-ai.ts` prompt to be platform-agnostic
-- Updated `URLInput.tsx` placeholder and `recipe/[id].tsx` "View Original Post" link
+
+#### MP1 — Add shared RawPost type
+- **Summary:** introduced shared `RawPost` shape used by all platform fetchers.
+- **Shipped:** pre-loop
+- **Files:** `src/types/post.ts`
+
+#### MP2 — Add TikTok service
+- **Summary:** TikTok oEmbed integration plus `vt.tiktok.com` short-link resolution.
+- **Shipped:** pre-loop
+- **Files:** `src/services/tiktok.ts`
+
+#### MP3 — Add Pinterest service
+- **Summary:** Pinterest oEmbed plus schema.org JSON-LD web scraping fallback.
+- **Shipped:** pre-loop
+- **Files:** `src/services/pinterest.ts`
+
+#### MP4 — Add post-fetcher router
+- **Summary:** central router with `detectPlatform` and `normalizePinterestUrl`.
+- **Shipped:** pre-loop
+- **Files:** `src/services/post-fetcher.ts`
+
+#### MP5 — Add web-recipe-fetcher
+- **Summary:** schema.org JSON-LD parser plus page-text fallback for arbitrary recipe URLs.
+- **Shipped:** c334155
+- **Files:** `src/services/web-recipe-fetcher.ts`
+
+#### MP6 — Detect all 3 platforms in useClipboard
+- **Summary:** clipboard listener now recognizes Instagram, TikTok, and Pinterest URLs.
+- **Shipped:** pre-loop
+- **Files:** `src/hooks/useClipboard.ts`
+
+#### MP7 — Tier 0 pre-extracted recipe bypass
+- **Summary:** `add-recipe.tsx` skips AI extraction when a structured recipe is already present.
+- **Shipped:** pre-loop
+- **Files:** `app/add-recipe.tsx`
+
+#### MP8 — Platform-agnostic AI parser prompt
+- **Summary:** rewrote the parser prompt so it does not assume Instagram captions.
+- **Shipped:** pre-loop
+- **Files:** `src/services/recipe-parser-ai.ts`
+
+#### MP9 — URLInput placeholder + recipe view-original link updates
+- **Summary:** placeholder copy and "View Original Post" link generalized across platforms.
+- **Shipped:** pre-loop
+- **Files:** `src/components/URLInput.tsx`, `app/recipe/[id].tsx`
 
 ### Cache, Type & Code Quality
-- Enforced 200 MB image cache limit in `src/utils/image-cache.ts` via `enforceCacheLimit()`; added startup orphan sweep in `app/_layout.tsx` (M3)
-- Added `id?: string` to `Ingredient` type; all parse paths assign `generateId()`; `IngredientList` keys on stable id with index fallback for legacy data (M4)
-- Moved `LOADING_THEMES` from `app/add-recipe.tsx` to `src/utils/constants.ts` (L10)
-- Removed dead `"video"` member from `extractionSource` union in `src/types/recipe.ts` (L12)
-- Switched all Claude API calls from `claude-opus-4-6` to `claude-sonnet-4-5` in `src/utils/constants.ts`
+
+#### M3 — Image cache 200 MB ceiling + orphan sweep
+- **Summary:** `enforceCacheLimit()` in `image-cache.ts`; startup orphan sweep runs from `_layout.tsx`.
+- **Shipped:** pre-loop
+- **Files:** `src/utils/image-cache.ts`, `app/_layout.tsx`
+
+#### M4 — Stable IDs on Ingredient
+- **Summary:** added `id?: string` to `Ingredient`; all parse paths assign `generateId()`; `IngredientList` keys on stable id with index fallback for legacy data.
+- **Shipped:** pre-loop
+- **Files:** `src/types/recipe.ts`, `src/components/IngredientList.tsx`
+
+#### L10 — Move LOADING_THEMES to constants
+- **Summary:** relocated `LOADING_THEMES` from `add-recipe.tsx` to the shared constants file.
+- **Shipped:** pre-loop
+- **Files:** `app/add-recipe.tsx`, `src/utils/constants.ts`
+
+#### L12 — Drop dead `"video"` extractionSource member
+- **Summary:** removed the unused `"video"` variant from the union.
+- **Shipped:** pre-loop
+- **Files:** `src/types/recipe.ts`
+
+#### MODEL1 — Switch Claude calls to claude-sonnet-4-5
+- **Summary:** all Anthropic API calls now target `claude-sonnet-4-5` (was `claude-opus-4-6`).
+- **Shipped:** pre-loop
+- **Files:** `src/utils/constants.ts`
 
 ### Stability, Performance & UX
-- Added `src/utils/fetch-with-timeout.ts` — AbortController + 10s timeout wrapper used by all services (C3)
-- Fixed image-cache race in `recipe-store.ts` `addRecipe` — image is cached before persist (H1)
-- Extracted tier-fallback logic into `src/services/recipe-extractor.ts`; `add-recipe.tsx` `handleFetch` is now UI-only (H2)
-- Added `clearAll()` to recipe/board/grocery stores; `settings.tsx` calls all three (H3)
-- Added minimum recipe validation in `add-recipe.tsx` save handler — title required + at least one ingredient or instruction (H4)
-- Added `src/stores/filter-store.ts` (H5). Note: initial version was _not_ persisted — `persist` middleware + MMKV storage were added later in the Opus audit (Commit 3, A1).
-- `src/utils/retry.ts` now uses exponential backoff and short-circuits on 4xx (H6)
-- `RecipeCard` and `BoardCard` wrapped in `React.memo` (M1)
-- Added `src/hooks/useDebounce.ts`; search is debounced 300ms in the recipes tab (M2)
-- Added `src/utils/uuid.ts` `generateId()`; used for recipe and grocery IDs (M5)
-- `add-recipe.tsx` checks `findBySourceUrl` before saving and prompts on duplicate (M6)
-- `RawPost` in `src/types/post.ts` is now a discriminated union over `platform` (`InstagramPost | TikTokPost | PinterestPost`) (M7)
-- `URLInput.tsx` validates URL format + supported platform inline before submit (M8)
-- Recipe scaling added (half and double)
+
+#### C3 — Universal fetch timeout wrapper
+- **Summary:** `fetch-with-timeout.ts` (AbortController + 10s default) used by every network service.
+- **Shipped:** pre-loop
+- **Files:** `src/utils/fetch-with-timeout.ts`
+
+#### H1 — Fix image-cache race in addRecipe
+- **Summary:** image is now cached before persist so reload never sees a missing file.
+- **Shipped:** pre-loop
+- **Files:** `src/stores/recipe-store.ts`
+
+#### H2 — Extract tier-fallback logic
+- **Summary:** moved tier orchestration into `recipe-extractor.ts`; `handleFetch` is UI-only.
+- **Shipped:** pre-loop
+- **Files:** `src/services/recipe-extractor.ts`, `app/add-recipe.tsx`
+
+#### H3 — clearAll across stores
+- **Summary:** added `clearAll()` to recipe / board / grocery stores; Settings "Clear all" calls all three.
+- **Shipped:** pre-loop
+- **Files:** `src/stores/recipe-store.ts`, `src/stores/board-store.ts`, `src/stores/grocery-store.ts`, `app/(tabs)/settings.tsx`
+
+#### H4 — Minimum recipe save validation
+- **Summary:** save handler requires a title plus at least one ingredient or instruction.
+- **Shipped:** pre-loop
+- **Files:** `app/add-recipe.tsx`
+
+#### H5 — filter-store added
+- **Summary:** centralized search + filter state. Persistence was added later (see A1).
+- **Shipped:** pre-loop
+- **Files:** `src/stores/filter-store.ts`
+
+#### H6 — Retry with exponential backoff
+- **Summary:** `retry.ts` uses exponential backoff and short-circuits on 4xx.
+- **Shipped:** pre-loop
+- **Files:** `src/utils/retry.ts`
+
+#### M1 — Memoize list cards
+- **Summary:** wrapped `RecipeCard` and `BoardCard` in `React.memo`.
+- **Shipped:** 0df3625
+- **Files:** `src/components/RecipeCard.tsx`, `src/components/BoardCard.tsx`
+
+#### M2 — Debounced search
+- **Summary:** added `useDebounce` hook; recipes-tab search debounced at 300ms.
+- **Shipped:** pre-loop
+- **Files:** `src/hooks/useDebounce.ts`, `app/(tabs)/index.tsx`
+
+#### M5 — generateId helper
+- **Summary:** `uuid.ts` `generateId()`; used for recipe and grocery IDs.
+- **Shipped:** pre-loop
+- **Files:** `src/utils/uuid.ts`
+
+#### M6 — Duplicate-recipe prompt
+- **Summary:** `add-recipe.tsx` checks `findBySourceUrl` before saving and prompts on duplicate.
+- **Shipped:** pre-loop
+- **Files:** `app/add-recipe.tsx`, `src/stores/recipe-store.ts`
+
+#### M7 — Discriminated RawPost union
+- **Summary:** `RawPost` is now `InstagramPost | TikTokPost | PinterestPost`, discriminated on `platform`.
+- **Shipped:** pre-loop
+- **Files:** `src/types/post.ts`
+
+#### M8 — Inline URL validation
+- **Summary:** `URLInput.tsx` validates URL format and supported platform inline before submit.
+- **Shipped:** pre-loop
+- **Files:** `src/components/URLInput.tsx`
+
+#### SCALE1 — Recipe scaling (½× / 1× / 2×)
+- **Summary:** half-and-double scaling computed at parse time; toggle on the recipe screen.
+- **Shipped:** pre-loop
+- **Files:** `src/utils/scale-recipe.ts`, `app/recipe/[id].tsx`
 
 ### Error Handling
-- Replaced all silent `catch { return null }` blocks with typed `ParseResult<T>` pattern (C2)
-- `parseRecipeWithAI` classifies Anthropic errors: 401 → `INVALID_API_KEY`, 429 → `RATE_LIMITED`, network → `NETWORK_ERROR`
-- `extractRecipeFromPost` returns `ParseResult<ExtractionResult>` — surfaces critical AI errors to UI if all tiers fail
-- `add-recipe.tsx` shows specific error messages for `INVALID_API_KEY`, `RATE_LIMITED`, `NETWORK_ERROR`; proceeds to manual preview for `PARSE_FAILED`
-- Post-fetching services (`instagram-oembed`, `tiktok`, `pinterest`, `web-recipe-fetcher`) no longer swallow network/timeout errors; 429 responses thrown explicitly and classified by `post-fetcher.ts`
-- `ParseErrorCode` and `ParseResult<T>` added to `src/types/result.ts`
+
+#### C2 — Typed ParseResult pattern
+- **Summary:** replaced silent `catch { return null }` blocks with typed `ParseResult<T>`.
+- **Shipped:** ab2e195
+- **Files:** `src/services/*.ts`, `src/types/result.ts`
+
+#### EH1 — Classified Anthropic errors in parseRecipeWithAI
+- **Summary:** 401 → `INVALID_API_KEY`, 429 → `RATE_LIMITED`, network → `NETWORK_ERROR`.
+- **Shipped:** ab2e195
+- **Files:** `src/services/recipe-parser-ai.ts`
+
+#### EH2 — extractRecipeFromPost returns ParseResult
+- **Summary:** surfaces critical AI errors to the UI when every tier fails.
+- **Shipped:** ab2e195
+- **Files:** `src/services/recipe-extractor.ts`
+
+#### EH3 — UI error mapping
+- **Summary:** `add-recipe.tsx` shows specific messages for `INVALID_API_KEY`, `RATE_LIMITED`, `NETWORK_ERROR`; falls through to manual preview on `PARSE_FAILED`.
+- **Shipped:** ab2e195
+- **Files:** `app/add-recipe.tsx`
+
+#### EH4 — Post-fetchers no longer swallow errors
+- **Summary:** Instagram / TikTok / Pinterest / web fetchers raise on network and timeout failures; 429 thrown explicitly and classified by `post-fetcher.ts`.
+- **Shipped:** ab2e195
+- **Files:** `src/services/instagram-oembed.ts`, `src/services/tiktok.ts`, `src/services/pinterest.ts`, `src/services/web-recipe-fetcher.ts`, `src/services/post-fetcher.ts`
+
+#### EH5 — Result types
+- **Summary:** added `ParseErrorCode` and `ParseResult<T>` to the shared types module.
+- **Shipped:** ab2e195
+- **Files:** `src/types/result.ts`
 
 ### Features & UX
-- Full-text search extended to match description, tags, and ingredient text in addition to title and author (L6)
-- Onboarding flow added (`app/onboarding.tsx`) — 4-slide pager shown on first launch; MMKV-backed `hasSeenOnboarding()` / `markOnboardingSeen()` in `src/utils/onboarding.ts`; `app/_layout.tsx` redirects to `/onboarding` on first launch; Settings "How to Use" row reopens onboarding in review mode (F1)
-- "Send Feedback" row added to Settings — opens Google Form via `Linking.openURL()` (F2)
-- Renamed "Boards" → "Collections" throughout UI: `boards.tsx` → `collections.tsx`, `board/[id].tsx` → `collection/[id].tsx`, tab label/title updated, all nav routes updated; internal store/MMKV keys unchanged to preserve persisted data (F3)
-- Replaced `ActivityIndicator` loading state in `add-recipe.tsx` with animated `CookingSpinner` component (`src/components/CookingSpinner.tsx`) using react-native-reanimated rotating 🍳 emoji (F4)
-- Storage stats section added to Settings — shows recipe count and image cache size in MB using `expo-file-system/legacy` (F5)
-- Removed "Lactose Free" from dietary filter pills; added Meal Type section (Salad, Appetizer, Dessert, Main, Soup); `filterMealType` added to `filter-store.ts`; removed "lactose free" from Claude system prompt (F6)
-- "Add to Grocery List" uses currently selected scale (½×/1×/2×) — `scaledIngredients` passed to `addRecipeIngredients` (F7)
-- `updateRecipe()` in `recipe-store.ts` regenerates `ingredientsHalf` and `ingredientsDouble` via `scaleIngredients()` whenever `ingredients` is updated (F8)
+
+#### L6 — Full-text search across recipe fields
+- **Summary:** search now matches description, tags, and ingredient text in addition to title and author.
+- **Shipped:** 5e2dc12
+- **Files:** `app/(tabs)/index.tsx`, `src/stores/filter-store.ts`
+
+#### F1 — Onboarding flow
+- **Summary:** 4-slide pager on first launch; MMKV-backed `hasSeenOnboarding()` / `markOnboardingSeen()`; `_layout.tsx` redirects to `/onboarding` on first launch; Settings "How to Use" reopens it in review mode.
+- **Shipped:** 5e2dc12
+- **Files:** `app/onboarding.tsx`, `src/utils/onboarding.ts`, `app/_layout.tsx`, `app/(tabs)/settings.tsx`
+
+#### F2 — Send Feedback row
+- **Summary:** Settings row opens the Google Form via `Linking.openURL()`.
+- **Shipped:** 5e2dc12
+- **Files:** `app/(tabs)/settings.tsx`
+
+#### F3 — Boards → Collections rename
+- **Summary:** UI-only rename across files, tab label, and routes; internal store and MMKV keys preserved so persisted data still loads.
+- **Shipped:** 5e2dc12
+- **Files:** `app/(tabs)/collections.tsx`, `app/collection/[id].tsx`, plus all referring routes
+
+#### F4 — CookingSpinner loading component
+- **Summary:** replaced `ActivityIndicator` in `add-recipe.tsx` with a reanimated rotating 🍳 emoji.
+- **Shipped:** 5e2dc12
+- **Files:** `src/components/CookingSpinner.tsx`, `app/add-recipe.tsx`
+
+#### F5 — Storage stats in Settings
+- **Summary:** shows recipe count and image cache size in MB via `expo-file-system/legacy`.
+- **Shipped:** 5e2dc12
+- **Files:** `app/(tabs)/settings.tsx`
+
+#### F6 — Filter pill rebalance + Meal Type
+- **Summary:** removed "Lactose Free" pill; added Meal Type section (Salad / Appetizer / Dessert / Main / Soup); `filterMealType` added to filter store; "lactose free" removed from the Claude system prompt.
+- **Shipped:** 5e2dc12
+- **Files:** `src/utils/constants.ts`, `src/stores/filter-store.ts`, `src/services/recipe-parser-ai.ts`
+
+#### F7 — Grocery list respects scale
+- **Summary:** "Add to Grocery List" passes the currently selected (½× / 1× / 2×) `scaledIngredients`.
+- **Shipped:** 5e2dc12
+- **Files:** `app/recipe/[id].tsx`, `src/services/grocery-service.ts`
+
+#### F8 — Regenerate scaled ingredients on update
+- **Summary:** `updateRecipe()` rebuilds `ingredientsHalf` and `ingredientsDouble` whenever `ingredients` is updated.
+- **Shipped:** 5e2dc12
+- **Files:** `src/stores/recipe-store.ts`
 
 ### Opus 4.7 deep-audit fixes
 
-**Commit 1 — Security foundations**
-- S1: replaced Facebook App Secret with Client Token (`EXPO_PUBLIC_FACEBOOK_CLIENT_TOKEN`) in `src/services/instagram-oembed.ts`; App Secret rotated in Meta dashboard
-- S4: encrypted MMKV — `src/utils/storage.ts` generates a 32-byte key via `expo-crypto`, stores it in `expo-secure-store`, passes it to `createMMKV({ encryptionKey })`; one-shot plaintext→ciphertext migration on first post-upgrade launch
-- S2: `src/services/post-fetcher.ts` `resolveShortUrl` now parses each `Location`, rejects private/link-local/loopback IPs + non-http(s) schemes via `src/utils/url-safety.ts`, caps hops at 3
-- M-d: Pinterest destination URL validated through `new URL()` + `isSafePublicUrl` before follow
-- M-c: `src/utils/log-redact.ts` — `redactUrl()` and `redactError()` used in `instagram-scraper.ts`, `recipe-extractor.ts`, `post-fetcher.ts`, `web-recipe-fetcher.ts`
+#### S1 — Facebook App Secret → Client Token
+- **Summary:** swapped App Secret for `EXPO_PUBLIC_FACEBOOK_CLIENT_TOKEN`; App Secret rotated in Meta dashboard.
+- **Shipped:** 0ef844b
+- **Files:** `src/services/instagram-oembed.ts`
 
-**Commit 2 — AI boundary hardening**
-- S3 + A3: Zod schemas (`RecipeResponseSchema`, `CleanupResponseSchema`) validate Claude's JSON in `src/services/recipe-parser-ai.ts`; user-supplied caption wrapped in `<user_caption>…</user_caption>` delimiters; `sanitizeForPrompt()` strips control chars and injected closing tags
-- A2: `cleanupRecipeExtraction` catch now classifies Anthropic errors (AuthN / RateLimit / Connection / Timeout) and logs `console.warn` with `redactError`; unknown errors hit `console.error`
-- M-a: HTML input capped at 200 KB in `src/services/web-recipe-fetcher.ts` before JSON-LD regex runs; regex is anchored
-- M-b: `src/services/recipe-parser.ts` `extractUrlsFromCaption` switched from host-blocklist to allowlist of known recipe domains
+#### S4 — Encrypted MMKV
+- **Summary:** 32-byte key generated via `expo-crypto`, stored in `expo-secure-store`, passed to `createMMKV({ encryptionKey })`; one-shot plaintext→ciphertext migration on first post-upgrade launch.
+- **Shipped:** 0ef844b
+- **Files:** `src/utils/storage.ts`
 
-**Commit 3 — Store correctness & races**
-- A1: `src/stores/filter-store.ts` wrapped in `persist(...)` with `zustandMMKVStorage` — search + filters now survive cold start
-- A4: `addRecipe` in `src/stores/recipe-store.ts` tracks in-flight saves by `sourceUrl` via a `Set`; Save button disabled while saving in `add-recipe.tsx`
-- A6: `src/services/grocery-service.ts` uses `generateId()` from `src/utils/uuid.ts` for per-ingredient IDs
-- A7: grocery check-state key aggressively normalized (collapse whitespace, strip punctuation, canonicalize fractions)
-- A5: `src/utils/image-cache.ts` switched to `Promise.allSettled`, batches in 50; `app/_layout.tsx` startup sweep awaits with explicit `.catch(log)`
-- M-e: `scaleIngredients` / `scaleIngredientText` / `scaleTime` reject `factor <= 0` or `!isFinite`
+#### S2 — SSRF-safe redirect resolver
+- **Summary:** `resolveShortUrl` parses each `Location`, rejects private / link-local / loopback IPs and non-http(s) schemes via `url-safety.ts`, caps hops at 3.
+- **Shipped:** 0ef844b
+- **Files:** `src/services/post-fetcher.ts`, `src/utils/url-safety.ts`
 
-**Commit 4 — Env discipline**
-- A8: `src/utils/env.ts` — single source for `CLAUDE_API_KEY`, `RAPIDAPI_KEY`, `FACEBOOK_APP_ID`, `FACEBOOK_CLIENT_TOKEN`; console-warns in `__DEV__` when keys are missing; removed inline `process.env` reads from `app/recipe/[id].tsx` and `src/services/recipe-extractor.ts`
+#### M-d — Pinterest destination URL validation
+- **Summary:** destination URL validated through `new URL()` + `isSafePublicUrl` before follow.
+- **Shipped:** 0ef844b
+- **Files:** `src/services/pinterest.ts`
 
-**Commit 5 — Accessibility & UX**
-- A9: `SafeAreaView` from `react-native-safe-area-context` wraps all tab screens, `add-recipe`, `onboarding`, `collection/[id]`, `recipe/edit/[id]`
-- A10: `accessibilityRole` / `accessibilityLabel` / `accessibilityHint` / `accessibilityState` added across all `Pressable`s, filter pills, FAB, scale toggles, favorite heart; `accessibilityLiveRegion="polite"` on error text
-- L-a: `Keyboard.dismiss()` in `add-recipe.tsx` + `recipe/edit/[id].tsx` `handleSave`
-- L-b: `keyboardShouldPersistTaps="handled"` on `ScrollView`s with touchables
+#### M-c — Log redaction
+- **Summary:** added `redactUrl()` and `redactError()`; applied across the Instagram, recipe-extractor, post-fetcher, and web-recipe-fetcher modules.
+- **Shipped:** 0ef844b
+- **Files:** `src/utils/log-redact.ts`, `src/services/instagram-scraper.ts`, `src/services/recipe-extractor.ts`, `src/services/post-fetcher.ts`, `src/services/web-recipe-fetcher.ts`
 
-**Commit 6 — Performance & UI polish**
-- M-f: `app/(tabs)/index.tsx` null-padding grid hack removed; `columnWrapperStyle={{ justifyContent: "flex-start" }}` with `numColumns={2}`
-- M-g: FlatList perf props (`removeClippedSubviews`, `initialNumToRender`, `maxToRenderPerBatch`, `windowSize`) on recipes + collections lists
-- M-j: `app/recipe/[id].tsx` `Modal` lifted out of `ScrollView` via Fragment wrapper
-- M-k: `RecipeCard` blurhash placeholder removed; uses `colors.surfaceAlt` background
-- L-c: extracted `src/components/PillButton.tsx`; filter-pill arrays centralized in `src/utils/constants.ts`
-- L-d: `src/components/SkeletonRecipeGrid.tsx` shown on home until MMKV hydrates (`useRecipeStore.persist.hasHydrated()` + `onFinishHydration` listener)
-- L-e: filter modal backdrop uses `bg-black/40` dim
-- M-h (partial): `src/utils/colors.ts` token file added; per-className dark-mode migration deferred to future commit (see backlog)
+#### S3 + A3 — AI boundary hardening
+- **Summary:** Zod schemas (`RecipeResponseSchema`, `CleanupResponseSchema`) validate Claude JSON; user caption wrapped in `<user_caption>…</user_caption>` delimiters; `sanitizeForPrompt()` strips control chars and injected closing tags.
+- **Shipped:** 0ef844b
+- **Files:** `src/services/recipe-parser-ai.ts`
 
-**Commit 7 — Testing infrastructure (M-i)**
-- `jest.config.js` + `jest.setup.ts` (mocks for `expo-secure-store`, `expo-crypto`, `react-native-mmkv` with `MockMMKV`, `expo-file-system/legacy`)
-- Pure-function tests: `src/utils/__tests__/{scale-recipe,uuid,fetch-with-timeout,url-safety}.test.ts`
-- AI boundary tests: `src/services/__tests__/recipe-parser-ai.test.ts` (mocked Anthropic SDK — happy path, malformed JSON, schema mismatch, classified errors, prompt-injection defense)
-- Integration test: `src/services/__tests__/recipe-extractor.test.ts` (tier 0/1/2/fallback + error surfacing)
-- Component test: `src/components/__tests__/RecipeCard.test.tsx`
-- Scripts: `npm test`, `npm run test:watch`, `npm run test:coverage`
-- **101 tests passing**, typecheck clean
+#### A2 — cleanupRecipeExtraction error classification
+- **Summary:** catch classifies Anthropic errors (AuthN / RateLimit / Connection / Timeout) and logs `console.warn` with `redactError`; unknown errors hit `console.error`.
+- **Shipped:** 0ef844b
+- **Files:** `src/services/recipe-parser-ai.ts`
+
+#### M-a — HTML input cap on JSON-LD parser
+- **Summary:** HTML input capped at 200 KB before the JSON-LD regex runs; regex is anchored.
+- **Shipped:** 0ef844b
+- **Files:** `src/services/web-recipe-fetcher.ts`
+
+#### M-b — Recipe-URL extractor uses an allowlist
+- **Summary:** `extractUrlsFromCaption` switched from host-blocklist to allowlist of known recipe domains.
+- **Shipped:** 0ef844b
+- **Files:** `src/services/recipe-parser.ts`
+
+#### A1 — Persist filter-store
+- **Summary:** wrapped `filter-store` in `persist(...)` with `zustandMMKVStorage` — search and filters survive cold start.
+- **Shipped:** 0df3625
+- **Files:** `src/stores/filter-store.ts`
+
+#### A4 — In-flight save dedupe
+- **Summary:** `addRecipe` tracks in-flight saves by `sourceUrl` via a `Set`; Save button disabled while saving.
+- **Shipped:** 0df3625
+- **Files:** `src/stores/recipe-store.ts`, `app/add-recipe.tsx`
+
+#### A6 — Per-ingredient grocery IDs
+- **Summary:** `grocery-service.ts` uses `generateId()` instead of array indexes.
+- **Shipped:** 0df3625
+- **Files:** `src/services/grocery-service.ts`
+
+#### A7 — Aggressive grocery key normalization
+- **Summary:** check-state key collapses whitespace, strips punctuation, canonicalizes fractions.
+- **Shipped:** 0df3625
+- **Files:** `src/services/grocery-service.ts`
+
+#### A5 — Image-cache batched cleanup
+- **Summary:** switched to `Promise.allSettled` in 50-batch chunks; startup sweep awaits with explicit `.catch(log)`.
+- **Shipped:** 0df3625
+- **Files:** `src/utils/image-cache.ts`, `app/_layout.tsx`
+
+#### M-e — Reject invalid scaling factors
+- **Summary:** `scaleIngredients` / `scaleIngredientText` / `scaleTime` reject `factor <= 0` or `!isFinite`.
+- **Shipped:** 0df3625
+- **Files:** `src/utils/scale-recipe.ts`
+
+#### A8 — Single env source
+- **Summary:** `env.ts` holds `CLAUDE_API_KEY`, `RAPIDAPI_KEY`, `FACEBOOK_APP_ID`, `FACEBOOK_CLIENT_TOKEN`; console-warns in `__DEV__` when missing; removed inline `process.env` reads from `recipe/[id].tsx` and `recipe-extractor.ts`.
+- **Shipped:** 0df3625
+- **Files:** `src/utils/env.ts`, `app/recipe/[id].tsx`, `src/services/recipe-extractor.ts`
+
+#### A9 — SafeAreaView wraps every screen
+- **Summary:** applied `react-native-safe-area-context` `SafeAreaView` to all tab screens, `add-recipe`, `onboarding`, `collection/[id]`, `recipe/edit/[id]`.
+- **Shipped:** 0df3625
+- **Files:** `app/**/*.tsx`
+
+#### A10 — Accessibility props across interactive surfaces
+- **Summary:** `accessibilityRole` / `accessibilityLabel` / `accessibilityHint` / `accessibilityState` on every `Pressable`, filter pill, FAB, scale toggle, favorite heart; `accessibilityLiveRegion="polite"` on error text.
+- **Shipped:** 0df3625
+- **Files:** `app/**/*.tsx`, `src/components/**/*.tsx`
+
+#### L-a — Dismiss keyboard on save
+- **Summary:** `Keyboard.dismiss()` in the save handlers of `add-recipe.tsx` and `recipe/edit/[id].tsx`.
+- **Shipped:** 0df3625
+- **Files:** `app/add-recipe.tsx`, `app/recipe/edit/[id].tsx`
+
+#### L-b — keyboardShouldPersistTaps on touchable scrollers
+- **Summary:** set `keyboardShouldPersistTaps="handled"` on every `ScrollView` containing touchables.
+- **Shipped:** 0df3625
+- **Files:** `app/**/*.tsx`
+
+#### M-f — Drop the null-padding grid hack
+- **Summary:** removed the placeholder-padding grid hack on the home tab; `columnWrapperStyle={{ justifyContent: "flex-start" }}` with `numColumns={2}`.
+- **Shipped:** 0df3625
+- **Files:** `app/(tabs)/index.tsx`
+
+#### M-g — FlatList perf props
+- **Summary:** `removeClippedSubviews`, `initialNumToRender`, `maxToRenderPerBatch`, `windowSize` set on recipes and collections lists.
+- **Shipped:** 0df3625
+- **Files:** `app/(tabs)/index.tsx`, `app/(tabs)/collections.tsx`
+
+#### M-j — Lift Modal out of ScrollView
+- **Summary:** moved the recipe modal out of the `ScrollView` via a Fragment wrapper.
+- **Shipped:** 0df3625
+- **Files:** `app/recipe/[id].tsx`
+
+#### M-k — Drop blurhash placeholder
+- **Summary:** `RecipeCard` uses `colors.surfaceAlt` background instead of the blurhash placeholder.
+- **Shipped:** 0df3625
+- **Files:** `src/components/RecipeCard.tsx`
+
+#### L-c — PillButton component + centralized pill arrays
+- **Summary:** extracted `PillButton`; filter-pill arrays moved to `constants.ts`.
+- **Shipped:** 0df3625
+- **Files:** `src/components/PillButton.tsx`, `src/utils/constants.ts`
+
+#### L-d — SkeletonRecipeGrid until MMKV hydrates
+- **Summary:** show skeleton on home until `useRecipeStore.persist.hasHydrated()`; hides via `onFinishHydration` listener.
+- **Shipped:** 0df3625
+- **Files:** `src/components/SkeletonRecipeGrid.tsx`, `app/(tabs)/index.tsx`
+
+#### L-e — Filter modal backdrop dim
+- **Summary:** filter modal backdrop uses `bg-black/40`.
+- **Shipped:** 0df3625
+- **Files:** `app/(tabs)/index.tsx`
+
+#### M-h (partial) — Color tokens file
+- **Summary:** `colors.ts` token file added; per-className dark-mode migration deferred (tracked under outstanding M-h).
+- **Shipped:** 0df3625
+- **Files:** `src/utils/colors.ts`
+
+#### TEST1 — Jest harness
+- **Summary:** `jest.config.js` + `jest.setup.ts` with mocks for `expo-secure-store`, `expo-crypto`, `react-native-mmkv` (`MockMMKV`), and `expo-file-system/legacy`.
+- **Shipped:** 9e54e2e
+- **Files:** `jest.config.js`, `jest.setup.ts`
+
+#### TEST2 — Pure-function tests
+- **Summary:** unit tests for `scale-recipe`, `uuid`, `fetch-with-timeout`, `url-safety`.
+- **Shipped:** 9e54e2e
+- **Files:** `src/utils/__tests__/*.test.ts`
+
+#### TEST3 — AI boundary tests
+- **Summary:** mocked Anthropic SDK; covers happy path, malformed JSON, schema mismatch, classified errors, prompt-injection defense.
+- **Shipped:** 9e54e2e
+- **Files:** `src/services/__tests__/recipe-parser-ai.test.ts`
+
+#### TEST4 — recipe-extractor integration test
+- **Summary:** tier 0 / 1 / 2 / fallback paths plus error surfacing.
+- **Shipped:** 9e54e2e
+- **Files:** `src/services/__tests__/recipe-extractor.test.ts`
+
+#### TEST5 — RecipeCard component test
+- **Summary:** rendering smoke test for the recipe card.
+- **Shipped:** 9e54e2e
+- **Files:** `src/components/__tests__/RecipeCard.test.tsx`
+
+#### M-i — Test scripts and baseline
+- **Summary:** added `npm test`, `npm run test:watch`, `npm run test:coverage`. Baseline: 101 tests passing, typecheck clean.
+- **Shipped:** 9e54e2e
+- **Files:** `package.json`

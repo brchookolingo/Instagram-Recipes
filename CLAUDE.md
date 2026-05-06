@@ -16,24 +16,7 @@ This file is read by Claude Code as persistent context. Keep it up to date as ta
 
 ## Task Backlog
 
-### 🔴 CRITICAL (must fix before any public release)
-
-- [ ] **C1 — Move API keys to a backend proxy (or switch to BYOK)**
-  `EXPO_PUBLIC_CLAUDE_API_KEY` and `EXPO_PUBLIC_RAPIDAPI_KEY` are still bundled in the client and readable from any decompiled APK. Two acceptable resolutions:
-  1. Lightweight backend (Expo API routes / Edge function) that holds secrets and proxies requests; client exchanges a session token.
-  2. **BYOK (bring-your-own-keys)** — Settings screen where the user pastes their own keys, stored in `expo-secure-store`. Sidesteps "need a backend" entirely.
-  Note: Facebook App Secret was already replaced with a non-sensitive Client Token (Opus audit S1 — completed).
-  _Files: `src/utils/env.ts`, `src/services/instagram-scraper.ts`, `src/services/recipe-extractor.ts`_
-
----
-
-### 🟡 MEDIUM
-
-- [ ] **M-h (dark mode migration)** — `src/utils/colors.ts` tokens added, but class-level migration across ~30 `className` sites not yet done. Future task: add `dark:` variants keyed off `useColorScheme()`.
-
-### 🟢 LOW PRIORITY
-
-- **L9** — No MMKV schema migration strategy; corrupted storage has no recovery path. _(skipped by user — too complex for personal app at this stage)_
+Outstanding tasks live in [`TASKS.md`](TASKS.md), split into **AI-Autonomous** (safe for loop execution) and **Needs User Input** (blocked on a human decision). When a task ships, move its entry from `TASKS.md` into the "Completed Work" section below.
 
 ---
 

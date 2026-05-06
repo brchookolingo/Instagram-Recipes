@@ -19,3 +19,4 @@ This file is read by Claude Code as persistent context. Keep it up to date as ta
 - Outstanding work: [`TASKS.md`](TASKS.md) — split into **AI-Autonomous** and **Needs User Input**.
 - Completed work history: [`TASKS.md`](TASKS.md#completed-work).
 - When a task ships, move its entry from the outstanding section of `TASKS.md` into the "Completed Work" section of the same file.
+- Research-only tasks deliver a markdown file under `docs/research/`. See [`docs/README.md`](docs/README.md) for the convention.

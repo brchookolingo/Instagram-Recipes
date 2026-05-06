@@ -36,39 +36,6 @@ These have a clear scope, no external accounts/secrets, and no irreversible deci
 - **Suggested approach:** grep for `bg-`, `text-`, `border-` color classes within the chosen screen; add `dark:` companion for each using the token mapping. Manually verify after.
 - **Output / Files:** `app/**/*.tsx`, `src/components/**/*.tsx`
 
-### FS2 — Add `.DS_Store` to `.gitignore` and untrack any tracked copies
-- **Status:** new
-- **Estimate:** 5 min
-- **Scope:** ensure macOS Finder metadata is never committed.
-- **Acceptance:**
-  - `.gitignore` contains `.DS_Store` (and a recursive pattern if not already)
-  - `git ls-files | grep DS_Store` returns nothing
-  - Working tree clean after commit
-- **Suggested approach:** append the pattern, then `git rm --cached` any tracked instances.
-- **Output / Files:** `.gitignore`
-
-### FS3 — Relocate the three movable root files
-- **Status:** new (FS1 audit complete)
-- **Estimate:** ≤30 min
-- **Scope:** per `docs/research/folder-structure-audit.md`, move three files: `jest.setup.ts` → `tests/jest.setup.ts`, `global.css` → `src/styles/global.css`, `nativewind-env.d.ts` → `types/nativewind-env.d.ts`. Update each consuming config / import. Leave `jest.config.js`, `babel.config.js`, and all other root files where they are — the audit explains why.
-- **Acceptance:**
-  - `npm test` still passes
-  - `npx tsc --noEmit` clean
-  - Expo dev server starts without missing-config warnings; `global.css` styles still apply on first render
-  - Each move is its own commit so any one can be reverted independently
-- **Suggested approach:** follow the ordered steps in the "Recommendation for FS3" section of the audit doc; validate between each move; revert that single move if validation fails.
-- **Output / Files:** `tests/jest.setup.ts`, `src/styles/global.css`, `types/nativewind-env.d.ts`, `jest.config.js`, `app/_layout.tsx`, `tsconfig.json`
-
-### FS4 — Audit `docs/` directory and propose consolidation
-- **Status:** new
-- **Estimate:** 10 min
-- **Scope:** `docs/` currently holds `privacy-policy.html`. Decide whether new research docs go in `docs/research/` (recommended) and document the convention in `docs/README.md`.
-- **Acceptance:**
-  - `docs/README.md` exists describing what lives where
-  - Convention referenced from `CLAUDE.md` Tasks section
-- **Suggested approach:** straight write — no code changes.
-- **Output / Files:** `docs/README.md`, `CLAUDE.md`
-
 ### R1 — Identify direct competitors to ReciGrams
 - **Status:** new
 - **Estimate:** ≤30 min
@@ -240,8 +207,23 @@ Each entry uses the shape: **Summary** (one line), **Shipped** (commit hash or `
 
 #### FS1 — Audit which root-level files are tool-required vs movable
 - **Summary:** wrote an audit covering all 19 root files, classifying each as required-at-root vs movable with the consuming tool's reason. Found three safely relocatable files (`jest.setup.ts`, `global.css`, `nativewind-env.d.ts`); recommended leaving `jest.config.js` at root for IDE compatibility. Audit feeds FS3 with an ordered, revertable plan.
-- **Shipped:** this loop tick
+- **Shipped:** bdc4647
 - **Files:** `docs/research/folder-structure-audit.md`
+
+#### FS2 — Ensure `.DS_Store` is gitignored and not tracked
+- **Summary:** verified `.DS_Store` is already in `.gitignore` (recursive by default with no leading slash) and `git ls-files | grep DS_Store` returns nothing. No change needed.
+- **Shipped:** no-op
+- **Files:** `.gitignore`
+
+#### FS3 — Relocate the three movable root files
+- **Summary:** per FS1 audit, moved `jest.setup.ts` → `tests/jest.setup.ts`, `global.css` → `src/styles/global.css`, `nativewind-env.d.ts` → `types/nativewind-env.d.ts`. Updated `jest.config.js` `setupFiles`, `metro.config.js` `input`, and `app/_layout.tsx` import. Each move shipped as its own commit so any one can be reverted independently. Typecheck clean, tests still green (101/101).
+- **Shipped:** ee505db, 88f69c7, aa5ade1
+- **Files:** `tests/jest.setup.ts`, `src/styles/global.css`, `types/nativewind-env.d.ts`, `jest.config.js`, `metro.config.js`, `app/_layout.tsx`
+
+#### FS4 — Document `docs/` convention
+- **Summary:** added `docs/README.md` describing the layout (`research/` for task-deliverable markdown, `privacy-policy.html` for the public policy) and referenced the convention from `CLAUDE.md`.
+- **Shipped:** this loop tick
+- **Files:** `docs/README.md`, `CLAUDE.md`
 
 ### Code Cleanup
 

@@ -36,16 +36,6 @@ These have a clear scope, no external accounts/secrets, and no irreversible deci
 - **Suggested approach:** grep for `bg-`, `text-`, `border-` color classes within the chosen screen; add `dark:` companion for each using the token mapping. Manually verify after.
 - **Output / Files:** `app/**/*.tsx`, `src/components/**/*.tsx`
 
-### FS1 — Audit which root-level files are tool-required vs movable
-- **Status:** new
-- **Estimate:** ≤30 min
-- **Scope:** for every file currently sitting at the repo root (`app.json`, `babel.config.js`, `eas.json`, `global.css`, `jest.config.js`, `jest.setup.ts`, `metro.config.js`, `nativewind-env.d.ts`, `tailwind.config.js`, `tsconfig.json`, `.env`, `.env.example`, `package.json`, `package-lock.json`, `CLAUDE.md`, `README.md`, `TASKS.md`), determine whether the tool that consumes it requires the file at root or supports a custom path.
-- **Acceptance:**
-  - `docs/research/folder-structure-audit.md` exists with a table: file | required-at-root? | source (link to tool docs) | proposed location if movable
-  - Recommends a target structure (e.g. `config/` for movable configs) without making changes
-- **Suggested approach:** check Expo, Metro, Babel, Jest, Tailwind, NativeWind, TypeScript docs for each. Many (Expo `app.json`, `package.json`, `tsconfig.json`) are pinned to root; some (`jest.setup.ts`) are freely relocatable.
-- **Output / Files:** `docs/research/folder-structure-audit.md`
-
 ### FS2 — Add `.DS_Store` to `.gitignore` and untrack any tracked copies
 - **Status:** new
 - **Estimate:** 5 min
@@ -57,16 +47,17 @@ These have a clear scope, no external accounts/secrets, and no irreversible deci
 - **Suggested approach:** append the pattern, then `git rm --cached` any tracked instances.
 - **Output / Files:** `.gitignore`
 
-### FS3 — Move freely-relocatable configs into a `config/` directory
-- **Status:** blocked-on FS1
+### FS3 — Relocate the three movable root files
+- **Status:** new (FS1 audit complete)
 - **Estimate:** ≤30 min
-- **Scope:** based on the FS1 audit, move only the configs that tooling supports relocating (likely `jest.setup.ts`, possibly `babel.config.js` with caveats). Update the consuming config to point at the new path.
+- **Scope:** per `docs/research/folder-structure-audit.md`, move three files: `jest.setup.ts` → `tests/jest.setup.ts`, `global.css` → `src/styles/global.css`, `nativewind-env.d.ts` → `types/nativewind-env.d.ts`. Update each consuming config / import. Leave `jest.config.js`, `babel.config.js`, and all other root files where they are — the audit explains why.
 - **Acceptance:**
   - `npm test` still passes
   - `npx tsc --noEmit` clean
-  - Expo dev server starts without warnings about missing configs
-- **Suggested approach:** move one file at a time, run tests after each move, revert if a tool complains.
-- **Output / Files:** `config/`, `jest.config.js`, any other consumer configs
+  - Expo dev server starts without missing-config warnings; `global.css` styles still apply on first render
+  - Each move is its own commit so any one can be reverted independently
+- **Suggested approach:** follow the ordered steps in the "Recommendation for FS3" section of the audit doc; validate between each move; revert that single move if validation fails.
+- **Output / Files:** `tests/jest.setup.ts`, `src/styles/global.css`, `types/nativewind-env.d.ts`, `jest.config.js`, `app/_layout.tsx`, `tsconfig.json`
 
 ### FS4 — Audit `docs/` directory and propose consolidation
 - **Status:** new
@@ -242,8 +233,15 @@ Each entry uses the shape: **Summary** (one line), **Shipped** (commit hash or `
 
 #### DOC2 — Normalize the Completed Work section
 - **Summary:** rewrote every completed-work entry to the three-field shape (Summary / Shipped / Files); preserved existing IDs, assigned synthetic IDs (CC*, MP*, EH*, MODEL*, SCALE*, TEST*) to legacy bullets that lacked them; flattened the per-Commit groupings under "Opus 4.7 deep-audit fixes" — commit refs now live in each entry's Shipped field.
-- **Shipped:** this loop tick
+- **Shipped:** fd407fb
 - **Files:** `TASKS.md`
+
+### Folder structure
+
+#### FS1 — Audit which root-level files are tool-required vs movable
+- **Summary:** wrote an audit covering all 19 root files, classifying each as required-at-root vs movable with the consuming tool's reason. Found three safely relocatable files (`jest.setup.ts`, `global.css`, `nativewind-env.d.ts`); recommended leaving `jest.config.js` at root for IDE compatibility. Audit feeds FS3 with an ordered, revertable plan.
+- **Shipped:** this loop tick
+- **Files:** `docs/research/folder-structure-audit.md`
 
 ### Code Cleanup
 

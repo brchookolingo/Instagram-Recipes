@@ -49,42 +49,42 @@ export default function GroceryScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white" edges={["bottom"]}>
+    <SafeAreaView className="flex-1 bg-white dark:bg-gray-900" edges={["bottom"]}>
       {/* Action buttons */}
       <View className="flex-row gap-3 px-4 pt-4 pb-2">
         <Pressable
-          className={`flex-1 rounded-xl py-3 items-center ${isEditing ? "bg-black" : "bg-gray-100"}`}
+          className={`flex-1 rounded-xl py-3 items-center ${isEditing ? "bg-black dark:bg-white" : "bg-gray-100 dark:bg-gray-800"}`}
           onPress={() => setIsEditing((v) => !v)}
           accessibilityRole="button"
           accessibilityLabel={isEditing ? "Finish editing" : "Edit grocery list"}
           accessibilityState={{ selected: isEditing }}
         >
-          <Text className={`font-semibold text-sm ${isEditing ? "text-white" : "text-gray-700"}`}>
+          <Text className={`font-semibold text-sm ${isEditing ? "text-white dark:text-black" : "text-gray-700 dark:text-gray-200"}`}>
             {isEditing ? "Done" : "Edit List"}
           </Text>
         </Pressable>
         <Pressable
-          className="flex-1 bg-gray-100 rounded-xl py-3 items-center"
+          className="flex-1 bg-gray-100 dark:bg-gray-800 rounded-xl py-3 items-center"
           onPress={clearChecked}
           accessibilityRole="button"
           accessibilityLabel="Clear checked items"
         >
-          <Text className="text-gray-700 font-semibold text-sm">Clear Crossed Out</Text>
+          <Text className="text-gray-700 dark:text-gray-200 font-semibold text-sm">Clear Crossed Out</Text>
         </Pressable>
         <Pressable
-          className="flex-1 bg-red-50 rounded-xl py-3 items-center"
+          className="flex-1 bg-red-50 dark:bg-red-900/20 rounded-xl py-3 items-center"
           onPress={handleClearAll}
           accessibilityRole="button"
           accessibilityLabel="Clear entire grocery list"
         >
-          <Text className="text-red-600 font-semibold text-sm">Clear All</Text>
+          <Text className="text-red-600 dark:text-red-400 font-semibold text-sm">Clear All</Text>
         </Pressable>
       </View>
 
       {isLoading ? (
         <View className="flex-1 items-center justify-center">
           <ActivityIndicator size="large" color="#ec4899" />
-          <Text className="text-gray-500 mt-3">Organizing your grocery list...</Text>
+          <Text className="text-gray-500 dark:text-gray-400 mt-3">Organizing your grocery list...</Text>
         </View>
       ) : isEmpty ? (
         <EmptyState
@@ -101,7 +101,7 @@ export default function GroceryScreen() {
           {/* Recipe refs */}
           {recipeRefs.length > 0 && (
             <View className="mt-4 mb-6">
-              <Text className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">
+              <Text className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-2">
                 Added from
               </Text>
               <View className="flex-row flex-wrap gap-2">
@@ -109,12 +109,12 @@ export default function GroceryScreen() {
                   <Pressable
                     key={ref.id}
                     onPress={() => router.push(`/recipe/${ref.id}`)}
-                    className="bg-pink-50 rounded-full px-3 py-1 flex-row items-center gap-1"
+                    className="bg-pink-50 dark:bg-pink-900/20 rounded-full px-3 py-1 flex-row items-center gap-1"
                     accessibilityRole="link"
                     accessibilityLabel={`Open recipe ${ref.title}`}
                   >
-                    <Text className="text-pink-600 text-sm font-medium">{ref.title}</Text>
-                    <Text className="text-pink-400 text-xs">↗</Text>
+                    <Text className="text-pink-600 dark:text-pink-300 text-sm font-medium">{ref.title}</Text>
+                    <Text className="text-pink-400 dark:text-pink-500 text-xs">↗</Text>
                   </Pressable>
                 ))}
               </View>
@@ -124,13 +124,13 @@ export default function GroceryScreen() {
           {/* Manual section — shown in edit mode when list is empty */}
           {isEditing && sections.length === 0 && (
             <View className="mb-6 mt-4">
-              <Text className="text-base font-bold text-gray-800 mb-2 border-b border-gray-100 pb-1">
+              <Text className="text-base font-bold text-gray-800 dark:text-gray-100 mb-2 border-b border-gray-100 dark:border-gray-700 pb-1">
                 Manual
               </Text>
               <View className="flex-row items-center gap-2 mt-2">
                 <View className="w-[22px]" />
                 <TextInput
-                  className="flex-1 border border-dashed border-gray-300 rounded-lg px-3 py-2 text-base text-gray-600"
+                  className="flex-1 border border-dashed border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-base text-gray-600 dark:text-gray-200"
                   placeholder="Add item..."
                   value={newItemTexts["Manual"] ?? ""}
                   onChangeText={(text) =>
@@ -156,7 +156,7 @@ export default function GroceryScreen() {
           {sections.map((section) => (
             <View key={section.name} className="mb-6">
               <Text
-                className="text-base font-bold text-gray-800 mb-2 border-b border-gray-100 pb-1"
+                className="text-base font-bold text-gray-800 dark:text-gray-100 mb-2 border-b border-gray-100 dark:border-gray-700 pb-1"
                 accessibilityRole="header"
               >
                 {section.name}
@@ -174,7 +174,7 @@ export default function GroceryScreen() {
                       <Ionicons name="remove-circle" size={22} color="#f87171" />
                     </Pressable>
                     <TextInput
-                      className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-base text-gray-800"
+                      className="flex-1 border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-2 text-base text-gray-800 dark:text-gray-100"
                       value={item.text}
                       onChangeText={(text) => updateItem(section.name, item.id, text)}
                       placeholder="Item name"
@@ -197,7 +197,7 @@ export default function GroceryScreen() {
                       color={item.checked ? "#9ca3af" : "#ec4899"}
                     />
                     <Text
-                      className={`flex-1 text-base ${item.checked ? "text-gray-400 line-through" : "text-gray-800"}`}
+                      className={`flex-1 text-base ${item.checked ? "text-gray-400 dark:text-gray-500 line-through" : "text-gray-800 dark:text-gray-100"}`}
                     >
                       {item.quantity ? `${item.quantity}${item.unit ? " " + item.unit : ""} ` : ""}
                       {item.text}
@@ -211,7 +211,7 @@ export default function GroceryScreen() {
                 <View className="flex-row items-center gap-2 mt-2">
                   <View className="w-[22px]" />
                   <TextInput
-                    className="flex-1 border border-dashed border-gray-300 rounded-lg px-3 py-2 text-base text-gray-600"
+                    className="flex-1 border border-dashed border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-base text-gray-600 dark:text-gray-200"
                     placeholder="Add item..."
                     value={newItemTexts[section.name] ?? ""}
                     onChangeText={(text) =>

@@ -580,7 +580,7 @@ Each entry uses the shape: **Summary** (one line), **Shipped** (commit hash or `
 
 #### M-h — Dark mode className migration
 - **Summary:** completed the per-className dark-mode migration begun under M-h (partial). Settings tab (dd5d634), grocery tab + `EmptyState` (28bd528), and in this final pass: home/recipes tab (incl. filter modal + pill rows), collections tab, add-recipe (loading/input/preview/edit states + form inputs), recipe detail (header, scale toggles, ingredient/instruction sections, action buttons, collection picker modal), recipe edit, collection detail, onboarding (`useColorScheme`-driven StyleSheet swap), and shared components: `RecipeCard`, `BoardCard`, `URLInput`, `IngredientList`, `InstructionList`, `PillButton`, `SkeletonRecipeGrid`, `ErrorBoundary`. Brand accents (`bg-pink-500`, `text-pink-500`) intentionally left without dark variants since they read correctly on both backgrounds. Typecheck clean, 101/101 tests pass.
-- **Shipped:** this loop tick
+- **Shipped:** 0d40fff
 - **Files:** `app/(tabs)/index.tsx`, `app/(tabs)/collections.tsx`, `app/add-recipe.tsx`, `app/recipe/[id].tsx`, `app/recipe/edit/[id].tsx`, `app/collection/[id].tsx`, `app/onboarding.tsx`, `src/components/RecipeCard.tsx`, `src/components/BoardCard.tsx`, `src/components/URLInput.tsx`, `src/components/IngredientList.tsx`, `src/components/InstructionList.tsx`, `src/components/PillButton.tsx`, `src/components/SkeletonRecipeGrid.tsx`, `src/components/ErrorBoundary.tsx`
 
 #### TEST1 — Jest harness

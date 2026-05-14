@@ -36,48 +36,8 @@ These have a clear scope, no external accounts/secrets, and no irreversible deci
 - **Suggested approach:** grep for `bg-`, `text-`, `border-` color classes within the chosen screen; add `dark:` companion for each using the token mapping. Manually verify after.
 - **Output / Files:** `app/**/*.tsx`, `src/components/**/*.tsx`
 
-### R1 — Identify direct competitors to ReciGrams
-- **Status:** new
-- **Estimate:** ≤30 min
-- **Scope:** find apps that let users save recipes from Instagram / TikTok / Pinterest / web links, with a focus on AI extraction. Capture 8–12 candidates.
-- **Acceptance:**
-  - `docs/research/competitors.md` lists each app with: name, platforms (iOS / Android / web), one-line value prop, primary input source (IG link / camera / web), AI-powered yes/no, link to App Store / Play Store / website
-  - Includes both indie apps and well-funded ones
-- **Suggested approach:** search App Store, Play Store, Product Hunt, Reddit r/recipes / r/MealPrepSunday for "save Instagram recipe" type queries. Use WebSearch / WebFetch.
-- **Output / Files:** `docs/research/competitors.md`
-
-### R2 — Build a competitor feature comparison matrix
-- **Status:** blocked-on R1
-- **Estimate:** ≤30 min
-- **Scope:** for the apps from R1, fill a matrix on features that overlap with ReciGrams: IG / TikTok / Pinterest support, AI extraction, scaling, grocery list, collections, offline storage, dark mode, sharing/export.
-- **Acceptance:**
-  - `docs/research/competitor-features.md` with a markdown table
-  - Short "where ReciGrams stands out / lags" paragraph at the bottom
-- **Suggested approach:** read each app's listing + a few screenshots; do not install paid apps. If unclear, mark `?`.
-- **Output / Files:** `docs/research/competitor-features.md`
-
-### R3 — Survey competitor pricing and monetization models
-- **Status:** blocked-on R1
-- **Estimate:** ≤30 min
-- **Scope:** for each app from R1, record monetization model (free, freemium, one-time, subscription, ads, BYOK), price points, and what's gated behind paid tiers.
-- **Acceptance:**
-  - `docs/research/competitor-pricing.md` with a table and a short summary of common patterns
-- **Suggested approach:** App Store / Play Store pricing pages + each app's website. Do not subscribe to anything.
-- **Output / Files:** `docs/research/competitor-pricing.md`
-
-### P1 — Compute variable cost per new recipe
-- **Status:** new
-- **Estimate:** ≤30 min
-- **Scope:** quantify what one new recipe extraction costs us. Inputs: average input/output token count for `parseRecipeWithAI` + `cleanupRecipeExtraction` against `claude-sonnet-4-5` published pricing; RapidAPI Instagram scraper per-call cost; Facebook oEmbed (free); TikTok/Pinterest oEmbed (free).
-- **Acceptance:**
-  - `docs/research/unit-economics.md` lists per-tier cost (Tier 0 / 1 / 2 / fallback) with token estimates from real prompts in `src/services/recipe-parser-ai.ts`
-  - States expected $/recipe at p50 and p95
-  - Notes which numbers are estimated vs measured
-- **Suggested approach:** read the prompts in `recipe-parser-ai.ts`, estimate tokens with `tiktoken`-style heuristics or document assumptions. Pull current Anthropic + RapidAPI pricing from their public pages. Do not sign up for paid tiers.
-- **Output / Files:** `docs/research/unit-economics.md`
-
 ### P2 — Draft 2–3 candidate pricing structures with break-even math
-- **Status:** blocked-on P1, R3
+- **Status:** new (unblocked — P1 + R3 shipped)
 - **Estimate:** ≤30 min
 - **Scope:** propose at least three pricing structures (e.g. freemium with quota, BYOK + one-time unlock, monthly sub, lifetime). For each, show break-even on per-recipe cost from P1 plus App Store / Play Store cuts (15–30%).
 - **Acceptance:**
@@ -86,29 +46,8 @@ These have a clear scope, no external accounts/secrets, and no irreversible deci
 - **Suggested approach:** keep math explicit; cite P1's numbers.
 - **Output / Files:** `docs/research/pricing-options.md`
 
-### AND1 — Document the local Android test path
-- **Status:** new
-- **Estimate:** ≤30 min
-- **Scope:** write up the steps to run ReciGrams on Android using the existing Expo setup, on both an emulator and a physical device, without paying for anything. Cover Android Studio install (free), AVD setup, Expo Go vs dev client, and `npx expo run:android`.
-- **Acceptance:**
-  - `docs/research/android-testing.md` covers: prerequisites, emulator path, physical device path, common gotchas (e.g. `EXPO_PUBLIC_*` env, MMKV native module needs dev client not Expo Go)
-  - Notes any features that are likely to behave differently on Android (clipboard listener, `Linking`, secure-store, share-sheet intents)
-- **Suggested approach:** check current `app.json` + `android/` config; cross-reference Expo + React Native docs.
-- **Output / Files:** `docs/research/android-testing.md`
-
-### AND2 — Document Play Store publishing requirements (no purchase)
-- **Status:** new
-- **Estimate:** ≤30 min
-- **Scope:** survey what's required to publish on Google Play: developer account fee, app signing, target SDK, privacy policy URL, data-safety form, content rating, store listing assets, internal/closed/open testing tracks. Surface the **one-time $25 Google Play Console registration fee** prominently as a blocker — do not pay.
-- **Acceptance:**
-  - `docs/research/play-store-publishing.md` lists every requirement with a status (✅ have it / ⚠️ partial / ❌ missing) against our current state
-  - Calls out costs (the $25 fee, plus anything else) under a "Costs (do not pay yet)" heading
-  - Lists ReciGrams-specific risks: Instagram ToS scraping question, AI-generated content disclosure, user-generated content category
-- **Suggested approach:** Play Console policy docs + Expo's "Submit to Google Play" guide.
-- **Output / Files:** `docs/research/play-store-publishing.md`
-
 ### AND3 — Document EAS build + internal-distribution path for Android
-- **Status:** blocked-on AND1
+- **Status:** new (unblocked — AND1 shipped)
 - **Estimate:** ≤30 min
 - **Scope:** describe how to produce a shareable Android build via EAS without uploading to Play Store yet (internal distribution APK / AAB), so testers can install before the Play Console fee is paid.
 - **Acceptance:**
@@ -117,19 +56,8 @@ These have a clear scope, no external accounts/secrets, and no irreversible deci
 - **Suggested approach:** consult `eas.json` + Expo EAS Build docs.
 - **Output / Files:** `docs/research/android-internal-build.md`
 
-### VID1 — Survey AI tools for producing app walkthrough videos
-- **Status:** new
-- **Estimate:** ≤30 min
-- **Scope:** identify candidate tools for replacing the static onboarding slides with short demo videos. Cover at minimum: screen-recording-first tools with AI polish (Screen Studio, Tella, Arcade, Descript), AI avatar/voiceover tools (Synthesia, HeyGen, ElevenLabs), and full text-to-video models (Runway, Sora, Veo, Pika).
-- **Acceptance:**
-  - `docs/research/onboarding-video-tools.md` with one row per tool: input style (screen recording / prompt / avatar), output quality bracket, free-tier capability, watermark on free tier yes/no, paid tier cost, fit for "show app screens with voiceover" use case
-  - Does **not** sign up for any tool
-  - Concludes with a short shortlist (3 tools) for the user to pick from
-- **Suggested approach:** WebFetch each tool's pricing page + a quick scan of recent reviews.
-- **Output / Files:** `docs/research/onboarding-video-tools.md`
-
 ### VID2 — Recommend a capture-and-edit pipeline for the onboarding videos
-- **Status:** blocked-on VID1
+- **Status:** new (unblocked — VID1 shipped)
 - **Estimate:** ≤30 min
 - **Scope:** based on VID1's shortlist, propose an end-to-end pipeline (capture → edit → voiceover → export) that produces 4 short clips matching the existing 4 onboarding slides. Constrain to free-tier-only where possible; flag any paid step.
 - **Acceptance:**
@@ -172,7 +100,7 @@ These are blocked on a human choice, an external account, a purchase, or a destr
 - **Output / Files:** none in repo
 
 ### VID-PICK — Pick the AI video tool from the VID1 shortlist
-- **Status:** blocked-on VID1
+- **Status:** unblocked — VID1 shipped, awaiting user
 - **Estimate:** 10 min
 - **Scope:** user reads `docs/research/onboarding-video-tools.md` and picks the tool. Sign-ups, paid plans, and credential storage are all the user's call.
 - **Acceptance:** decision captured as a follow-up task `VID3 — Produce 4 onboarding clips using <chosen tool>`.
@@ -202,6 +130,43 @@ Each entry uses the shape: **Summary** (one line), **Shipped** (commit hash or `
 - **Summary:** rewrote every completed-work entry to the three-field shape (Summary / Shipped / Files); preserved existing IDs, assigned synthetic IDs (CC*, MP*, EH*, MODEL*, SCALE*, TEST*) to legacy bullets that lacked them; flattened the per-Commit groupings under "Opus 4.7 deep-audit fixes" — commit refs now live in each entry's Shipped field.
 - **Shipped:** fd407fb
 - **Files:** `TASKS.md`
+
+### Research
+
+#### R1 — Identify direct competitors to ReciGrams
+- **Summary:** catalogued 12 direct competitors (ReciMe, Pestle, Flavorish, Pluck, Recipe Notes, Recipe Bro, Cookmark, rmnd, Inspo, Recipe One, Crouton, Cooking Guru) with platforms, value prop, primary input source, AI yes/no, and listing link. Closes the doc with field-level notes on input convergence, AI commoditisation, pricing camps, and the cross-platform RN gap.
+- **Shipped:** dd5d634
+- **Files:** `docs/research/competitors.md`
+
+#### R2 — Competitor feature comparison matrix
+- **Summary:** 11-column feature matrix (IG / TikTok / Pinterest / Web URL / AI extract / Scaling / Grocery / Collections / Offline / Dark mode / Sharing) across the R1 competitors, with explicit Y/N/? distinction. "Where ReciGrams stands out / lags" paragraph names Pestle and Pluck as the only competitors that match offline + multi-source AI extract.
+- **Shipped:** dd5d634
+- **Files:** `docs/research/competitor-features.md`
+
+#### R3 — Competitor pricing & monetization survey
+- **Summary:** pricing table for all 12 R1 competitors with model, free tier, paid tier(s), what's gated. Common-patterns section flags freemium-with-import-cap dominance, $2.99–$6.99/mo cluster, the BYOK gap (no competitor uses it — a wedge for ReciGrams), and store-cut implications.
+- **Shipped:** this loop tick
+- **Files:** `docs/research/competitor-pricing.md`
+
+#### P1 — Variable cost per recipe extraction
+- **Summary:** per-tier (Tier 0 / 1 / 2 / fallback) cost decomposition referencing `parseRecipeWithAI` + `cleanupRecipeExtraction` token estimates against `claude-sonnet-4-5` pricing and RapidAPI Instagram scraper per-call cost. Quotes p50/p95 $/recipe; flags estimated vs measured numbers; notes pricing-snapshot date.
+- **Shipped:** dd5d634
+- **Files:** `docs/research/unit-economics.md`
+
+#### AND1 — Local Android test path
+- **Summary:** prerequisites, AVD/emulator path, physical-device path, dev-client vs Expo Go (MMKV native module forces dev client), `EXPO_PUBLIC_*` env handling, and Android-vs-iOS divergence notes (clipboard listener, `Linking`, secure-store, share-sheet intents).
+- **Shipped:** dd5d634
+- **Files:** `docs/research/android-testing.md`
+
+#### AND2 — Play Store publishing requirements
+- **Summary:** every requirement (developer account fee, signing, target SDK, privacy policy URL, data-safety, content rating, store listing assets, testing tracks) mapped to ✅/⚠️/❌ against current state. Surfaces the $25 Google Play Console fee under "Costs (do not pay yet)" and ReciGrams-specific risks (Instagram ToS, AI-generated content disclosure, UGC category).
+- **Shipped:** 7bd1028
+- **Files:** `docs/research/play-store-publishing.md`
+
+#### VID1 — AI tools for onboarding walkthrough videos
+- **Summary:** comparison of screen-recording-first tools (Screen Studio, Tella, Arcade, Descript), AI avatar/voiceover (Synthesia, HeyGen, ElevenLabs), and full text-to-video (Runway, Sora, Veo, Pika), with input style, output quality bracket, free-tier capability, watermark status, paid cost, and fit-for-purpose verdict. Ends with a 3-tool shortlist for VID-PICK.
+- **Shipped:** 7bd1028
+- **Files:** `docs/research/onboarding-video-tools.md`
 
 ### Folder structure
 

@@ -10,8 +10,8 @@ export function IngredientList({ ingredients }: IngredientListProps) {
     <View className="gap-2">
       {ingredients.map((ingredient, index) => (
         <View key={ingredient.id ?? `${index}-${ingredient.text}`} className="flex-row items-start gap-3 py-1 px-3">
-          <Text className="text-gray-400 mt-1">•</Text>
-          <Text className="flex-1 text-base text-gray-800">
+          <Text className="text-gray-400 dark:text-gray-500 mt-1">•</Text>
+          <Text className="flex-1 text-base text-gray-800 dark:text-gray-100">
             {ingredient.text}
           </Text>
         </View>

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, Text, Pressable, StyleSheet } from "react-native";
+import { View, Text, Pressable, StyleSheet, useColorScheme } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { markOnboardingSeen } from "../src/utils/onboarding";
@@ -39,6 +39,7 @@ export default function OnboardingScreen() {
   const router = useRouter();
   const { mode } = useLocalSearchParams<{ mode?: string }>();
   const isReview = mode === "review";
+  const isDark = useColorScheme() === "dark";
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const isLast = currentIndex === SLIDES.length - 1;
@@ -68,7 +69,10 @@ export default function OnboardingScreen() {
   const slide = SLIDES[currentIndex];
 
   return (
-    <SafeAreaView style={styles.container} edges={["top", "bottom"]}>
+    <SafeAreaView
+      style={[styles.container, isDark && { backgroundColor: "#111827" }]}
+      edges={["top", "bottom"]}
+    >
       {/* Skip button */}
       <View style={styles.skipRow}>
         {!isLast ? (
@@ -90,10 +94,15 @@ export default function OnboardingScreen() {
         <Text style={styles.emoji} accessibilityElementsHidden>
           {slide.emoji}
         </Text>
-        <Text style={styles.title} accessibilityRole="header">
+        <Text
+          style={[styles.title, isDark && { color: "#f3f4f6" }]}
+          accessibilityRole="header"
+        >
           {slide.title}
         </Text>
-        <Text style={styles.description}>{slide.description}</Text>
+        <Text style={[styles.description, isDark && { color: "#9ca3af" }]}>
+          {slide.description}
+        </Text>
       </View>
 
       {/* Dots */}
@@ -106,7 +115,11 @@ export default function OnboardingScreen() {
             key={i}
             style={[
               styles.dot,
-              i === currentIndex ? styles.dotActive : styles.dotInactive,
+              i === currentIndex
+                ? styles.dotActive
+                : isDark
+                  ? { width: 8, backgroundColor: "#374151" }
+                  : styles.dotInactive,
             ]}
           />
         ))}

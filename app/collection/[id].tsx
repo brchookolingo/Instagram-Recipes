@@ -18,8 +18,8 @@ export default function CollectionDetailScreen() {
 
   if (!board) {
     return (
-      <View className="flex-1 items-center justify-center bg-white">
-        <Text className="text-gray-500">Collection not found</Text>
+      <View className="flex-1 items-center justify-center bg-white dark:bg-gray-900">
+        <Text className="text-gray-500 dark:text-gray-400">Collection not found</Text>
       </View>
     );
   }
@@ -77,10 +77,10 @@ export default function CollectionDetailScreen() {
   );
 
   return (
-    <View className="flex-1 bg-gray-50">
-      <View className="px-4 py-3 flex-row items-center justify-between bg-white border-b border-gray-100">
+    <View className="flex-1 bg-gray-50 dark:bg-gray-900">
+      <View className="px-4 py-3 flex-row items-center justify-between bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
         <Text
-          className="text-lg font-bold flex-1"
+          className="text-lg font-bold flex-1 text-gray-900 dark:text-gray-100"
           numberOfLines={1}
           accessibilityRole="header"
         >
@@ -92,14 +92,14 @@ export default function CollectionDetailScreen() {
             accessibilityRole="button"
             accessibilityLabel="Rename collection"
           >
-            <Text className="text-pink-500 font-semibold">Rename</Text>
+            <Text className="text-pink-500 dark:text-pink-400 font-semibold">Rename</Text>
           </Pressable>
           <Pressable
             onPress={handleDeleteCollection}
             accessibilityRole="button"
             accessibilityLabel="Delete collection"
           >
-            <Text className="text-red-500 font-semibold">Delete</Text>
+            <Text className="text-red-500 dark:text-red-400 font-semibold">Delete</Text>
           </Pressable>
         </View>
       </View>

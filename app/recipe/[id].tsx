@@ -40,8 +40,8 @@ export default function RecipeDetailScreen() {
 
   if (!recipe) {
     return (
-      <View className="flex-1 items-center justify-center bg-white">
-        <Text className="text-gray-500">Recipe not found</Text>
+      <View className="flex-1 items-center justify-center bg-white dark:bg-gray-900">
+        <Text className="text-gray-500 dark:text-gray-400">Recipe not found</Text>
       </View>
     );
   }
@@ -106,14 +106,14 @@ export default function RecipeDetailScreen() {
 
   return (
     <>
-    <ScrollView className="flex-1 bg-white" keyboardShouldPersistTaps="handled">
+    <ScrollView className="flex-1 bg-white dark:bg-gray-900" keyboardShouldPersistTaps="handled">
       <View className="px-4 py-4">
-        <Text className="text-2xl font-bold" accessibilityRole="header">
+        <Text className="text-2xl font-bold text-gray-900 dark:text-gray-100" accessibilityRole="header">
           {recipe.title}
         </Text>
 
         {recipe.author ? (
-          <Text className="text-gray-500 mt-1">by {recipe.author}</Text>
+          <Text className="text-gray-500 dark:text-gray-400 mt-1">by {recipe.author}</Text>
         ) : null}
 
         {recipe.sourceUrl ? (
@@ -123,7 +123,7 @@ export default function RecipeDetailScreen() {
             accessibilityLabel="View original post"
             accessibilityHint="Opens the source URL in the browser"
           >
-            <Text className="text-pink-500 text-sm mt-1">
+            <Text className="text-pink-500 dark:text-pink-400 text-sm mt-1">
               View Original Post ↗
             </Text>
           </Pressable>
@@ -132,22 +132,22 @@ export default function RecipeDetailScreen() {
         <View className="flex-row items-center mt-3">
           <View className="flex-1 flex-row flex-wrap gap-2">
             {recipe.prepTime ? (
-              <View className="bg-pink-50 rounded-full px-3 py-1">
-                <Text className="text-xs text-pink-600">
+              <View className="bg-pink-50 dark:bg-pink-900/20 rounded-full px-3 py-1">
+                <Text className="text-xs text-pink-600 dark:text-pink-300">
                   Prep: {recipe.prepTime} min
                 </Text>
               </View>
             ) : null}
             {recipe.cookTime ? (
-              <View className="bg-orange-50 rounded-full px-3 py-1">
-                <Text className="text-xs text-orange-600">
+              <View className="bg-orange-50 dark:bg-orange-900/20 rounded-full px-3 py-1">
+                <Text className="text-xs text-orange-600 dark:text-orange-300">
                   Cook: {recipe.cookTime} min
                 </Text>
               </View>
             ) : null}
             {scaledServings ? (
-              <View className="bg-blue-50 rounded-full px-3 py-1">
-                <Text className="text-xs text-blue-600">
+              <View className="bg-blue-50 dark:bg-blue-900/20 rounded-full px-3 py-1">
+                <Text className="text-xs text-blue-600 dark:text-blue-300">
                   Serves: {scaledServings}
                 </Text>
               </View>
@@ -164,13 +164,13 @@ export default function RecipeDetailScreen() {
             <Ionicons
               name={recipe.isFavourite ? "heart" : "heart-outline"}
               size={24}
-              color={recipe.isFavourite ? "#ef4444" : "#000000"}
+              color={recipe.isFavourite ? "#ef4444" : "#9ca3af"}
             />
           </Pressable>
         </View>
 
         {recipe.description ? (
-          <Text className="text-gray-600 mt-4">{recipe.description}</Text>
+          <Text className="text-gray-600 dark:text-gray-300 mt-4">{recipe.description}</Text>
         ) : null}
 
         {imageUri ? (
@@ -185,40 +185,40 @@ export default function RecipeDetailScreen() {
         {recipe.ingredients.length > 0 && (
           <View className="mt-6">
             <View className="flex-row items-center justify-between mb-3">
-              <Text className="text-lg font-bold" accessibilityRole="header">
+              <Text className="text-lg font-bold text-gray-900 dark:text-gray-100" accessibilityRole="header">
                 Ingredients
               </Text>
-              <View className="flex-row bg-gray-100 rounded-xl p-1 gap-1">
+              <View className="flex-row bg-gray-100 dark:bg-gray-800 rounded-xl p-1 gap-1">
                 <Pressable
                   onPress={() => setScale("half")}
-                  className={`px-3 py-1 rounded-lg ${scale === "half" ? "bg-white" : ""}`}
+                  className={`px-3 py-1 rounded-lg ${scale === "half" ? "bg-white dark:bg-gray-700" : ""}`}
                   accessibilityRole="button"
                   accessibilityLabel="Half scale"
                   accessibilityState={{ selected: scale === "half" }}
                 >
-                  <Text className={`text-sm font-semibold ${scale === "half" ? "text-pink-500" : "text-gray-400"}`}>
+                  <Text className={`text-sm font-semibold ${scale === "half" ? "text-pink-500 dark:text-pink-300" : "text-gray-400 dark:text-gray-500"}`}>
                     ½×
                   </Text>
                 </Pressable>
                 <Pressable
                   onPress={() => setScale("normal")}
-                  className={`px-3 py-1 rounded-lg ${scale === "normal" ? "bg-white" : ""}`}
+                  className={`px-3 py-1 rounded-lg ${scale === "normal" ? "bg-white dark:bg-gray-700" : ""}`}
                   accessibilityRole="button"
                   accessibilityLabel="Normal scale"
                   accessibilityState={{ selected: scale === "normal" }}
                 >
-                  <Text className={`text-sm font-semibold ${scale === "normal" ? "text-pink-500" : "text-gray-400"}`}>
+                  <Text className={`text-sm font-semibold ${scale === "normal" ? "text-pink-500 dark:text-pink-300" : "text-gray-400 dark:text-gray-500"}`}>
                     1×
                   </Text>
                 </Pressable>
                 <Pressable
                   onPress={() => setScale("double")}
-                  className={`px-3 py-1 rounded-lg ${scale === "double" ? "bg-white" : ""}`}
+                  className={`px-3 py-1 rounded-lg ${scale === "double" ? "bg-white dark:bg-gray-700" : ""}`}
                   accessibilityRole="button"
                   accessibilityLabel="Double scale"
                   accessibilityState={{ selected: scale === "double" }}
                 >
-                  <Text className={`text-sm font-semibold ${scale === "double" ? "text-pink-500" : "text-gray-400"}`}>
+                  <Text className={`text-sm font-semibold ${scale === "double" ? "text-pink-500 dark:text-pink-300" : "text-gray-400 dark:text-gray-500"}`}>
                     2×
                   </Text>
                 </Pressable>
@@ -230,7 +230,7 @@ export default function RecipeDetailScreen() {
 
         {recipe.instructions.length > 0 && (
           <View className="mt-6">
-            <Text className="text-lg font-bold mb-3" accessibilityRole="header">
+            <Text className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-3" accessibilityRole="header">
               Instructions
             </Text>
             <InstructionList instructions={recipe.instructions} />
@@ -239,25 +239,25 @@ export default function RecipeDetailScreen() {
 
         {recipe.notes ? (
           <View className="mt-6">
-            <Text className="text-lg font-bold mb-3" accessibilityRole="header">
+            <Text className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-3" accessibilityRole="header">
               Notes
             </Text>
-            <Text className="text-base text-gray-700 leading-relaxed">{recipe.notes}</Text>
+            <Text className="text-base text-gray-700 dark:text-gray-200 leading-relaxed">{recipe.notes}</Text>
           </View>
         ) : null}
 
         <View className="gap-3 mt-8 mb-8">
           <View className="flex-row gap-3">
             <Pressable
-              className="flex-1 bg-pink-50 rounded-xl py-3 items-center"
+              className="flex-1 bg-pink-50 dark:bg-pink-900/20 rounded-xl py-3 items-center"
               onPress={() => setShowBoardModal(true)}
               accessibilityRole="button"
               accessibilityLabel="Add to collection"
             >
-              <Text className="text-pink-600 font-semibold">Add to Collection</Text>
+              <Text className="text-pink-600 dark:text-pink-300 font-semibold">Add to Collection</Text>
             </Pressable>
             <Pressable
-              className="flex-1 bg-green-50 rounded-xl py-3 items-center flex-row justify-center gap-2"
+              className="flex-1 bg-green-50 dark:bg-green-900/20 rounded-xl py-3 items-center flex-row justify-center gap-2"
               onPress={handleAddToGrocery}
               disabled={addingToGrocery}
               accessibilityRole="button"
@@ -267,27 +267,27 @@ export default function RecipeDetailScreen() {
               {addingToGrocery ? (
                 <ActivityIndicator size="small" color="#16a34a" />
               ) : null}
-              <Text className="text-green-700 font-semibold">
+              <Text className="text-green-700 dark:text-green-300 font-semibold">
                 {addingToGrocery ? "Adding..." : "Add to Grocery List"}
               </Text>
             </Pressable>
           </View>
           <View className="flex-row gap-3">
             <Pressable
-              className="flex-1 bg-gray-100 rounded-xl py-3 items-center"
+              className="flex-1 bg-gray-100 dark:bg-gray-800 rounded-xl py-3 items-center"
               onPress={() => router.push(`/recipe/edit/${recipe.id}`)}
               accessibilityRole="button"
               accessibilityLabel="Edit recipe"
             >
-              <Text className="text-gray-700 font-semibold">Edit Recipe</Text>
+              <Text className="text-gray-700 dark:text-gray-200 font-semibold">Edit Recipe</Text>
             </Pressable>
             <Pressable
-              className="flex-1 bg-red-50 rounded-xl py-3 items-center"
+              className="flex-1 bg-red-50 dark:bg-red-900/20 rounded-xl py-3 items-center"
               onPress={handleDelete}
               accessibilityRole="button"
               accessibilityLabel="Delete recipe"
             >
-              <Text className="text-red-600 font-semibold">Delete Recipe</Text>
+              <Text className="text-red-600 dark:text-red-400 font-semibold">Delete Recipe</Text>
             </Pressable>
           </View>
         </View>
@@ -302,12 +302,12 @@ export default function RecipeDetailScreen() {
             accessibilityRole="button"
             accessibilityLabel="Close collection picker"
           />
-          <View className="bg-white rounded-t-3xl px-4 pt-6 pb-10 max-h-96">
-            <Text className="text-lg font-bold mb-4" accessibilityRole="header">
+          <View className="bg-white dark:bg-gray-800 rounded-t-3xl px-4 pt-6 pb-10 max-h-96">
+            <Text className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4" accessibilityRole="header">
               Add to Collection
             </Text>
             {boards.length === 0 ? (
-              <Text className="text-gray-400 text-center py-4">
+              <Text className="text-gray-400 dark:text-gray-500 text-center py-4">
                 No collections yet. Create one from the Collections tab.
               </Text>
             ) : (
@@ -318,7 +318,7 @@ export default function RecipeDetailScreen() {
                   const isInBoard = item.recipeIds.includes(recipe.id);
                   return (
                     <Pressable
-                      className="flex-row items-center py-3 border-b border-gray-100"
+                      className="flex-row items-center py-3 border-b border-gray-100 dark:border-gray-700"
                       onPress={() => handleToggleBoard(item.id)}
                       accessibilityRole="checkbox"
                       accessibilityLabel={item.name}
@@ -329,7 +329,7 @@ export default function RecipeDetailScreen() {
                         className={`w-6 h-6 rounded-md border-2 items-center justify-center mr-3 ${
                           isInBoard
                             ? "bg-pink-500 border-pink-500"
-                            : "border-gray-300"
+                            : "border-gray-300 dark:border-gray-600"
                         }`}
                       >
                         {isInBoard && (
@@ -338,8 +338,8 @@ export default function RecipeDetailScreen() {
                           </Text>
                         )}
                       </View>
-                      <Text className="text-base flex-1">{item.name}</Text>
-                      <Text className="text-xs text-gray-400">
+                      <Text className="text-base flex-1 text-gray-900 dark:text-gray-100">{item.name}</Text>
+                      <Text className="text-xs text-gray-400 dark:text-gray-500">
                         {item.recipeIds.length} recipes
                       </Text>
                     </Pressable>
@@ -348,12 +348,12 @@ export default function RecipeDetailScreen() {
               />
             )}
             <Pressable
-              className="mt-4 bg-gray-100 rounded-xl py-3 items-center"
+              className="mt-4 bg-gray-100 dark:bg-gray-700 rounded-xl py-3 items-center"
               onPress={() => setShowBoardModal(false)}
               accessibilityRole="button"
               accessibilityLabel="Close collection picker"
             >
-              <Text className="text-gray-600 font-semibold">Done</Text>
+              <Text className="text-gray-600 dark:text-gray-200 font-semibold">Done</Text>
             </Pressable>
           </View>
         </View>

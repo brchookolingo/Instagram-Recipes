@@ -22,9 +22,9 @@ export const BoardCard = memo(function BoardCard({ board, recipeCount, recipeIma
       accessibilityLabel={`${board.name}, ${recipesLabel}`}
       accessibilityHint="Opens the collection"
     >
-      <View className="bg-white rounded-2xl shadow-sm overflow-hidden">
+      <View className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm overflow-hidden">
         {recipeImages.length === 0 ? (
-          <View className="w-full aspect-square bg-gray-100 items-center justify-center">
+          <View className="w-full aspect-square bg-gray-100 dark:bg-gray-700 items-center justify-center">
             <Text className="text-4xl">📋</Text>
           </View>
         ) : (
@@ -45,10 +45,10 @@ export const BoardCard = memo(function BoardCard({ board, recipeCount, recipeIma
           </View>
         )}
         <View className="p-3">
-          <Text className="text-base font-semibold" numberOfLines={1}>
+          <Text className="text-base font-semibold text-gray-900 dark:text-gray-100" numberOfLines={1}>
             {board.name}
           </Text>
-          <Text className="text-xs text-gray-500 mt-1">
+          <Text className="text-xs text-gray-500 dark:text-gray-400 mt-1">
             {recipeCount} {recipeCount === 1 ? "recipe" : "recipes"}
           </Text>
         </View>

@@ -25,17 +25,6 @@ Research-only tasks deliver a markdown file under `docs/research/`. Code tasks m
 
 These have a clear scope, no external accounts/secrets, and no irreversible decisions. An agent can complete them without user input. **Do not buy anything, register paid accounts, or enter payment info — flag any cost in the deliverable and stop.**
 
-### M-h — Dark mode className migration
-- **Status:** partial; tokens already exist in `src/utils/colors.ts`. Done so far: settings tab (dd5d634), grocery tab + `EmptyState` component (28bd528). Remaining: home/recipes tab (`app/(tabs)/index.tsx`), collections tab, add-recipe screen, recipe detail/edit screens, onboarding, collection detail, and the remaining shared components (`RecipeCard`, `BoardCard`, `URLInput`, `IngredientList`, `PillButton`, `SkeletonRecipeGrid`, `CookingSpinner`).
-- **Estimate:** 30 min per screen batch (split across multiple sessions)
-- **Scope:** add `dark:` variants across ~30 `className` sites, keyed off `useColorScheme()`. One session = one screen or one component cluster, not the full repo.
-- **Acceptance:**
-  - Every touched screen/component renders correctly in both light and dark mode
-  - No hardcoded hex/rgb in touched `className`s where a token exists
-  - Typecheck + existing test suite still pass
-- **Suggested approach:** grep for `bg-`, `text-`, `border-` color classes within the chosen screen; add `dark:` companion for each using the token mapping. Manually verify after.
-- **Output / Files:** `app/**/*.tsx`, `src/components/**/*.tsx`
-
 ### AND3 — Document EAS build + internal-distribution path for Android
 - **Status:** new (unblocked — AND1 shipped)
 - **Estimate:** ≤30 min
@@ -588,6 +577,11 @@ Each entry uses the shape: **Summary** (one line), **Shipped** (commit hash or `
 - **Summary:** `colors.ts` token file added; per-className dark-mode migration deferred (tracked under outstanding M-h).
 - **Shipped:** 0df3625
 - **Files:** `src/utils/colors.ts`
+
+#### M-h — Dark mode className migration
+- **Summary:** completed the per-className dark-mode migration begun under M-h (partial). Settings tab (dd5d634), grocery tab + `EmptyState` (28bd528), and in this final pass: home/recipes tab (incl. filter modal + pill rows), collections tab, add-recipe (loading/input/preview/edit states + form inputs), recipe detail (header, scale toggles, ingredient/instruction sections, action buttons, collection picker modal), recipe edit, collection detail, onboarding (`useColorScheme`-driven StyleSheet swap), and shared components: `RecipeCard`, `BoardCard`, `URLInput`, `IngredientList`, `InstructionList`, `PillButton`, `SkeletonRecipeGrid`, `ErrorBoundary`. Brand accents (`bg-pink-500`, `text-pink-500`) intentionally left without dark variants since they read correctly on both backgrounds. Typecheck clean, 101/101 tests pass.
+- **Shipped:** this loop tick
+- **Files:** `app/(tabs)/index.tsx`, `app/(tabs)/collections.tsx`, `app/add-recipe.tsx`, `app/recipe/[id].tsx`, `app/recipe/edit/[id].tsx`, `app/collection/[id].tsx`, `app/onboarding.tsx`, `src/components/RecipeCard.tsx`, `src/components/BoardCard.tsx`, `src/components/URLInput.tsx`, `src/components/IngredientList.tsx`, `src/components/InstructionList.tsx`, `src/components/PillButton.tsx`, `src/components/SkeletonRecipeGrid.tsx`, `src/components/ErrorBoundary.tsx`
 
 #### TEST1 — Jest harness
 - **Summary:** `jest.config.js` + `jest.setup.ts` with mocks for `expo-secure-store`, `expo-crypto`, `react-native-mmkv` (`MockMMKV`), and `expo-file-system/legacy`.

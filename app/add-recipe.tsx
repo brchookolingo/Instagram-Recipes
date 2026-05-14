@@ -216,10 +216,10 @@ export default function AddRecipeScreen() {
   // Loading state
   if (step === "loading") {
     return (
-      <SafeAreaView className="flex-1 items-center justify-center bg-white px-8" edges={["bottom"]}>
+      <SafeAreaView className="flex-1 items-center justify-center bg-white dark:bg-gray-900 px-8" edges={["bottom"]}>
         <ActivityIndicator size="large" color="#ec4899" />
         {loadingMessage ? (
-          <Text className="mt-4 text-gray-500 text-sm text-center">{loadingMessage}</Text>
+          <Text className="mt-4 text-gray-500 dark:text-gray-400 text-sm text-center">{loadingMessage}</Text>
         ) : null}
       </SafeAreaView>
     );
@@ -228,26 +228,26 @@ export default function AddRecipeScreen() {
   // Input state
   if (step === "input") {
     return (
-      <SafeAreaView className="flex-1 bg-white" edges={["bottom"]}>
+      <SafeAreaView className="flex-1 bg-white dark:bg-gray-900" edges={["bottom"]}>
         <View className="pt-6">
           <URLInput onSubmit={handleFetch} />
         </View>
         {error ? (
-          <View className="mx-4 mt-2 bg-red-50 rounded-xl px-4 py-3">
-            <Text className="text-red-600 text-sm" accessibilityLiveRegion="polite">
+          <View className="mx-4 mt-2 bg-red-50 dark:bg-red-900/20 rounded-xl px-4 py-3">
+            <Text className="text-red-600 dark:text-red-400 text-sm" accessibilityLiveRegion="polite">
               {error}
             </Text>
           </View>
         ) : null}
         <View className="items-center mt-8">
-          <Text className="text-gray-400 mb-3">or</Text>
+          <Text className="text-gray-400 dark:text-gray-500 mb-3">or</Text>
           <Pressable
-            className="bg-gray-100 rounded-xl px-6 py-3"
+            className="bg-gray-100 dark:bg-gray-800 rounded-xl px-6 py-3"
             onPress={handleManualEntry}
             accessibilityRole="button"
             accessibilityLabel="Enter recipe manually"
           >
-            <Text className="text-gray-600 font-semibold">Enter Manually</Text>
+            <Text className="text-gray-600 dark:text-gray-200 font-semibold">Enter Manually</Text>
           </Pressable>
         </View>
       </SafeAreaView>
@@ -256,8 +256,8 @@ export default function AddRecipeScreen() {
 
   // Preview/edit state
   return (
-    <SafeAreaView className="flex-1 bg-white" edges={["bottom"]}>
-      <ScrollView className="flex-1 bg-white" keyboardShouldPersistTaps="handled">
+    <SafeAreaView className="flex-1 bg-white dark:bg-gray-900" edges={["bottom"]}>
+      <ScrollView className="flex-1 bg-white dark:bg-gray-900" keyboardShouldPersistTaps="handled">
         {postData?.imageUrl && (
           <Image
             source={{ uri: postData.imageUrl }}
@@ -269,25 +269,27 @@ export default function AddRecipeScreen() {
 
         <View className="px-4 py-4 gap-4">
           <View>
-            <Text className="text-sm font-medium text-gray-500 mb-1">Title</Text>
+            <Text className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Title</Text>
             <TextInput
-              className="border border-gray-200 rounded-xl px-4 py-3 text-base"
+              className="border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 text-base text-gray-900 dark:text-gray-100"
               value={title}
               onChangeText={setTitle}
               placeholder="Recipe title"
+              placeholderTextColor="#9ca3af"
               accessibilityLabel="Recipe title"
             />
           </View>
 
           <View>
-            <Text className="text-sm font-medium text-gray-500 mb-1">
+            <Text className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
               Description
             </Text>
             <TextInput
-              className="border border-gray-200 rounded-xl px-4 py-3 text-base"
+              className="border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 text-base text-gray-900 dark:text-gray-100"
               value={description}
               onChangeText={setDescription}
               placeholder="Brief description"
+              placeholderTextColor="#9ca3af"
               multiline
               accessibilityLabel="Recipe description"
             />
@@ -295,40 +297,43 @@ export default function AddRecipeScreen() {
 
           <View className="flex-row gap-3">
             <View className="flex-1">
-              <Text className="text-sm font-medium text-gray-500 mb-1">
+              <Text className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
                 Prep Time
               </Text>
               <TextInput
-                className="border border-gray-200 rounded-xl px-4 py-3 text-base"
+                className="border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 text-base text-gray-900 dark:text-gray-100"
                 value={prepTime}
                 onChangeText={setPrepTime}
                 placeholder="e.g. 15"
+                placeholderTextColor="#9ca3af"
                 keyboardType="numeric"
                 accessibilityLabel="Prep time in minutes"
               />
             </View>
             <View className="flex-1">
-              <Text className="text-sm font-medium text-gray-500 mb-1">
+              <Text className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
                 Cook Time
               </Text>
               <TextInput
-                className="border border-gray-200 rounded-xl px-4 py-3 text-base"
+                className="border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 text-base text-gray-900 dark:text-gray-100"
                 value={cookTime}
                 onChangeText={setCookTime}
                 placeholder="e.g. 30"
+                placeholderTextColor="#9ca3af"
                 keyboardType="numeric"
                 accessibilityLabel="Cook time in minutes"
               />
             </View>
             <View className="flex-1">
-              <Text className="text-sm font-medium text-gray-500 mb-1">
+              <Text className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
                 Servings
               </Text>
               <TextInput
-                className="border border-gray-200 rounded-xl px-4 py-3 text-base"
+                className="border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 text-base text-gray-900 dark:text-gray-100"
                 value={servings}
                 onChangeText={setServings}
                 placeholder="e.g. 4"
+                placeholderTextColor="#9ca3af"
                 keyboardType="numeric"
                 accessibilityLabel="Number of servings"
               />
@@ -338,7 +343,7 @@ export default function AddRecipeScreen() {
           {/* Ingredients */}
           <View>
             <View className="flex-row items-center justify-between mb-2">
-              <Text className="text-lg font-bold" accessibilityRole="header">
+              <Text className="text-lg font-bold text-gray-900 dark:text-gray-100" accessibilityRole="header">
                 Ingredients
               </Text>
               <Pressable
@@ -352,10 +357,11 @@ export default function AddRecipeScreen() {
             {ingredients.map((ing, i) => (
               <View key={i} className="flex-row items-center gap-2 mb-2">
                 <TextInput
-                  className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-base"
+                  className="flex-1 border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-2 text-base text-gray-900 dark:text-gray-100"
                   value={ing.text}
                   onChangeText={(text) => handleUpdateIngredient(i, text)}
                   placeholder={`Ingredient ${i + 1}`}
+                  placeholderTextColor="#9ca3af"
                   accessibilityLabel={`Ingredient ${i + 1}`}
                 />
                 <Pressable
@@ -363,7 +369,7 @@ export default function AddRecipeScreen() {
                   accessibilityRole="button"
                   accessibilityLabel={`Remove ingredient ${i + 1}`}
                 >
-                  <Text className="text-red-400 text-lg px-2">✕</Text>
+                  <Text className="text-red-400 dark:text-red-500 text-lg px-2">✕</Text>
                 </Pressable>
               </View>
             ))}
@@ -372,7 +378,7 @@ export default function AddRecipeScreen() {
           {/* Instructions */}
           <View>
             <View className="flex-row items-center justify-between mb-2">
-              <Text className="text-lg font-bold" accessibilityRole="header">
+              <Text className="text-lg font-bold text-gray-900 dark:text-gray-100" accessibilityRole="header">
                 Instructions
               </Text>
               <Pressable
@@ -385,16 +391,17 @@ export default function AddRecipeScreen() {
             </View>
             {instructions.map((inst, i) => (
               <View key={i} className="flex-row items-start gap-2 mb-2">
-                <View className="w-7 h-7 rounded-full bg-pink-100 items-center justify-center mt-2">
-                  <Text className="text-pink-600 text-xs font-bold">
+                <View className="w-7 h-7 rounded-full bg-pink-100 dark:bg-pink-900/30 items-center justify-center mt-2">
+                  <Text className="text-pink-600 dark:text-pink-300 text-xs font-bold">
                     {inst.stepNumber}
                   </Text>
                 </View>
                 <TextInput
-                  className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-base"
+                  className="flex-1 border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-2 text-base text-gray-900 dark:text-gray-100"
                   value={inst.text}
                   onChangeText={(text) => handleUpdateInstruction(i, text)}
                   placeholder={`Step ${i + 1}`}
+                  placeholderTextColor="#9ca3af"
                   multiline
                   accessibilityLabel={`Step ${i + 1}`}
                 />
@@ -403,21 +410,22 @@ export default function AddRecipeScreen() {
                   accessibilityRole="button"
                   accessibilityLabel={`Remove step ${i + 1}`}
                 >
-                  <Text className="text-red-400 text-lg px-2 mt-2">✕</Text>
+                  <Text className="text-red-400 dark:text-red-500 text-lg px-2 mt-2">✕</Text>
                 </Pressable>
               </View>
             ))}
           </View>
 
           <View>
-            <Text className="text-sm font-medium text-gray-500 mb-1">
+            <Text className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
               Tags (comma-separated)
             </Text>
             <TextInput
-              className="border border-gray-200 rounded-xl px-4 py-3 text-base"
+              className="border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 text-base text-gray-900 dark:text-gray-100"
               value={tags}
               onChangeText={setTags}
               placeholder="e.g. pasta, italian, quick"
+              placeholderTextColor="#9ca3af"
               accessibilityLabel="Recipe tags, comma separated"
             />
           </View>

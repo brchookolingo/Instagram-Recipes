@@ -46,7 +46,7 @@ export default function CollectionsScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50" edges={["bottom"]}>
+    <SafeAreaView className="flex-1 bg-gray-50 dark:bg-gray-900" edges={["bottom"]}>
       {boards.length === 0 ? (
         <EmptyState
           icon="📋"

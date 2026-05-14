@@ -15,7 +15,7 @@ export function InstructionList({ instructions }: InstructionListProps) {
               {instruction.stepNumber}
             </Text>
           </View>
-          <Text className="flex-1 text-base text-gray-800 pt-1">
+          <Text className="flex-1 text-base text-gray-800 dark:text-gray-100 pt-1">
             {instruction.text}
           </Text>
         </View>

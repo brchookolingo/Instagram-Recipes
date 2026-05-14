@@ -31,12 +31,12 @@ export class ErrorBoundary extends Component<Props, State> {
   render() {
     if (this.state.hasError) {
       return (
-        <View className="flex-1 items-center justify-center bg-white px-8">
+        <View className="flex-1 items-center justify-center bg-white dark:bg-gray-900 px-8">
           <Text className="text-5xl mb-4">😵</Text>
-          <Text className="text-xl font-bold text-gray-700">
+          <Text className="text-xl font-bold text-gray-700 dark:text-gray-100">
             Something went wrong
           </Text>
-          <Text className="text-gray-400 text-center mt-2">
+          <Text className="text-gray-400 dark:text-gray-500 text-center mt-2">
             {this.state.error?.message ?? "An unexpected error occurred"}
           </Text>
           <Pressable

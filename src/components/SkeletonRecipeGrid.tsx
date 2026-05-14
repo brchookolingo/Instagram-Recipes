@@ -3,11 +3,11 @@ import { View } from "react-native";
 function SkeletonCard() {
   return (
     <View className="flex-1 m-1.5">
-      <View className="bg-white rounded-2xl shadow-sm overflow-hidden">
+      <View className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm overflow-hidden">
         <View style={{ width: "100%", aspectRatio: 1, backgroundColor: "#f3f4f6" }} />
         <View className="p-3 gap-2">
-          <View className="h-4 rounded bg-gray-100" />
-          <View className="h-3 w-1/2 rounded bg-gray-100" />
+          <View className="h-4 rounded bg-gray-100 dark:bg-gray-700" />
+          <View className="h-3 w-1/2 rounded bg-gray-100 dark:bg-gray-700" />
         </View>
       </View>
     </View>

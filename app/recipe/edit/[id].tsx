@@ -34,8 +34,8 @@ export default function EditRecipeScreen() {
 
   if (!recipe) {
     return (
-      <View className="flex-1 items-center justify-center bg-white">
-        <Text className="text-gray-500">Recipe not found</Text>
+      <View className="flex-1 items-center justify-center bg-white dark:bg-gray-900">
+        <Text className="text-gray-500 dark:text-gray-400">Recipe not found</Text>
       </View>
     );
   }
@@ -102,15 +102,15 @@ export default function EditRecipeScreen() {
 
   return (
     <ScrollView
-      className="flex-1 bg-white"
+      className="flex-1 bg-white dark:bg-gray-900"
       keyboardShouldPersistTaps="handled"
     >
       <View className="px-4 py-4 gap-4">
         {/* Title */}
         <View>
-          <Text className="text-sm font-medium text-gray-500 mb-1">Title</Text>
+          <Text className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Title</Text>
           <TextInput
-            className="border border-gray-200 rounded-xl px-4 py-3 text-base"
+            className="border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 text-base text-gray-900 dark:text-gray-100"
             value={title}
             onChangeText={setTitle}
             placeholder="Recipe title"
@@ -120,11 +120,11 @@ export default function EditRecipeScreen() {
 
         {/* Description */}
         <View>
-          <Text className="text-sm font-medium text-gray-500 mb-1">
+          <Text className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
             Description
           </Text>
           <TextInput
-            className="border border-gray-200 rounded-xl px-4 py-3 text-base"
+            className="border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 text-base text-gray-900 dark:text-gray-100"
             value={description}
             onChangeText={setDescription}
             placeholder="Brief description"
@@ -136,11 +136,11 @@ export default function EditRecipeScreen() {
         {/* Prep / Cook / Servings */}
         <View className="flex-row gap-3">
           <View className="flex-1">
-            <Text className="text-sm font-medium text-gray-500 mb-1">
+            <Text className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
               Prep Time
             </Text>
             <TextInput
-              className="border border-gray-200 rounded-xl px-4 py-3 text-base"
+              className="border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 text-base text-gray-900 dark:text-gray-100"
               value={prepTime}
               onChangeText={setPrepTime}
               placeholder="e.g. 15"
@@ -149,11 +149,11 @@ export default function EditRecipeScreen() {
             />
           </View>
           <View className="flex-1">
-            <Text className="text-sm font-medium text-gray-500 mb-1">
+            <Text className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
               Cook Time
             </Text>
             <TextInput
-              className="border border-gray-200 rounded-xl px-4 py-3 text-base"
+              className="border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 text-base text-gray-900 dark:text-gray-100"
               value={cookTime}
               onChangeText={setCookTime}
               placeholder="e.g. 30"
@@ -162,11 +162,11 @@ export default function EditRecipeScreen() {
             />
           </View>
           <View className="flex-1">
-            <Text className="text-sm font-medium text-gray-500 mb-1">
+            <Text className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
               Servings
             </Text>
             <TextInput
-              className="border border-gray-200 rounded-xl px-4 py-3 text-base"
+              className="border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 text-base text-gray-900 dark:text-gray-100"
               value={servings}
               onChangeText={setServings}
               placeholder="e.g. 4"
@@ -179,7 +179,7 @@ export default function EditRecipeScreen() {
         {/* Ingredients */}
         <View>
           <View className="flex-row items-center justify-between mb-2">
-            <Text className="text-lg font-bold" accessibilityRole="header">
+            <Text className="text-lg font-bold text-gray-900 dark:text-gray-100" accessibilityRole="header">
               Ingredients
             </Text>
             <Pressable
@@ -187,13 +187,13 @@ export default function EditRecipeScreen() {
               accessibilityRole="button"
               accessibilityLabel="Add ingredient"
             >
-              <Text className="text-pink-500 font-semibold">+ Add</Text>
+              <Text className="text-pink-500 dark:text-pink-400 font-semibold">+ Add</Text>
             </Pressable>
           </View>
           {ingredients.map((ing, i) => (
             <View key={i} className="flex-row items-center gap-2 mb-2">
               <TextInput
-                className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-base"
+                className="flex-1 border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-2 text-base text-gray-900 dark:text-gray-100"
                 value={ing.text}
                 onChangeText={(text) => handleUpdateIngredient(i, text)}
                 placeholder={`Ingredient ${i + 1}`}
@@ -204,7 +204,7 @@ export default function EditRecipeScreen() {
                 accessibilityRole="button"
                 accessibilityLabel={`Remove ingredient ${i + 1}`}
               >
-                <Text className="text-red-400 text-lg px-2">✕</Text>
+                <Text className="text-red-400 dark:text-red-500 text-lg px-2">✕</Text>
               </Pressable>
             </View>
           ))}
@@ -213,7 +213,7 @@ export default function EditRecipeScreen() {
         {/* Instructions */}
         <View>
           <View className="flex-row items-center justify-between mb-2">
-            <Text className="text-lg font-bold" accessibilityRole="header">
+            <Text className="text-lg font-bold text-gray-900 dark:text-gray-100" accessibilityRole="header">
               Instructions
             </Text>
             <Pressable
@@ -221,18 +221,18 @@ export default function EditRecipeScreen() {
               accessibilityRole="button"
               accessibilityLabel="Add instruction step"
             >
-              <Text className="text-pink-500 font-semibold">+ Add</Text>
+              <Text className="text-pink-500 dark:text-pink-400 font-semibold">+ Add</Text>
             </Pressable>
           </View>
           {instructions.map((inst, i) => (
             <View key={i} className="flex-row items-start gap-2 mb-2">
-              <View className="w-7 h-7 rounded-full bg-pink-100 items-center justify-center mt-2">
-                <Text className="text-pink-600 text-xs font-bold">
+              <View className="w-7 h-7 rounded-full bg-pink-100 dark:bg-pink-900/30 items-center justify-center mt-2">
+                <Text className="text-pink-600 dark:text-pink-300 text-xs font-bold">
                   {inst.stepNumber}
                 </Text>
               </View>
               <TextInput
-                className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-base"
+                className="flex-1 border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-2 text-base text-gray-900 dark:text-gray-100"
                 value={inst.text}
                 onChangeText={(text) => handleUpdateInstruction(i, text)}
                 placeholder={`Step ${i + 1}`}
@@ -244,7 +244,7 @@ export default function EditRecipeScreen() {
                 accessibilityRole="button"
                 accessibilityLabel={`Remove step ${i + 1}`}
               >
-                <Text className="text-red-400 text-lg px-2 mt-2">✕</Text>
+                <Text className="text-red-400 dark:text-red-500 text-lg px-2 mt-2">✕</Text>
               </Pressable>
             </View>
           ))}
@@ -253,11 +253,11 @@ export default function EditRecipeScreen() {
         {/* Notes */}
         <View>
           <View className="flex-row items-center justify-between mb-1">
-            <Text className="text-sm font-medium text-gray-500">Notes</Text>
-            <Text className="text-xs text-gray-400">{notes.length}/500</Text>
+            <Text className="text-sm font-medium text-gray-500 dark:text-gray-400">Notes</Text>
+            <Text className="text-xs text-gray-400 dark:text-gray-500">{notes.length}/500</Text>
           </View>
           <TextInput
-            className="border border-gray-200 rounded-xl px-4 py-3 text-base"
+            className="border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 text-base text-gray-900 dark:text-gray-100"
             value={notes}
             onChangeText={(text) => { if (text.length <= 500) setNotes(text); }}
             placeholder="Any extra notes, variations, tips..."
@@ -271,11 +271,11 @@ export default function EditRecipeScreen() {
 
         {/* Tags */}
         <View>
-          <Text className="text-sm font-medium text-gray-500 mb-1">
+          <Text className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
             Tags (comma-separated)
           </Text>
           <TextInput
-            className="border border-gray-200 rounded-xl px-4 py-3 text-base"
+            className="border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 text-base text-gray-900 dark:text-gray-100"
             value={tags}
             onChangeText={setTags}
             placeholder="e.g. pasta, italian, quick"

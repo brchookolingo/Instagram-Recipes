@@ -80,18 +80,19 @@ export default function HomeScreen() {
   );
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50" edges={["bottom"]}>
+    <SafeAreaView className="flex-1 bg-gray-50 dark:bg-gray-900" edges={["bottom"]}>
       {/* Search + filter bar */}
       <View className="px-4 pt-2 pb-2 flex-row items-center gap-2">
         <TextInput
-          className="flex-1 bg-white border border-gray-200 rounded-xl px-4 py-2.5 text-base"
+          className="flex-1 bg-white dark:bg-gray-800 dark:text-gray-100 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-base"
           placeholder="Search recipes..."
+          placeholderTextColor="#9ca3af"
           value={search}
           onChangeText={setSearch}
           accessibilityLabel="Search recipes"
         />
         <Pressable
-          className="bg-white border border-gray-200 rounded-xl p-2.5 items-center justify-center"
+          className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-2.5 items-center justify-center"
           onPress={() => setShowFilter(true)}
           style={{ position: "relative" }}
           accessibilityRole="button"
@@ -181,10 +182,10 @@ export default function HomeScreen() {
             accessibilityRole="button"
             accessibilityLabel="Close filter panel"
           />
-          <View className="bg-white rounded-t-3xl px-4 pt-6 pb-10">
+          <View className="bg-white dark:bg-gray-800 rounded-t-3xl px-4 pt-6 pb-10">
             {/* Header */}
             <View className="flex-row items-center justify-between mb-5">
-              <Text className="text-lg font-bold" accessibilityRole="header">
+              <Text className="text-lg font-bold text-gray-900 dark:text-gray-100" accessibilityRole="header">
                 Filter Recipes
               </Text>
               <Pressable
@@ -197,7 +198,7 @@ export default function HomeScreen() {
             </View>
 
             {/* Favourites */}
-            <Text className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">
+            <Text className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-2">
               Favourites
             </Text>
             <View className="flex-row flex-wrap gap-2 mb-5">
@@ -209,7 +210,7 @@ export default function HomeScreen() {
             </View>
 
             {/* Dietary */}
-            <Text className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">
+            <Text className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-2">
               Dietary
             </Text>
             <View className="flex-row flex-wrap gap-2 mb-5">
@@ -224,7 +225,7 @@ export default function HomeScreen() {
             </View>
 
             {/* Protein */}
-            <Text className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">
+            <Text className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-2">
               Protein
             </Text>
             <View className="flex-row flex-wrap gap-2 mb-5">
@@ -239,7 +240,7 @@ export default function HomeScreen() {
             </View>
 
             {/* Preparation */}
-            <Text className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">
+            <Text className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-2">
               Preparation
             </Text>
             <View className="flex-row flex-wrap gap-2 mb-5">
@@ -254,7 +255,7 @@ export default function HomeScreen() {
             </View>
 
             {/* Meal Type */}
-            <Text className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">
+            <Text className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-2">
               Meal Type
             </Text>
             <View className="flex-row flex-wrap gap-2 mb-4">

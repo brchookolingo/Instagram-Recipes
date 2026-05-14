@@ -28,7 +28,7 @@ export const RecipeCard = memo(function RecipeCard({ recipe, onPress }: RecipeCa
       accessibilityLabel={accessibilityLabel}
       accessibilityHint="Opens recipe details"
     >
-      <View className="bg-white rounded-2xl shadow-sm overflow-hidden">
+      <View className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm overflow-hidden">
         {imageUri ? (
           <Image
             source={{ uri: imageUri }}
@@ -40,32 +40,32 @@ export const RecipeCard = memo(function RecipeCard({ recipe, onPress }: RecipeCa
           <View style={{ width: "100%", aspectRatio: 1, backgroundColor: colors.surfaceAlt }} />
         )}
         <View className="p-3">
-          <Text className="text-base font-semibold" numberOfLines={2}>
+          <Text className="text-base font-semibold text-gray-900 dark:text-gray-100" numberOfLines={2}>
             {recipe.title}
           </Text>
           {recipe.author ? (
-            <Text className="text-xs text-gray-500 mt-1">
+            <Text className="text-xs text-gray-500 dark:text-gray-400 mt-1">
               by {recipe.author}
             </Text>
           ) : null}
           <View className="flex-row mt-2 gap-2">
             {recipe.prepTime ? (
-              <View className="bg-pink-50 rounded-full px-2 py-0.5">
-                <Text className="text-xs text-pink-600">
+              <View className="bg-pink-50 dark:bg-pink-900/20 rounded-full px-2 py-0.5">
+                <Text className="text-xs text-pink-600 dark:text-pink-300">
                   Prep: {recipe.prepTime} min
                 </Text>
               </View>
             ) : null}
             {recipe.cookTime ? (
-              <View className="bg-orange-50 rounded-full px-2 py-0.5">
-                <Text className="text-xs text-orange-600">
+              <View className="bg-orange-50 dark:bg-orange-900/20 rounded-full px-2 py-0.5">
+                <Text className="text-xs text-orange-600 dark:text-orange-300">
                   Cook: {recipe.cookTime} min
                 </Text>
               </View>
             ) : null}
           </View>
           {recipe.description ? (
-            <Text className="text-xs text-gray-400 mt-2" numberOfLines={2}>
+            <Text className="text-xs text-gray-400 dark:text-gray-500 mt-2" numberOfLines={2}>
               {recipe.description}
             </Text>
           ) : null}

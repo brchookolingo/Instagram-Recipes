@@ -44,8 +44,9 @@ export function URLInput({ onSubmit }: URLInputProps) {
   return (
     <View className="px-4 py-3">
       <TextInput
-        className={`border rounded-xl px-4 py-3 text-base bg-white ${validationError ? "border-red-400" : "border-gray-300"}`}
+        className={`border rounded-xl px-4 py-3 text-base bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 ${validationError ? "border-red-400" : "border-gray-300 dark:border-gray-700"}`}
         placeholder="Paste a recipe URL from Instagram, TikTok, Pinterest, or any website..."
+        placeholderTextColor="#9ca3af"
         value={url}
         onChangeText={(text) => {
           setUrl(text);
@@ -58,7 +59,7 @@ export function URLInput({ onSubmit }: URLInputProps) {
       />
       {validationError ? (
         <Text
-          className="text-red-500 text-sm mt-1 ml-1"
+          className="text-red-500 dark:text-red-400 text-sm mt-1 ml-1"
           accessibilityLiveRegion="polite"
         >
           {validationError}
@@ -66,12 +67,12 @@ export function URLInput({ onSubmit }: URLInputProps) {
       ) : null}
       {hasClipboardContent && !url && (
         <Pressable
-          className="mt-2 bg-pink-50 rounded-lg px-4 py-2"
+          className="mt-2 bg-pink-50 dark:bg-pink-900/20 rounded-lg px-4 py-2"
           onPress={handlePasteFromClipboard}
           accessibilityRole="button"
           accessibilityLabel="Paste URL from clipboard"
         >
-          <Text className="text-pink-600 text-sm">Paste from clipboard</Text>
+          <Text className="text-pink-600 dark:text-pink-300 text-sm">Paste from clipboard</Text>
         </Pressable>
       )}
       <Pressable

@@ -118,6 +118,40 @@ export async function cacheImage(
   return downloadResult.uri;
 }
 
+interface BackfillCandidate {
+  id: string;
+  imageUrl: string;
+  localImageUri?: string;
+}
+
+/**
+ * One-shot backfill: caches any recipe that has a remote imageUrl but no
+ * localImageUri. Best-effort — failures (expired CDN URL, network) are
+ * swallowed per-recipe so one bad URL doesn't block the rest. Calls
+ * onCached(id, localUri) for each success so the caller can update the store.
+ */
+export async function backfillImageCache(
+  candidates: BackfillCandidate[],
+  onCached: (id: string, localUri: string) => void,
+): Promise<void> {
+  const targets = candidates.filter((c) => c.imageUrl && !c.localImageUri);
+  if (targets.length === 0) return;
+
+  try {
+    await ensureImageDir();
+    await runInBatches(targets, BATCH_SIZE, async (recipe) => {
+      try {
+        const localUri = await cacheImage(recipe.imageUrl, recipe.id);
+        onCached(recipe.id, localUri);
+      } catch {
+        // Leave imageUrl intact — likely an expired CDN URL, nothing to do.
+      }
+    });
+  } catch (error) {
+    console.error("[image-cache] backfillImageCache failed:", redactError(error));
+  }
+}
+
 /**
  * Deletes the cached image for a recipe. Safe to call even if no image
  * was cached — silently ignores missing files.

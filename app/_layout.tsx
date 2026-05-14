@@ -2,19 +2,32 @@ import "../src/styles/global.css";
 
 import { useEffect } from "react";
 import { Stack, useRouter } from "expo-router";
-import { sweepOrphanedImages } from "../src/utils/image-cache";
+import { backfillImageCache, sweepOrphanedImages } from "../src/utils/image-cache";
 import { useRecipeStore } from "../src/stores/recipe-store";
 import { hasSeenOnboarding } from "../src/utils/onboarding";
 
 export default function RootLayout() {
-  const recipes = useRecipeStore((s) => s.recipes);
+  const updateRecipe = useRecipeStore((s) => s.updateRecipe);
   const router = useRouter();
 
   useEffect(() => {
-    const ids = recipes.map((r) => r.id);
-    sweepOrphanedImages(ids).catch(() => {
-      // Already logs internally; swallow so the tree mounts regardless.
+    const run = async () => {
+      const current = useRecipeStore.getState().recipes;
+      await sweepOrphanedImages(current.map((r) => r.id));
+      await backfillImageCache(
+        current.map((r) => ({
+          id: r.id,
+          imageUrl: r.imageUrl,
+          localImageUri: r.localImageUri,
+        })),
+        (id, localImageUri) => updateRecipe(id, { localImageUri }),
+      );
+    };
+    const unsub = useRecipeStore.persist.onFinishHydration(() => {
+      void run();
     });
+    if (useRecipeStore.persist.hasHydrated()) void run();
+    return unsub;
   }, []);
 
   useEffect(() => {

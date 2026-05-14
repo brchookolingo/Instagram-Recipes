@@ -26,7 +26,7 @@ Research-only tasks deliver a markdown file under `docs/research/`. Code tasks m
 These have a clear scope, no external accounts/secrets, and no irreversible decisions. An agent can complete them without user input. **Do not buy anything, register paid accounts, or enter payment info — flag any cost in the deliverable and stop.**
 
 ### M-h — Dark mode className migration
-- **Status:** partial; tokens already exist in `src/utils/colors.ts`. Done so far: settings tab (dd5d634), grocery tab + `EmptyState` component (this tick). Remaining: home/recipes tab (`app/(tabs)/index.tsx`), collections tab, add-recipe screen, recipe detail/edit screens, onboarding, collection detail, and the remaining shared components (`RecipeCard`, `BoardCard`, `URLInput`, `IngredientList`, `PillButton`, `SkeletonRecipeGrid`, `CookingSpinner`).
+- **Status:** partial; tokens already exist in `src/utils/colors.ts`. Done so far: settings tab (dd5d634), grocery tab + `EmptyState` component (28bd528). Remaining: home/recipes tab (`app/(tabs)/index.tsx`), collections tab, add-recipe screen, recipe detail/edit screens, onboarding, collection detail, and the remaining shared components (`RecipeCard`, `BoardCard`, `URLInput`, `IngredientList`, `PillButton`, `SkeletonRecipeGrid`, `CookingSpinner`).
 - **Estimate:** 30 min per screen batch (split across multiple sessions)
 - **Scope:** add `dark:` variants across ~30 `className` sites, keyed off `useColorScheme()`. One session = one screen or one component cluster, not the full repo.
 - **Acceptance:**
@@ -135,12 +135,12 @@ Each entry uses the shape: **Summary** (one line), **Shipped** (commit hash or `
 
 #### P2 — Candidate pricing structures with break-even math
 - **Summary:** drafted three pricing structures (A: freemium with monthly quota + $4.99/mo or $34.99/yr sub; B: BYOK + $9.99 one-time unlock; C: $24.99 lifetime + $2.99/mo or $19.99/yr fallback). Each section covers target user, gated features, break-even tables under 30% and 15% store cuts using P1's $0.026/$0.07 p50/p95 per-recipe cost, and tail risks. Closes with a non-binding recommendation framed against the C1 architecture decision: Option B if BYOK, Option A if backend proxy. Final pick deferred to PRICING1.
-- **Shipped:** this loop tick
+- **Shipped:** 035b3bc
 - **Files:** `docs/research/pricing-options.md`
 
 #### R3 — Competitor pricing & monetization survey
 - **Summary:** pricing table for all 12 R1 competitors with model, free tier, paid tier(s), what's gated. Common-patterns section flags freemium-with-import-cap dominance, $2.99–$6.99/mo cluster, the BYOK gap (no competitor uses it — a wedge for ReciGrams), and store-cut implications.
-- **Shipped:** this loop tick
+- **Shipped:** 227680f
 - **Files:** `docs/research/competitor-pricing.md`
 
 #### P1 — Variable cost per recipe extraction
@@ -182,7 +182,7 @@ Each entry uses the shape: **Summary** (one line), **Shipped** (commit hash or `
 
 #### FS4 — Document `docs/` convention
 - **Summary:** added `docs/README.md` describing the layout (`research/` for task-deliverable markdown, `privacy-policy.html` for the public policy) and referenced the convention from `CLAUDE.md`.
-- **Shipped:** this loop tick
+- **Shipped:** 961c855
 - **Files:** `docs/README.md`, `CLAUDE.md`
 
 ### Code Cleanup
